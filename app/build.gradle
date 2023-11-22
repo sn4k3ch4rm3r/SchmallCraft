@@ -10,6 +10,7 @@ plugins {
     id 'application'
     id 'java'
     id 'jacoco'
+    id "org.sonarqube" version "4.4.1.3373"
 }
 
 repositories {
@@ -35,4 +36,12 @@ test {
 
 jacocoTestReport {
     dependsOn test
+}
+
+sonar {
+  properties {
+    property "sonar.projectKey", "sn4k3ch4rm3r_SchmallCraft"
+    property "sonar.organization", "sn4k3ch4rm3r"
+    property "sonar.host.url", "https://sonarcloud.io"
+  }
 }
