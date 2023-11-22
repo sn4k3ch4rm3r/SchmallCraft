@@ -1,4 +1,4 @@
-package WFC;
+package wfc;
 
 import java.awt.Point;
 import java.util.ArrayList;

@@ -1,6 +1,10 @@
-package SchmallCraft;
+package schmallcraft.display;
 
 import javax.swing.*;
+
+import schmallcraft.game.Game;
+import schmallcraft.game.objects.GameObject;
+
 import java.awt.*;
 import java.util.LinkedList;
 import java.util.Queue;
@@ -28,10 +32,5 @@ public class GamePanel extends JPanel {
 		g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_NEAREST_NEIGHBOR);
 		g2.drawImage(Game.screenBuffer, 0, 0, this.getSize().width, this.getSize().height, null);
 		g2.dispose();
-		// g.setColor(Color.RED);
-		// while (!renderingQueue.isEmpty()) {
-		// GameObject gameObject = renderingQueue.poll();
-		// g.fillOval((int) gameObject.position.x, (int) gameObject.position.y, 20, 20);
-		// }
 	}
 }

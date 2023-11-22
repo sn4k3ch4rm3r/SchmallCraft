@@ -1,4 +1,4 @@
-package WFC;
+package wfc;
 
 public enum Direction {
 	UP, DOWN, LEFT, RIGHT;

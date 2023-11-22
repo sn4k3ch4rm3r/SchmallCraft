@@ -1,4 +1,6 @@
-package SchmallCraft;
+package schmallcraft.game.objects;
+
+import schmallcraft.util.Vector2;
 
 public abstract class GameObject {
 	public Vector2 position;

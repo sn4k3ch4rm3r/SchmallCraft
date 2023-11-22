@@ -1,4 +1,4 @@
-package SchmallCraft;
+package schmallcraft.util;
 
 public class Vector2 {
 	public double x;
@@ -31,6 +31,8 @@ public class Vector2 {
 
 	public Vector2 normalize() {
 		double mag = magnitude();
+		if (mag == 0)
+			return new Vector2(0, 0);
 		return new Vector2(x / mag, y / mag);
 	}
 }

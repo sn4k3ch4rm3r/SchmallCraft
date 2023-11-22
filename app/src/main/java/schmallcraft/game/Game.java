@@ -1,4 +1,4 @@
-package SchmallCraft;
+package schmallcraft.game;
 
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
@@ -9,6 +9,11 @@ import java.util.ArrayList;
 import javax.imageio.ImageIO;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
+
+import schmallcraft.display.GamePanel;
+import schmallcraft.event.KeyboardInputListener;
+import schmallcraft.game.objects.GameObject;
+import schmallcraft.game.objects.Player;
 
 public class Game implements Runnable {
 	private final int TARGET_FPS = 120;
@@ -53,7 +58,7 @@ public class Game implements Runnable {
 		gameObjects = new ArrayList<GameObject>();
 
 		Player player = new Player();
-		gamePanel.addKeyListener(player);
+		gamePanel.addKeyListener(new KeyboardInputListener());
 		gameObjects.add(player);
 	}
 
@@ -123,7 +128,7 @@ public class Game implements Runnable {
 
 		for (int x = 0; x < WIDTH; x += 16) {
 			for (int y = 0; y < HEIGHT; y += 16) {
-				g.drawImage(spriteSheet.getSubimage(16, 0, 16, 16), x, y, null);
+				g.drawImage(spriteSheet.getSubimage(16 * 6, 0, 16, 16), x, y, null);
 			}
 		}
 

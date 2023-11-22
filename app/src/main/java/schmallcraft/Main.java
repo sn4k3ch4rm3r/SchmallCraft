@@ -1,4 +1,6 @@
-package SchmallCraft;
+package schmallcraft;
+
+import schmallcraft.game.Game;
 
 public class Main {
     public static void main(String[] args) throws Exception {
