@@ -4,7 +4,9 @@ import java.lang.reflect.InvocationTargetException;
 import javax.swing.SwingUtilities;
 
 import schmallcraft.game.objects.entities.Entity;
+import schmallcraft.game.objects.entities.Player;
 import schmallcraft.game.rendering.Renderer;
+import schmallcraft.util.Vector2;
 
 public class Game implements Runnable {
 	private final int TARGET_FPS = 120;
@@ -15,9 +17,13 @@ public class Game implements Runnable {
 	private GameState state;
 	private Renderer renderer;
 
+	private Player player;
+
 	public Game(GameState gameState, Renderer gameRenderer) {
 		state = gameState;
 		renderer = gameRenderer;
+		player = new Player();
+		state.addEntity(player);
 	}
 
 	public void start() {
@@ -73,6 +79,10 @@ public class Game implements Runnable {
 				frameCount = 0;
 			}
 		}
+	}
+
+	public void setPlayerDirection(Vector2 direction) {
+		player.setDirection(direction);
 	}
 
 	private void update() {

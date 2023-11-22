@@ -2,9 +2,20 @@ package schmallcraft.event;
 
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.util.HashMap;
+import java.util.Map;
+
+import schmallcraft.game.Game;
+import schmallcraft.util.Direction;
+import schmallcraft.util.Vector2;
 
 public class KeyboardInputListener implements KeyListener {
-	private boolean[] keys = { false, false, false, false };
+	private Game game;
+	private Map<Direction, Boolean> activeDirections = new HashMap<Direction, Boolean>();
+
+	public KeyboardInputListener(Game game) {
+		this.game = game;
+	}
 
 	@Override
 	public void keyTyped(KeyEvent e) {
@@ -13,29 +24,53 @@ public class KeyboardInputListener implements KeyListener {
 
 	@Override
 	public void keyPressed(KeyEvent e) {
-		int keyCode = e.getKeyCode();
-		if (keyCode == KeyEvent.VK_W) {
-			keys[InputCodes.UP.getValue()] = true;
-		} else if (keyCode == KeyEvent.VK_S) {
-			keys[InputCodes.DOWN.getValue()] = true;
-		} else if (keyCode == KeyEvent.VK_A) {
-			keys[InputCodes.LEFT.getValue()] = true;
-		} else if (keyCode == KeyEvent.VK_D) {
-			keys[InputCodes.RIGHT.getValue()] = true;
+		switch (e.getKeyCode()) {
+			case KeyEvent.VK_W:
+				activeDirections.put(Direction.UP, true);
+				break;
+			case KeyEvent.VK_S:
+				activeDirections.put(Direction.DOWN, true);
+				break;
+			case KeyEvent.VK_A:
+				activeDirections.put(Direction.LEFT, true);
+				break;
+			case KeyEvent.VK_D:
+				activeDirections.put(Direction.RIGHT, true);
+				break;
+			default:
+				break;
 		}
+		updateGame();
 	}
 
 	@Override
 	public void keyReleased(KeyEvent e) {
-		int keyCode = e.getKeyCode();
-		if (keyCode == KeyEvent.VK_W) {
-			keys[0] = false;
-		} else if (keyCode == KeyEvent.VK_S) {
-			keys[1] = false;
-		} else if (keyCode == KeyEvent.VK_A) {
-			keys[2] = false;
-		} else if (keyCode == KeyEvent.VK_D) {
-			keys[3] = false;
+		switch (e.getKeyCode()) {
+			case KeyEvent.VK_W:
+				activeDirections.put(Direction.UP, false);
+				break;
+			case KeyEvent.VK_S:
+				activeDirections.put(Direction.DOWN, false);
+				break;
+			case KeyEvent.VK_A:
+				activeDirections.put(Direction.LEFT, false);
+				break;
+			case KeyEvent.VK_D:
+				activeDirections.put(Direction.RIGHT, false);
+				break;
+			default:
+				break;
 		}
+		updateGame();
+	}
+
+	private void updateGame() {
+		Vector2 direction = new Vector2(0, 0);
+		for (Direction dir : activeDirections.keySet()) {
+			if (activeDirections.get(dir)) {
+				direction = direction.add(dir.toVector2());
+			}
+		}
+		game.setPlayerDirection(direction);
 	}
 }

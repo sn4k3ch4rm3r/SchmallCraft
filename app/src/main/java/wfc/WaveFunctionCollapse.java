@@ -1,10 +1,13 @@
 package wfc;
 
 import java.awt.Point;
+import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Deque;
 import java.util.HashSet;
 import java.util.Random;
-import java.util.Stack;
+
+import schmallcraft.util.Direction;
 
 public class WaveFunctionCollapse {
 	private Random random;
@@ -66,7 +69,7 @@ public class WaveFunctionCollapse {
 			}
 		}
 
-		Stack<Point> stack = new Stack<Point>();
+		Deque<Point> stack = new ArrayDeque<Point>();
 		int entropy = Integer.MAX_VALUE;
 		ArrayList<Point> minEntropyPoints = new ArrayList<Point>();
 		minEntropyPoints.add(new Point(0, 0));

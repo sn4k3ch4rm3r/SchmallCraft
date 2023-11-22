@@ -33,6 +33,14 @@ public class GameState implements Serializable {
 		return entities;
 	}
 
+	public void addEntity(Entity entity) {
+		entities.add(entity);
+	}
+
+	public void removeEntity(Entity entity) {
+		entities.remove(entity);
+	}
+
 	public Block[][] getOverworldMap() {
 		return overworld;
 	}

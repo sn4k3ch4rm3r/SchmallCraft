@@ -1,4 +1,4 @@
-package wfc;
+package schmallcraft.util;
 
 public enum Direction {
 	UP, DOWN, LEFT, RIGHT;
@@ -23,5 +23,9 @@ public enum Direction {
 
 	public boolean isHorizontal() {
 		return this == LEFT || this == RIGHT;
+	}
+
+	public Vector2 toVector2() {
+		return new Vector2(dx, dy);
 	}
 }

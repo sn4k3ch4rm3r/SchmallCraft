@@ -2,6 +2,9 @@ package wfc;
 
 import java.util.Arrays;
 import java.util.Map;
+
+import schmallcraft.util.Direction;
+
 import java.util.HashSet;
 import java.util.HashMap;
 

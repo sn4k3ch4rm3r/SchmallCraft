@@ -3,6 +3,8 @@ package wfc;
 import java.util.Arrays;
 import java.util.Random;
 
+import schmallcraft.util.Direction;
+
 public class WaveCell {
 	private Random random;
 	private Pattern[] allStates;

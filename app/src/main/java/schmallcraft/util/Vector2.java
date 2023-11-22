@@ -35,4 +35,9 @@ public class Vector2 {
 			return new Vector2(0, 0);
 		return new Vector2(x / mag, y / mag);
 	}
+
+	@Override
+	public String toString() {
+		return "Vector2(" + x + ", " + y + ")";
+	}
 }

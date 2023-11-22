@@ -6,6 +6,8 @@ import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
 
+import schmallcraft.util.Direction;
+
 public class PatternTest {
 	int[][][] rawPatterns;
 	Pattern[] patterns;
