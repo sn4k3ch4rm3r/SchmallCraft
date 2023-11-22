@@ -89,5 +89,7 @@ public class Game implements Runnable {
 		for (Entity entity : state.getEntities()) {
 			entity.update(deltaTime);
 		}
+
+		renderer.setCameraPosition(player.getPosition().add(new Vector2(0.5, 0.5)));
 	}
 }

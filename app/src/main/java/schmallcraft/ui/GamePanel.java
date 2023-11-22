@@ -13,7 +13,7 @@ public class GamePanel extends JPanel {
 		this.gameRenderer = gameRenderer;
 		setPreferredSize(new Dimension(gameRenderer.getScreenWidth(), gameRenderer.getScreenHeight()));
 		setBackground(Color.BLACK);
-		setDoubleBuffered(false);
+		setDoubleBuffered(true);
 	}
 
 	@Override
