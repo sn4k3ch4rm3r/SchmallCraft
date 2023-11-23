@@ -1,6 +1,7 @@
 package schmallcraft.game.rendering;
 
 import java.awt.Graphics2D;
+import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import javax.imageio.ImageIO;
@@ -18,7 +19,7 @@ public class Renderer {
 	private BufferedImage screenBuffer;
 	private BufferedImage spriteSheet;
 	private int scale;
-	private Vector2 cameraPosition = new Vector2(0, 0);
+	private Camera camera = new Camera();
 
 	public Renderer(int logicalWidth, int logicalHeight, int scale, OnRenderCallback renderCallback) {
 		this.scale = scale;
@@ -34,22 +35,22 @@ public class Renderer {
 	public void render(GameState gameState) {
 
 		Graphics2D g = (Graphics2D) screenBuffer.getGraphics();
-
+		g.clearRect(0, 0, screenBuffer.getWidth(), screenBuffer.getHeight());
 		// Render world
-		int startY = (int) Math.max(0, cameraPosition.y - getHeight() / 2);
-		int startX = (int) Math.max(0, cameraPosition.x - getWidth() / 2);
-		int endY = (int) Math.min(gameState.getOverworldMap().length, cameraPosition.y + getHeight() / 2);
-		int endX = (int) Math.min(gameState.getOverworldMap()[0].length, cameraPosition.x + getWidth() / 2);
+		Rectangle cameraBounds = camera.getBoundsInWorldSpace();
+		int startY = Math.max(0, cameraBounds.y);
+		int startX = Math.max(0, cameraBounds.x);
+		int endY = Math.min(gameState.getOverworldMap().length, cameraBounds.y + cameraBounds.height);
+		int endX = Math.min(gameState.getOverworldMap()[0].length, cameraBounds.x + cameraBounds.width);
 		for (int y = startY; y < endY; y++) {
 			for (int x = startX; x < endX; x++) {
 				int spriteId = gameState.getOverworldMap()[y][x].getSpriteId();
 				int spriteX = (spriteId & 0x0F) << 4;
 				int spriteY = spriteId & 0xF0;
-				Vector2 renderPos = (new Vector2(x, y)).subtract(cameraPosition)
-						.add(new Vector2((getWidth() / TILE_SIZE) / 2, (getHeight() / TILE_SIZE) / 2));
+				Vector2 renderPos = camera.worldToRenderCoords(new Vector2(x, y));
 				g.drawImage(spriteSheet.getSubimage(spriteX, spriteY, TILE_SIZE, TILE_SIZE),
-						(int) (renderPos.x * TILE_SIZE),
-						(int) (renderPos.y * TILE_SIZE),
+						(int) Math.round(renderPos.x * TILE_SIZE),
+						(int) Math.round(renderPos.y * TILE_SIZE),
 						null);
 			}
 		}
@@ -59,11 +60,10 @@ public class Renderer {
 			int spriteId = entity.getSpriteId();
 			int spriteX = (spriteId & 0x0F) << 4;
 			int spriteY = spriteId & 0xF0;
-			Vector2 renderPos = entity.getPosition().subtract(cameraPosition)
-					.add(new Vector2((getWidth() / TILE_SIZE) / 2, (getHeight() / TILE_SIZE) / 2));
+			Vector2 renderPos = camera.worldToRenderCoords(entity.getPosition());
 			g.drawImage(spriteSheet.getSubimage(spriteX, spriteY, TILE_SIZE, TILE_SIZE),
-					(int) (renderPos.x * TILE_SIZE),
-					(int) (renderPos.y * TILE_SIZE), null);
+					(int) Math.round(renderPos.x * TILE_SIZE),
+					(int) Math.round(renderPos.y * TILE_SIZE), null);
 		}
 
 		g.dispose();
@@ -93,6 +93,6 @@ public class Renderer {
 	}
 
 	public void setCameraPosition(Vector2 cameraPosition) {
-		this.cameraPosition = cameraPosition;
+		this.camera.setPosition(cameraPosition);
 	}
 }

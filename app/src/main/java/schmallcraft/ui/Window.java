@@ -1,9 +1,14 @@
 package schmallcraft.ui;
 
+import static schmallcraft.util.Constants.RENDER_HEIGHT;
+import static schmallcraft.util.Constants.RENDER_SCALE;
+import static schmallcraft.util.Constants.RENDER_WIDTH;
+
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.WindowConstants;
 
-import schmallcraft.event.KeyboardInputListener;
+import schmallcraft.event.KeyboardListener;
 import schmallcraft.game.Game;
 import schmallcraft.game.GameState;
 import schmallcraft.game.rendering.Renderer;
@@ -12,14 +17,14 @@ public class Window extends JFrame {
 	private JPanel gamePanel;
 
 	public Window() {
-		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 		this.setResizable(false);
 		this.setTitle("SchmallCraft");
 
-		Renderer gameRenderer = new Renderer(256, 192, 4, () -> gamePanel.repaint());
+		Renderer gameRenderer = new Renderer(RENDER_WIDTH, RENDER_HEIGHT, RENDER_SCALE, () -> gamePanel.repaint());
 		Game game = new Game(new GameState(), gameRenderer);
 		gamePanel = new GamePanel(gameRenderer);
-		gamePanel.addKeyListener(new KeyboardInputListener(game));
+		gamePanel.addKeyListener(new KeyboardListener(game));
 		gamePanel.setFocusable(true);
 		gamePanel.requestFocusInWindow();
 

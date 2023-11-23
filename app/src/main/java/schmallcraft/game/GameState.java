@@ -1,5 +1,7 @@
 package schmallcraft.game;
 
+import static schmallcraft.util.Constants.WORLD_SIZE;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Random;
@@ -19,7 +21,7 @@ public class GameState implements Serializable {
 		entities = new ArrayList<Entity>();
 		Random random = new Random();
 		WaveFunctionCollapse wfc = new WaveFunctionCollapse(WFCPatterns.overworld, 3, 3, random);
-		int[][] overworldBlockIds = wfc.generateMap(32, 32);
+		int[][] overworldBlockIds = wfc.generateMap(WORLD_SIZE, WORLD_SIZE);
 		overworld = new Block[overworldBlockIds.length][overworldBlockIds[0].length];
 		for (int y = 0; y < overworldBlockIds.length; y++) {
 			for (int x = 0; x < overworldBlockIds[0].length; x++) {
