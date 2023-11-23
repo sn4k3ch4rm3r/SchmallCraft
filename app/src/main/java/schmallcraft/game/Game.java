@@ -1,8 +1,12 @@
 package schmallcraft.game;
 
+import java.awt.Rectangle;
 import java.lang.reflect.InvocationTargetException;
 import javax.swing.SwingUtilities;
 
+import schmallcraft.game.objects.GameObject;
+import schmallcraft.game.objects.blocks.Block;
+import schmallcraft.game.objects.blocks.BlockType;
 import schmallcraft.game.objects.entities.Entity;
 import schmallcraft.game.objects.entities.Player;
 import schmallcraft.game.rendering.Renderer;
@@ -86,10 +90,40 @@ public class Game implements Runnable {
 	}
 
 	private void update() {
+		// Update every entity
 		for (Entity entity : state.getEntities()) {
 			entity.update(deltaTime);
 		}
 
-		renderer.setCameraPosition(player.getPosition().add(new Vector2(0.5, 0.5)));
+		// Calculate & update camera position
+		Rectangle cameraBounds = renderer.getCamera().getBoundsInWorldSpace();
+		Vector2 cameraPosition = player.getPosition()
+				.subtract(new Vector2(cameraBounds.width / 2 - 1.5, cameraBounds.height / 2 - 1.5));
+		if (cameraPosition.x < 0) {
+			cameraPosition.x = 0;
+		}
+		if (cameraPosition.y < 0) {
+			cameraPosition.y = 0;
+		}
+		if (cameraPosition.x + cameraBounds.width > state.getMap()[0].length) {
+			cameraPosition.x = state.getMap()[0].length - cameraBounds.width;
+		}
+		if (cameraPosition.y + cameraBounds.height > state.getMap().length) {
+			cameraPosition.y = state.getMap().length - cameraBounds.height;
+		}
+		renderer.setCameraPosition(cameraPosition);
+	}
+
+	public void actionAttack() {
+		GameObject attacked = state.getHighLightedObject(renderer.getCamera());
+		state.getMap()[(int) attacked.getPosition().y][(int) attacked.getPosition().x] = new Block(BlockType.DIRT);
+	}
+
+	public void actionUse() {
+
+	}
+
+	public void setHighLightPosition(Vector2 highLightPosition) {
+		state.setCursorPosition(highLightPosition);
 	}
 }

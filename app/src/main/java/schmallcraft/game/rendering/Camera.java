@@ -31,17 +31,17 @@ public class Camera {
 	}
 
 	public Vector2 worldToRenderCoords(Vector2 worldCoordinates) {
-		return worldCoordinates.subtract(position).add(
-				new Vector2((RENDER_WIDTH / TILE_SIZE) / 2, (RENDER_HEIGHT / TILE_SIZE) / 2));
+		return worldCoordinates.subtract(position).multiply(TILE_SIZE);
 	}
 
 	public Vector2 screenToWorldCoords(Vector2 screenCoordinates) {
-		return screenCoordinates.add(position);
+		Vector2 renderCoordinates = screenCoordinates.multiply(1.0 / RENDER_SCALE);
+		return renderCoordinates.multiply(1.0 / TILE_SIZE).add(position);
 	}
 
 	public Rectangle getBoundsInWorldSpace() {
-		int x = (int) position.x - (RENDER_WIDTH / TILE_SIZE) / 2 - 1;
-		int y = (int) position.y - (RENDER_HEIGHT / TILE_SIZE) / 2 - 1;
+		int x = (int) position.x - 1;
+		int y = (int) position.y - 1;
 		int width = (RENDER_WIDTH / TILE_SIZE) + 2;
 		int height = (RENDER_HEIGHT / TILE_SIZE) + 2;
 		return new Rectangle(x, y, width, height);

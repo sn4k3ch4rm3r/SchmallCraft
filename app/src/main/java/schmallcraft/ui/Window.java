@@ -9,6 +9,7 @@ import javax.swing.JPanel;
 import javax.swing.WindowConstants;
 
 import schmallcraft.event.KeyboardListener;
+import schmallcraft.event.MouseListener;
 import schmallcraft.game.Game;
 import schmallcraft.game.GameState;
 import schmallcraft.game.rendering.Renderer;
@@ -25,6 +26,9 @@ public class Window extends JFrame {
 		Game game = new Game(new GameState(), gameRenderer);
 		gamePanel = new GamePanel(gameRenderer);
 		gamePanel.addKeyListener(new KeyboardListener(game));
+		MouseListener mouseListener = new MouseListener(game);
+		gamePanel.addMouseListener(mouseListener);
+		gamePanel.addMouseMotionListener(mouseListener);
 		gamePanel.setFocusable(true);
 		gamePanel.requestFocusInWindow();
 

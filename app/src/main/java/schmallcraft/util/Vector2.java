@@ -1,6 +1,8 @@
 package schmallcraft.util;
 
-public class Vector2 {
+import java.io.Serializable;
+
+public class Vector2 implements Serializable {
 	public double x;
 	public double y;
 
@@ -34,6 +36,10 @@ public class Vector2 {
 		if (mag == 0)
 			return new Vector2(0, 0);
 		return new Vector2(x / mag, y / mag);
+	}
+
+	public Vector2 floor() {
+		return new Vector2(Math.floor(x), Math.floor(y));
 	}
 
 	@Override

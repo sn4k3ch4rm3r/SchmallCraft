@@ -9,11 +9,11 @@ import schmallcraft.game.Game;
 import schmallcraft.util.Direction;
 import schmallcraft.util.Vector2;
 
-public class KeyboardInputListener implements KeyListener {
+public class KeyboardListener implements KeyListener {
 	private Game game;
 	private Map<Direction, Boolean> activeDirections = new HashMap<Direction, Boolean>();
 
-	public KeyboardInputListener(Game game) {
+	public KeyboardListener(Game game) {
 		this.game = game;
 	}
 
