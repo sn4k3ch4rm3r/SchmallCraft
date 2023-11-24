@@ -3,6 +3,8 @@ package schmallcraft.game.objects.blocks;
 import java.util.EnumMap;
 import java.util.HashMap;
 
+import schmallcraft.items.ItemType;
+
 public enum BlockType {
 	GRASS, SAND, STONE, DIRT, TREE, WATER, ROCK, STAIR;
 
@@ -20,14 +22,23 @@ public enum BlockType {
 		idToType.put(6, BlockType.GRASS);
 		idToType.put(37, BlockType.STAIR);
 
-		typeProperties.put(BlockType.GRASS, new BlockProperties(1));
-		typeProperties.put(BlockType.SAND, new BlockProperties(1));
-		typeProperties.put(BlockType.STONE, new BlockProperties(1));
-		typeProperties.put(BlockType.DIRT, new BlockProperties(1));
-		typeProperties.put(BlockType.TREE, new BlockProperties(1, 1, BlockType.GRASS));
+		BlockProperties defauBlockProperties = new BlockProperties(1);
+		BlockProperties treeBlockProperties = new BlockProperties(1, 1, BlockType.GRASS);
+		treeBlockProperties.getDropTable().setDropRate(ItemType.WOOD, 2.5);
+		treeBlockProperties.getDropTable().setDropRate(ItemType.STICK, 0.3);
+		treeBlockProperties.getDropTable().setDropRate(ItemType.APPLE, 0.1);
+
+		BlockProperties rockBlockProperties = new BlockProperties(1, 1, BlockType.STONE);
+		rockBlockProperties.getDropTable().setDropRate(ItemType.STONE, 3);
+
+		typeProperties.put(BlockType.GRASS, defauBlockProperties);
+		typeProperties.put(BlockType.SAND, defauBlockProperties);
+		typeProperties.put(BlockType.STONE, defauBlockProperties);
+		typeProperties.put(BlockType.DIRT, defauBlockProperties);
+		typeProperties.put(BlockType.TREE, treeBlockProperties);
 		typeProperties.put(BlockType.WATER, new BlockProperties(0.5));
-		typeProperties.put(BlockType.ROCK, new BlockProperties(1));
-		typeProperties.put(BlockType.STAIR, new BlockProperties(1));
+		typeProperties.put(BlockType.ROCK, rockBlockProperties);
+		typeProperties.put(BlockType.STAIR, defauBlockProperties);
 
 		baseSpriteId.put(BlockType.GRASS, 0x00);
 		baseSpriteId.put(BlockType.STONE, 0x01);
@@ -40,7 +51,11 @@ public enum BlockType {
 	}
 
 	public int baseSpriteId() {
-		return baseSpriteId.get(this);
+		if (baseSpriteId.containsKey(this)) {
+			return baseSpriteId.get(this);
+		} else {
+			return 0xFF;
+		}
 	}
 
 	public static BlockType fromId(int id) {

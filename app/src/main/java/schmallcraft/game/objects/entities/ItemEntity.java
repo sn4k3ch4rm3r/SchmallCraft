@@ -1,17 +1,23 @@
 package schmallcraft.game.objects.entities;
 
+import schmallcraft.items.Item;
+import schmallcraft.util.Vector2;
+
 public class ItemEntity extends Entity {
+	private Item item;
+
+	public ItemEntity(Item item, Vector2 position) {
+		this.item = item;
+		this.position = position;
+	}
 
 	@Override
 	public void update(double deltaTime) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException("Unimplemented method 'update'");
 	}
 
 	@Override
 	public int getSpriteId() {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException("Unimplemented method 'getSpriteId'");
+		return item.getType().getSpriteId();
 	}
 
 }

@@ -1,7 +1,9 @@
 package schmallcraft.game.objects;
 
 import java.io.Serializable;
+import java.util.List;
 
+import schmallcraft.items.Item;
 import schmallcraft.util.Vector2;
 
 public abstract class GameObject implements Serializable {
@@ -18,7 +20,14 @@ public abstract class GameObject implements Serializable {
 		this.position = position;
 	}
 
-	public void damage(int damage) {
+	/**
+	 * Sebzi az objektumot.
+	 * 
+	 * @param damage Mennyi sebzést okozzon.
+	 * @return A sebzés hatására dobott itemek.
+	 */
+	public List<Item> damage(int damage) {
 		this.damage += damage;
+		return null;
 	}
 }

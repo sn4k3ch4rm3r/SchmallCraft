@@ -1,7 +1,6 @@
 package schmallcraft.game.rendering;
 
 import java.awt.Graphics2D;
-import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
@@ -67,17 +66,30 @@ public class Renderer {
 		}
 	}
 
-	private Point getTextureCoords(int spriteId) {
+	/**
+	 * Visszaadja a megadott sprite azonosítójú sprite-ot.
+	 * 
+	 * @param spriteId A sprite azonosítója, spriteId = 0xSYX, ahol X a sor, Y az
+	 *                 oszlop, S = 0, ha teljes sprite, 1-4 ha negyed sprite
+	 * @return A kért sprite
+	 */
+	private BufferedImage getSprite(int spriteId) {
+		spriteId = Math.abs(spriteId);
+		int subId = (spriteId & 0xF00) >> 8;
+		int spriteSize = subId > 0 ? TILE_SIZE / 2 : TILE_SIZE;
 		int spriteX = (spriteId & 0x0F) << 4;
 		int spriteY = spriteId & 0xF0;
-		return new Point(spriteX, spriteY);
+
+		if (subId > 0) {
+			spriteX += (TILE_SIZE / 2) * ((subId - 1) % 2);
+			spriteY += (TILE_SIZE / 2) * ((subId - 1) / 2);
+		}
+		return spriteSheet.getSubimage(spriteX, spriteY, spriteSize, spriteSize);
 	}
 
 	private void drawSprite(Graphics2D g, int spriteId, Vector2 position) {
 		Vector2 renderPos = camera.worldToRenderCoords(position);
-		g.drawImage(
-				spriteSheet.getSubimage(getTextureCoords(spriteId).x, getTextureCoords(spriteId).y,
-						TILE_SIZE, TILE_SIZE),
+		g.drawImage(getSprite(spriteId),
 				(int) Math.round(renderPos.x),
 				(int) Math.round(renderPos.y), null);
 	}

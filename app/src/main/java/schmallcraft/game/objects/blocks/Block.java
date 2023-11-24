@@ -1,6 +1,9 @@
 package schmallcraft.game.objects.blocks;
 
+import java.util.List;
+
 import schmallcraft.game.objects.GameObject;
+import schmallcraft.items.Item;
 
 public class Block extends GameObject {
 	private BlockType type;
@@ -23,12 +26,15 @@ public class Block extends GameObject {
 	}
 
 	@Override
-	public void damage(int damage) {
+	public List<Item> damage(int damage) {
 		if (getProperties().isBreakable()) {
 			super.damage(damage);
 			if (this.damage >= getProperties().getHardness()) {
+				List<Item> drops = getProperties().getDropTable().getDrops();
 				type = getProperties().getWhenBroken();
+				return drops;
 			}
 		}
+		return null;
 	}
 }

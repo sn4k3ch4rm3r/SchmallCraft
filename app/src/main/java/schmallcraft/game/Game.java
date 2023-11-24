@@ -1,28 +1,40 @@
 package schmallcraft.game;
 
+import static schmallcraft.util.Constants.WORLD_SIZE;
+
 import java.awt.Rectangle;
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
+
 import javax.swing.SwingUtilities;
 
+import schmallcraft.game.objects.GameObject;
 import schmallcraft.game.objects.entities.Entity;
+import schmallcraft.game.objects.entities.ItemEntity;
 import schmallcraft.game.objects.entities.Player;
 import schmallcraft.game.rendering.Renderer;
+import schmallcraft.items.Item;
 import schmallcraft.util.Vector2;
 
 public class Game implements Runnable {
 	private static final int TARGET_FPS = 120;
 	private static final int FIXED_UPDATES = 20;
 	private double deltaTime = 0;
+	public static Random random = new Random();
 
 	private GameState state;
 	private Renderer renderer;
 
 	private Player player;
+	private ArrayList<Entity> entitiesCreated = new ArrayList<>();
 
 	public Game(GameState gameState, Renderer gameRenderer) {
 		state = gameState;
 		renderer = gameRenderer;
 		player = new Player();
+		player.setPosition(new Vector2(WORLD_SIZE / 2.0, WORLD_SIZE / 2.0));
 		state.addEntity(player);
 	}
 
@@ -86,6 +98,12 @@ public class Game implements Runnable {
 	}
 
 	private void update() {
+		// Add newly created entites to the state
+		for (int i = 0; i < entitiesCreated.size(); i++) {
+			state.addEntity(entitiesCreated.get(i));
+		}
+		entitiesCreated.clear();
+
 		// Update every entity
 		for (Entity entity : state.getEntities()) {
 			entity.update(deltaTime);
@@ -111,7 +129,15 @@ public class Game implements Runnable {
 	}
 
 	public void actionAttack() {
-		state.getHighLightedObject(renderer.getCamera()).damage(1);
+		GameObject target = state.getHighLightedObject(renderer.getCamera());
+		List<Item> resultingItems = target.damage(1);
+		if (resultingItems != null) {
+			Vector2 tileCenter = target.getPosition().add(new Vector2(0.25, 0.25));
+			for (Item item : resultingItems) {
+				entitiesCreated.add(new ItemEntity(item, tileCenter.add(new Vector2(random.nextDouble() * 0.25,
+						random.nextDouble() * 0.25))));
+			}
+		}
 	}
 
 	public void actionUse() {
