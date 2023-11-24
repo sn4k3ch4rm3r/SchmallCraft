@@ -24,6 +24,10 @@ public class MouseListener implements java.awt.event.MouseListener, MouseMotionL
 
 	@Override
 	public void mouseClicked(MouseEvent e) {
+	}
+
+	@Override
+	public void mousePressed(MouseEvent e) {
 		switch (e.getButton()) {
 			case MouseEvent.BUTTON1:
 				game.actionAttack();
@@ -33,10 +37,6 @@ public class MouseListener implements java.awt.event.MouseListener, MouseMotionL
 			default:
 				break;
 		}
-	}
-
-	@Override
-	public void mousePressed(MouseEvent e) {
 	}
 
 	@Override

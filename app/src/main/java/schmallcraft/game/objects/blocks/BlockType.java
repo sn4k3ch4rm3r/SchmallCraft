@@ -1,13 +1,14 @@
 package schmallcraft.game.objects.blocks;
 
+import java.util.EnumMap;
 import java.util.HashMap;
 
 public enum BlockType {
 	GRASS, SAND, STONE, DIRT, TREE, WATER, ROCK, STAIR;
 
-	private static HashMap<Integer, BlockType> idToType = new HashMap<Integer, BlockType>();
-	private static HashMap<BlockType, BlockProperties> typeProperties = new HashMap<BlockType, BlockProperties>();
-	private static HashMap<BlockType, Integer> baseSpriteId = new HashMap<BlockType, Integer>();
+	private static HashMap<Integer, BlockType> idToType = new HashMap<>();
+	private static EnumMap<BlockType, BlockProperties> typeProperties = new EnumMap<>(BlockType.class);
+	private static EnumMap<BlockType, Integer> baseSpriteId = new EnumMap<>(BlockType.class);
 
 	static {
 		idToType.put(8, BlockType.GRASS);
@@ -19,14 +20,14 @@ public enum BlockType {
 		idToType.put(6, BlockType.GRASS);
 		idToType.put(37, BlockType.STAIR);
 
-		typeProperties.put(BlockType.GRASS, new BlockProperties(1, 1));
-		typeProperties.put(BlockType.SAND, new BlockProperties(1, 1));
-		typeProperties.put(BlockType.STONE, new BlockProperties(1, 1));
-		typeProperties.put(BlockType.DIRT, new BlockProperties(1, 1));
-		typeProperties.put(BlockType.TREE, new BlockProperties(1, 1));
-		typeProperties.put(BlockType.WATER, new BlockProperties(-1, 0.5));
-		typeProperties.put(BlockType.ROCK, new BlockProperties(1, 1));
-		typeProperties.put(BlockType.STAIR, new BlockProperties(1, 1));
+		typeProperties.put(BlockType.GRASS, new BlockProperties(1));
+		typeProperties.put(BlockType.SAND, new BlockProperties(1));
+		typeProperties.put(BlockType.STONE, new BlockProperties(1));
+		typeProperties.put(BlockType.DIRT, new BlockProperties(1));
+		typeProperties.put(BlockType.TREE, new BlockProperties(1, 1, BlockType.GRASS));
+		typeProperties.put(BlockType.WATER, new BlockProperties(0.5));
+		typeProperties.put(BlockType.ROCK, new BlockProperties(1));
+		typeProperties.put(BlockType.STAIR, new BlockProperties(1));
 
 		baseSpriteId.put(BlockType.GRASS, 0x00);
 		baseSpriteId.put(BlockType.STONE, 0x01);

@@ -11,7 +11,6 @@ import schmallcraft.util.Direction;
 
 public class WaveFunctionCollapse {
 	private Random random;
-	private WaveCell[][] wave;
 	private Pattern[] patterns;
 
 	private int patternWidth;
@@ -40,18 +39,6 @@ public class WaveFunctionCollapse {
 			}
 		}
 
-		// HashSet<Pattern> rotated = new HashSet<Pattern>();
-		// ptns.forEach(x -> {
-		// for (int r = 1; r < 4; r++) {
-		// Pattern p = x.rotate(r);
-		// p.setWeight(x.getWeight());
-		// rotated.add(p);
-		// }
-		// });
-		// rotated.forEach(x -> {
-		// ptns.add(x);
-		// });
-
 		this.patterns = ptns.toArray(new Pattern[ptns.size()]);
 		for (Pattern pattern : this.patterns) {
 			pattern.calculateCompatibilities(this.patterns);
@@ -62,6 +49,7 @@ public class WaveFunctionCollapse {
 	public int[][] generateMap(int width, int height) {
 		int waveWidth = width / patternWidth + 1;
 		int waveHeight = height / patternHeight + 1;
+		WaveCell[][] wave;
 		wave = new WaveCell[waveHeight][waveWidth];
 		for (int y = 0; y < wave.length; y++) {
 			for (int x = 0; x < wave[y].length; x++) {
@@ -69,11 +57,11 @@ public class WaveFunctionCollapse {
 			}
 		}
 
-		Deque<Point> stack = new ArrayDeque<Point>();
-		int entropy = Integer.MAX_VALUE;
-		ArrayList<Point> minEntropyPoints = new ArrayList<Point>();
+		Deque<Point> stack = new ArrayDeque<>();
+		int entropy;
+		ArrayList<Point> minEntropyPoints = new ArrayList<>();
 		minEntropyPoints.add(new Point(0, 0));
-		while (minEntropyPoints.size() > 0) {
+		while (!minEntropyPoints.isEmpty()) {
 			// Find minimum entropy cells
 			minEntropyPoints.clear();
 			entropy = Integer.MAX_VALUE;
@@ -88,7 +76,7 @@ public class WaveFunctionCollapse {
 					}
 				}
 			}
-			if (minEntropyPoints.size() == 0) {
+			if (minEntropyPoints.isEmpty()) {
 				break;
 			}
 			int indexToCollapse = random.nextInt(minEntropyPoints.size());
@@ -124,7 +112,7 @@ public class WaveFunctionCollapse {
 				for (int py = 0; py < patternHeight && y * patternHeight + py < height; py++) {
 					for (int px = 0; px < patternWidth && x * patternWidth + px < width; px++) {
 						if (p != null) {
-							map[y * patternHeight + py][x * patternWidth + px] = p.getPattern()[py][px];
+							map[y * patternHeight + py][x * patternWidth + px] = p.getRawPattern()[py][px];
 						} else {
 							map[y * patternHeight + py][x * patternWidth + px] = 255;
 						}

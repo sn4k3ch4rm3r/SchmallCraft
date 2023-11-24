@@ -6,17 +6,17 @@ import java.util.Map;
 import schmallcraft.util.Direction;
 
 import java.util.HashSet;
-import java.util.HashMap;
+import java.util.EnumMap;
 
 public class Pattern {
-	private int[][] pattern;
+	private int[][] rawPattern;
 	private int weight;
 	private int width;
 	private int height;
 	private Map<Direction, HashSet<Pattern>> compatiblePatterns;
 
 	public Pattern(int[][] pattern) {
-		this.pattern = pattern;
+		this.rawPattern = pattern;
 		this.width = pattern[0].length;
 		this.height = pattern.length;
 		this.weight = 1;
@@ -27,26 +27,26 @@ public class Pattern {
 	}
 
 	public void calculateCompatibilities(Pattern[] allPatterns) {
-		compatiblePatterns = new HashMap<Direction, HashSet<Pattern>>();
+		compatiblePatterns = new EnumMap<>(Direction.class);
 		for (Direction direction : Direction.values()) {
-			compatiblePatterns.put(direction, new HashSet<Pattern>());
+			compatiblePatterns.put(direction, new HashSet<>());
 			for (Pattern other : allPatterns) {
 				// Construct the combination of both patterns
 				int w = direction.isHorizontal() ? width * 2 : width;
 				int h = direction.isVertical() ? height * 2 : height;
 				int[][] combined = new int[h][w];
-				int[][] otherPattern = other.getPattern();
+				int[][] otherPattern = other.getRawPattern();
 				if (direction.isVertical()) {
 					int offset = direction == Direction.UP ? height : 0;
 					for (int y = 0; y < height; y++) {
-						System.arraycopy(pattern[y], 0, combined[y + offset], 0, width);
+						System.arraycopy(rawPattern[y], 0, combined[y + offset], 0, width);
 						System.arraycopy(otherPattern[y], 0, combined[y + height - offset], 0,
 								width);
 					}
 				} else {
 					int offset = direction == Direction.LEFT ? width : 0;
 					for (int y = 0; y < height; y++) {
-						System.arraycopy(pattern[y], 0, combined[y], offset, width);
+						System.arraycopy(rawPattern[y], 0, combined[y], offset, width);
 						System.arraycopy(otherPattern[y], 0, combined[y], width - offset, width);
 					}
 				}
@@ -72,9 +72,7 @@ public class Pattern {
 					for (int y = startY; y < startY + height; y++) {
 						for (int x = startX; x < startX + width; x++) {
 							window[y - startY][x - startX] = combined[y][x];
-							// System.out.print(window[y - startY][x - startX] + " ");
 						}
-						// System.out.println();
 					}
 
 					Pattern windowPattern = new Pattern(window);
@@ -98,7 +96,7 @@ public class Pattern {
 	public Pattern rotate(int amount) {
 		int w = width;
 		int h = height;
-		int[][] res = pattern;
+		int[][] res = rawPattern;
 		for (int r = 0; r < amount; r++) {
 			int[][] rotated = new int[w][h];
 			for (int y = 0; y < h; y++) {
@@ -122,8 +120,8 @@ public class Pattern {
 		return height;
 	}
 
-	public int[][] getPattern() {
-		return pattern;
+	public int[][] getRawPattern() {
+		return rawPattern;
 	}
 
 	@Override
@@ -131,7 +129,7 @@ public class Pattern {
 		StringBuilder sb = new StringBuilder();
 		for (int y = 0; y < height; y++) {
 			for (int x = 0; x < width; x++) {
-				sb.append(pattern[y][x] + " ");
+				sb.append(rawPattern[y][x] + " ");
 			}
 			sb.append("\n");
 		}
@@ -152,7 +150,7 @@ public class Pattern {
 		}
 		for (int x = 0; x < this.width; x++) {
 			for (int y = 0; y < this.height; y++) {
-				if (this.pattern[y][x] != otherPattern.pattern[y][x])
+				if (this.rawPattern[y][x] != otherPattern.rawPattern[y][x])
 					return false;
 			}
 		}
@@ -161,7 +159,7 @@ public class Pattern {
 
 	@Override
 	public int hashCode() {
-		return Arrays.deepHashCode(pattern);
+		return Arrays.deepHashCode(rawPattern);
 	}
 
 	public void increaseWeight() {

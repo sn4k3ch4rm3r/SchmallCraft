@@ -4,18 +4,14 @@ import java.awt.Rectangle;
 import java.lang.reflect.InvocationTargetException;
 import javax.swing.SwingUtilities;
 
-import schmallcraft.game.objects.GameObject;
-import schmallcraft.game.objects.blocks.Block;
-import schmallcraft.game.objects.blocks.BlockType;
 import schmallcraft.game.objects.entities.Entity;
 import schmallcraft.game.objects.entities.Player;
 import schmallcraft.game.rendering.Renderer;
 import schmallcraft.util.Vector2;
 
 public class Game implements Runnable {
-	private final int TARGET_FPS = 120;
-	private final int FIXED_UPDATES = 20;
-	private Thread gameThread;
+	private static final int TARGET_FPS = 120;
+	private static final int FIXED_UPDATES = 20;
 	private double deltaTime = 0;
 
 	private GameState state;
@@ -31,7 +27,7 @@ public class Game implements Runnable {
 	}
 
 	public void start() {
-		gameThread = new Thread(this);
+		Thread gameThread = new Thread(this);
 		gameThread.start();
 	}
 
@@ -44,7 +40,7 @@ public class Game implements Runnable {
 		int fixedUpdateCount = 0;
 		double deltaFrame = 0;
 		double deltaFixedUpdate = 0;
-		long now = System.nanoTime();
+		long now;
 
 		while (true) {
 			now = System.nanoTime();
@@ -98,7 +94,7 @@ public class Game implements Runnable {
 		// Calculate & update camera position
 		Rectangle cameraBounds = renderer.getCamera().getBoundsInWorldSpace();
 		Vector2 cameraPosition = player.getPosition()
-				.subtract(new Vector2(cameraBounds.width / 2 - 1.5, cameraBounds.height / 2 - 1.5));
+				.subtract(new Vector2(cameraBounds.width / 2.0 - 1.5, cameraBounds.height / 2.0 - 1.5));
 		if (cameraPosition.x < 0) {
 			cameraPosition.x = 0;
 		}
@@ -115,8 +111,7 @@ public class Game implements Runnable {
 	}
 
 	public void actionAttack() {
-		GameObject attacked = state.getHighLightedObject(renderer.getCamera());
-		state.getMap()[(int) attacked.getPosition().y][(int) attacked.getPosition().x] = new Block(BlockType.DIRT);
+		state.getHighLightedObject(renderer.getCamera()).damage(1);
 	}
 
 	public void actionUse() {

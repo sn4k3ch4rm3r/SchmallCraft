@@ -27,10 +27,10 @@ public class WaveCell {
 
 	public Pattern[] getValidStates() {
 		Pattern[] validStates = new Pattern[entropy];
-		// if (entropy == 1) {
-		// validStates[0] = state;
-		// return validStates;
-		// }
+		if (state != null) {
+			validStates[0] = state;
+			return validStates;
+		}
 		int index = 0;
 		for (int i = 0; i < stateValid.length; i++) {
 			if (stateValid[i]) {

@@ -49,16 +49,16 @@ public class Renderer {
 			}
 		}
 
-		// Render entities
-		for (Entity entity : gameState.getEntities()) {
-			drawSprite(g, entity.getSpriteId(), entity.getPosition());
-		}
-
 		// Render highlight
 		if (gameState.getCursorPosition() != null) {
 			Vector2 highlightPos = camera.screenToWorldCoords(gameState.getCursorPosition()).floor();
 			int highlight = 0x20;
 			drawSprite(g, highlight, highlightPos);
+		}
+
+		// Render entities
+		for (Entity entity : gameState.getEntities()) {
+			drawSprite(g, entity.getSpriteId(), entity.getPosition());
 		}
 
 		g.dispose();

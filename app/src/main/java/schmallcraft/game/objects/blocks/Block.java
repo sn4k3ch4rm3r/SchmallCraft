@@ -22,4 +22,13 @@ public class Block extends GameObject {
 		return type.getProperties();
 	}
 
+	@Override
+	public void damage(int damage) {
+		if (getProperties().isBreakable()) {
+			super.damage(damage);
+			if (this.damage >= getProperties().getHardness()) {
+				type = getProperties().getWhenBroken();
+			}
+		}
+	}
 }
