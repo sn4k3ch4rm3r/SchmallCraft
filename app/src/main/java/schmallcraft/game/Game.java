@@ -18,6 +18,7 @@ import schmallcraft.game.objects.entities.Entity;
 import schmallcraft.game.objects.entities.Player;
 import schmallcraft.game.rendering.Renderer;
 import schmallcraft.items.Item;
+import schmallcraft.util.Direction;
 import schmallcraft.util.Vector2;
 
 public class Game implements Runnable {
@@ -121,6 +122,49 @@ public class Game implements Runnable {
 		// Update every entity
 		for (Entity entity : visibleEntities) {
 			entity.update(deltaTime);
+
+			// Check for edge collision
+			if (entity.getPosition().x < 0) {
+				entity.collide(Direction.LEFT);
+			} else if (entity.getPosition().x >= WORLD_SIZE - 1) {
+				entity.collide(Direction.RIGHT);
+			}
+			if (entity.getPosition().y < 0) {
+				entity.collide(Direction.UP);
+			} else if (entity.getPosition().y >= WORLD_SIZE - 1) {
+				entity.collide(Direction.DOWN);
+			}
+
+			// Check for block collision
+			for (int y = (int) entity.getPosition().y - 1; y <= (int) entity.getPosition().y + 1; y++) {
+				for (int x = (int) entity.getPosition().x - 1; x <= (int) entity.getPosition().x + 1; x++) {
+					if (x < 0 || y < 0 || x >= state.getMap()[0].length || y >= state.getMap().length) {
+						continue;
+					}
+					BlockType blockType = state.getMap()[y][x].getType();
+					if (blockType.getProperties().isSolid()) {
+						entity.collide(state.getMap()[y][x]);
+					}
+				}
+			}
+
+			// Check for entity collision
+			for (Entity other : visibleEntities) {
+				if (other == entity) {
+					continue;
+				}
+				entity.collide(other);
+			}
+		}
+
+		// Check for dropped item collision
+		Iterator<DroppedItem> droppedItemIterator = state.getDroppedItems().iterator();
+		while (droppedItemIterator.hasNext()) {
+			DroppedItem droppedItem = droppedItemIterator.next();
+			if (player.collide(droppedItem)) {
+				droppedItemIterator.remove();
+				player.getInventory().add(droppedItem.getItem());
+			}
 		}
 
 		Vector2 playerFeet = player.getFeetPosition();
@@ -139,6 +183,7 @@ public class Game implements Runnable {
 				state.removeEntity(player);
 				state.changeDimension();
 				state.addEntity(player);
+				player.setPosition(playerFeet.floor());
 			}
 		} else {
 			onStairs = false;

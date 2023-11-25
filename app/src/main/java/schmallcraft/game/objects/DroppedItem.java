@@ -16,4 +16,7 @@ public class DroppedItem extends GameObject {
 		return item.getType().getSpriteId();
 	}
 
+	public Item getItem() {
+		return item;
+	}
 }

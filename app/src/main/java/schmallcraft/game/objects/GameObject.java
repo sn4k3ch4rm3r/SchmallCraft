@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.List;
 
 import schmallcraft.items.Item;
+import schmallcraft.util.RectangleD;
 import schmallcraft.util.Vector2;
 
 public abstract class GameObject implements Serializable {
@@ -18,6 +19,11 @@ public abstract class GameObject implements Serializable {
 
 	public void setPosition(Vector2 position) {
 		this.position = position;
+	}
+
+	public RectangleD getBoundingBox() {
+		double size = getSpriteId() > 0xFF ? 0.5 : 1.0;
+		return new RectangleD(position, size, size);
 	}
 
 	/**

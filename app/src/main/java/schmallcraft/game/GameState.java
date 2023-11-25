@@ -19,7 +19,6 @@ import schmallcraft.util.WFCPatterns;
 import wfc.WaveFunctionCollapse;
 
 public class GameState implements Serializable {
-	// TODO underworld entities are separate from overworld entities
 	private WorldData overworld;
 	private WorldData underworld;
 	private Level level;

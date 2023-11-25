@@ -40,6 +40,11 @@ public class BlockProperties {
 		return breakable;
 	}
 
+	// TODO: Maybe a better method
+	public boolean isSolid() {
+		return isBreakable();
+	}
+
 	public DropTable getDropTable() {
 		return dropTable;
 	}
