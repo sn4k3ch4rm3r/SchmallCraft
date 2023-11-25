@@ -1,9 +1,12 @@
 package schmallcraft.game.rendering;
 
+import schmallcraft.game.objects.entities.Entity;
 import schmallcraft.util.Vector2;
 import static schmallcraft.util.Constants.*;
 
 import java.awt.Rectangle;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * <ul>
@@ -45,6 +48,17 @@ public class Camera {
 		int width = (RENDER_WIDTH / TILE_SIZE) + 2;
 		int height = (RENDER_HEIGHT / TILE_SIZE) + 2;
 		return new Rectangle(x, y, width, height);
+	}
+
+	public List<Entity> getVisibleEntities(List<Entity> entities) {
+		Rectangle bounds = getBoundsInWorldSpace();
+		List<Entity> visibleEntities = new ArrayList<>();
+		for (Entity entity : entities) {
+			if (bounds.contains(entity.getPosition().toPoint())) {
+				visibleEntities.add(entity);
+			}
+		}
+		return visibleEntities;
 	}
 
 }

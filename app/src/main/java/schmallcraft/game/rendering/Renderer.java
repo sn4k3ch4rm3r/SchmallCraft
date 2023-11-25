@@ -56,7 +56,7 @@ public class Renderer {
 		}
 
 		// Render entities
-		for (Entity entity : gameState.getEntities()) {
+		for (Entity entity : camera.getVisibleEntities(gameState.getEntities())) {
 			drawSprite(g, entity.getSpriteId(), entity.getPosition());
 		}
 

@@ -107,8 +107,10 @@ public class Game implements Runnable {
 		}
 		entitiesCreated.clear();
 
+		List<Entity> visibleEntities = renderer.getCamera().getVisibleEntities(state.getEntities());
+
 		// Update every entity
-		for (Entity entity : state.getEntities()) {
+		for (Entity entity : visibleEntities) {
 			entity.update(deltaTime);
 		}
 

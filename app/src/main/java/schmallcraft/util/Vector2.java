@@ -1,5 +1,6 @@
 package schmallcraft.util;
 
+import java.awt.Point;
 import java.io.Serializable;
 
 public class Vector2 implements Serializable {
@@ -40,6 +41,10 @@ public class Vector2 implements Serializable {
 
 	public Vector2 floor() {
 		return new Vector2(Math.floor(x), Math.floor(y));
+	}
+
+	public Point toPoint() {
+		return new Point((int) x, (int) y);
 	}
 
 	@Override
