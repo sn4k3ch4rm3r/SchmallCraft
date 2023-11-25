@@ -21,6 +21,7 @@ public enum BlockType {
 		idToType.put(2, BlockType.WATER);
 		idToType.put(6, BlockType.GRASS);
 		idToType.put(37, BlockType.STAIR);
+		idToType.put(45, BlockType.STONE);
 
 		BlockProperties defauBlockProperties = new BlockProperties(1);
 		BlockProperties treeBlockProperties = new BlockProperties(1, 1, BlockType.GRASS);
@@ -59,7 +60,10 @@ public enum BlockType {
 	}
 
 	public static BlockType fromId(int id) {
-		return idToType.get(id);
+		if (idToType.containsKey(id)) {
+			return idToType.get(id);
+		}
+		return BlockType.DIRT;
 	}
 
 	public BlockProperties getProperties() {

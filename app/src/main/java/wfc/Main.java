@@ -5,6 +5,8 @@ import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.util.Random;
 
+import schmallcraft.util.WFCPatterns;
+
 @SuppressWarnings("unused")
 public class Main {
 	public static void main(String[] args) throws FileNotFoundException, UnsupportedEncodingException {
@@ -274,8 +276,8 @@ public class Main {
 				{ 0, 1, 0, 0, 0, 0 }
 		};
 		Random rnd = new Random();
-		WaveFunctionCollapse wfc = new WaveFunctionCollapse(overworld3, 3, 3, rnd);
-		int[][] map = wfc.generateMap(100, 100);
+		WaveFunctionCollapse wfc = new WaveFunctionCollapse(WFCPatterns.underworld, 3, 3, 100, 100, rnd);
+		int[][] map = wfc.generateMap();
 
 		PrintWriter writer = new PrintWriter("experiments/wfc/map.txt", "UTF-8");
 		for (int[] row : map) {

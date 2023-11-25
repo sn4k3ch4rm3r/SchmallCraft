@@ -11,16 +11,24 @@ import schmallcraft.util.Direction;
 
 public class WaveFunctionCollapse {
 	private Random random;
+	WaveCell[][] wave;
 	private Pattern[] patterns;
 
 	private int patternWidth;
 	private int patternHeight;
 
-	public WaveFunctionCollapse(int[][] inputPattern, int patternWidth, int patternHeight, Random random) {
+	private int resultWidth;
+	private int resultHeight;
+
+	public WaveFunctionCollapse(int[][] inputPattern, int patternWidth, int patternHeight, int resultWidth,
+			int resultHeight, Random random) {
 		this.random = random;
 		this.patternWidth = patternWidth;
 		this.patternHeight = patternHeight;
+		this.resultWidth = resultWidth;
+		this.resultHeight = resultHeight;
 
+		// Find patterns in input sample
 		HashSet<Pattern> ptns = new HashSet<Pattern>();
 		for (int iy = 0; iy < inputPattern.length - patternHeight; iy++) {
 			for (int ix = 0; ix < inputPattern[iy].length - patternWidth; ix++) {
@@ -39,29 +47,74 @@ public class WaveFunctionCollapse {
 			}
 		}
 
+		// Calculate what patterns can be next to eachother
 		this.patterns = ptns.toArray(new Pattern[ptns.size()]);
 		for (Pattern pattern : this.patterns) {
 			pattern.calculateCompatibilities(this.patterns);
 		}
 		System.out.println("Found " + patterns.length + " patterns");
-	}
 
-	public int[][] generateMap(int width, int height) {
-		int waveWidth = width / patternWidth + 1;
-		int waveHeight = height / patternHeight + 1;
-		WaveCell[][] wave;
+		// Setup wave
+		int waveWidth = resultWidth / patternWidth + 1;
+		int waveHeight = resultHeight / patternHeight + 1;
 		wave = new WaveCell[waveHeight][waveWidth];
 		for (int y = 0; y < wave.length; y++) {
 			for (int x = 0; x < wave[y].length; x++) {
 				wave[y][x] = new WaveCell(random, patterns);
 			}
 		}
+	}
 
+	public void setFixed(int x, int y, int value) {
+		int wx = x / patternWidth;
+		int wy = y / patternHeight;
+		int px = x % patternWidth;
+		int py = y % patternHeight;
+
+		// TODO: Find all patterns that satisfy the fixed value and choose one randomly
+		for (int i = 0; i < patterns.length; i++) {
+			if (patterns[i].getRawPattern()[py][px] == value) {
+				wave[wy][wx].collapseTo(patterns[i]);
+				propagate(new Point(wx, wy));
+				break;
+			}
+		}
+	}
+
+	private boolean propagate(Point index) {
 		Deque<Point> stack = new ArrayDeque<>();
+		stack.push(index);
+		while (!stack.isEmpty()) {
+			Point p = stack.pop();
+			int x = p.x;
+			int y = p.y;
+
+			for (Direction direction : Direction.values()) {
+				int nx = x - direction.dx;
+				int ny = y - direction.dy;
+
+				if (nx < 0 || ny >= wave.length || ny < 0 || nx >= wave[ny].length) {
+					continue;
+				}
+				WaveCell neighbour = wave[ny][nx];
+				boolean changed = neighbour.propagate(wave[y][x], direction);
+				if (changed) {
+					stack.push(new Point(nx, ny));
+					if (neighbour.getEntropy() == 0) {
+						return false;
+					}
+				}
+			}
+		}
+		return true;
+	}
+
+	public int[][] generateMap() {
+
 		int entropy;
 		ArrayList<Point> minEntropyPoints = new ArrayList<>();
-		minEntropyPoints.add(new Point(0, 0));
-		while (!minEntropyPoints.isEmpty()) {
+		boolean done = false;
+		while (!done) {
 			// Find minimum entropy cells
 			minEntropyPoints.clear();
 			entropy = Integer.MAX_VALUE;
@@ -77,40 +130,25 @@ public class WaveFunctionCollapse {
 				}
 			}
 			if (minEntropyPoints.isEmpty()) {
-				break;
-			}
-			int indexToCollapse = random.nextInt(minEntropyPoints.size());
-			Point pointToCollapse = minEntropyPoints.get(indexToCollapse);
-			WaveCell cellToCollapse = wave[pointToCollapse.y][pointToCollapse.x];
-			cellToCollapse.collapse();
-			stack.push(pointToCollapse);
-
-			while (!stack.isEmpty()) {
-				Point p = stack.pop();
-				int x = p.x;
-				int y = p.y;
-
-				for (Direction direction : Direction.values()) {
-					int nx = x - direction.dx;
-					int ny = y - direction.dy;
-
-					if (nx < 0 || ny >= wave.length || ny < 0 || nx >= wave[ny].length) {
-						continue;
-					}
-					WaveCell neighbour = wave[ny][nx];
-					boolean changed = neighbour.propagate(wave[y][x], direction);
-					if (changed) {
-						stack.push(new Point(nx, ny));
-					}
-				}
+				done = true;
+			} else {
+				// Chose a random cell if there are multiple with the same entropy
+				// Collapse it to a valid state and propagate the result
+				int indexToCollapse = random.nextInt(minEntropyPoints.size());
+				Point pointToCollapse = minEntropyPoints.get(indexToCollapse);
+				WaveCell cellToCollapse = wave[pointToCollapse.y][pointToCollapse.x];
+				cellToCollapse.collapse();
+				propagate(pointToCollapse);
 			}
 		}
-		int[][] map = new int[height][width];
+
+		// Write patterns to an array
+		int[][] map = new int[resultHeight][resultWidth];
 		for (int y = 0; y < wave.length; y++) {
 			for (int x = 0; x < wave[y].length; x++) {
 				Pattern p = wave[y][x].getState();
-				for (int py = 0; py < patternHeight && y * patternHeight + py < height; py++) {
-					for (int px = 0; px < patternWidth && x * patternWidth + px < width; px++) {
+				for (int py = 0; py < patternHeight && y * patternHeight + py < resultHeight; py++) {
+					for (int px = 0; px < patternWidth && x * patternWidth + px < resultWidth; px++) {
 						if (p != null) {
 							map[y * patternHeight + py][x * patternWidth + px] = p.getRawPattern()[py][px];
 						} else {
