@@ -143,11 +143,11 @@ public class Game implements Runnable {
 		if (cameraPosition.y < 0) {
 			cameraPosition.y = 0;
 		}
-		if (cameraPosition.x + cameraBounds.width > state.getMap()[0].length) {
-			cameraPosition.x = state.getMap()[0].length - cameraBounds.width;
+		if (cameraPosition.x + cameraBounds.width - 2 >= state.getMap()[0].length) {
+			cameraPosition.x = state.getMap()[0].length + 2 - cameraBounds.width;
 		}
-		if (cameraPosition.y + cameraBounds.height > state.getMap().length) {
-			cameraPosition.y = state.getMap().length - cameraBounds.height;
+		if (cameraPosition.y + cameraBounds.height - 2 >= state.getMap().length) {
+			cameraPosition.y = state.getMap().length + 2 - cameraBounds.height;
 		}
 		renderer.setCameraPosition(cameraPosition);
 	}

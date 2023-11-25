@@ -23,10 +23,10 @@ public class Player extends Entity {
 	@Override
 	public void update(double deltaTime) {
 		Vector2 delta = direction.normalize().multiply(MOVEMENT_SPEED * speedMultiplier * deltaTime);
-		if (position.add(delta).x < 0 || position.add(delta).x + 1 > WORLD_SIZE) {
+		if (position.add(delta).x < 0 || position.add(delta).x + 1 >= WORLD_SIZE) {
 			delta = new Vector2(0, delta.y);
 		}
-		if (position.add(delta).y < 0 || position.add(delta).y + 1 > WORLD_SIZE) {
+		if (position.add(delta).y < 0 || position.add(delta).y + 1 >= WORLD_SIZE) {
 			delta = new Vector2(delta.x, 0);
 		}
 		position = position.add(delta);
