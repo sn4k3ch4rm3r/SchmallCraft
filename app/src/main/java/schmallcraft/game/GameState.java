@@ -13,6 +13,7 @@ import schmallcraft.game.objects.GameObject;
 import schmallcraft.game.objects.blocks.Block;
 import schmallcraft.game.objects.blocks.BlockType;
 import schmallcraft.game.objects.entities.Entity;
+import schmallcraft.game.objects.entities.Player;
 import schmallcraft.game.rendering.Camera;
 import schmallcraft.items.Item;
 import schmallcraft.util.Level;
@@ -27,6 +28,7 @@ public class GameState implements Serializable {
 	private transient Vector2 cursorPosition;
 	private List<Item> inventory = new ArrayList<>();
 	private int inventorySelected = 0;
+	private Player player;
 
 	public GameState() {
 		Random random = new Random();
@@ -75,6 +77,9 @@ public class GameState implements Serializable {
 
 		this.overworld = new WorldData(overworldBlocks);
 		this.underworld = new WorldData(underworldBlocks);
+		this.player = new Player();
+		this.player.setPosition(new Vector2(WORLD_SIZE / 2.0, WORLD_SIZE / 2.0));
+		addEntity(player);
 	}
 
 	private Block[][] wfcMapToBlocks(int[][] wfcMap) {
@@ -118,6 +123,10 @@ public class GameState implements Serializable {
 
 	public int getInventorySelected() {
 		return inventorySelected;
+	}
+
+	public Player getPlayer() {
+		return player;
 	}
 
 	public void addToInventory(Item item) {

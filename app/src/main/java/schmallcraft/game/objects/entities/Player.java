@@ -14,9 +14,15 @@ public class Player extends Entity {
 	private Set<Item> inventory = new HashSet<>();
 	private boolean flip = false;
 	private boolean inWater = false;
+	private int exhaustion = 0;
 
 	public Player() {
 		position = new Vector2(1, 1);
+		health = 10;
+	}
+
+	public int getStamina() {
+		return (int) Math.max(0, health - exhaustion);
 	}
 
 	@Override

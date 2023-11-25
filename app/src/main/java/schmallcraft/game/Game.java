@@ -38,9 +38,7 @@ public class Game implements Runnable {
 	public Game(GameState gameState, Renderer gameRenderer) {
 		state = gameState;
 		renderer = gameRenderer;
-		player = new Player();
-		player.setPosition(new Vector2(WORLD_SIZE / 2.0, WORLD_SIZE / 2.0));
-		state.addEntity(player);
+		player = state.getPlayer();
 	}
 
 	public void start() {

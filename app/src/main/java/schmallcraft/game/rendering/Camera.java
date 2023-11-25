@@ -46,7 +46,7 @@ public class Camera {
 		int x = (int) position.x - 1;
 		int y = (int) position.y - 1;
 		int width = (RENDER_WIDTH / TILE_SIZE) + 2;
-		int height = (RENDER_HEIGHT / TILE_SIZE) + 2;
+		int height = (RENDER_HEIGHT / TILE_SIZE);
 		return new Rectangle(x, y, width, height);
 	}
 

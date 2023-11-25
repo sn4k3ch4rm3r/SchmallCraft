@@ -6,5 +6,5 @@ public class Constants {
 	public static final int RENDER_HEIGHT = 192;
 	public static final int RENDER_SCALE = 4;
 	public static final int WORLD_SIZE = 32;
-	public static final int INVENTORY_SIZE = 12;
+	public static final int INVENTORY_SIZE = RENDER_WIDTH / TILE_SIZE;
 }

@@ -9,8 +9,17 @@ import schmallcraft.util.Vector2;
 
 public abstract class Entity extends GameObject {
 	protected Vector2 velocity = new Vector2();
+	protected int health;
 
 	abstract public void update(double deltaTime);
+
+	public int getHealth() {
+		return (int) Math.max(0, health - damage);
+	}
+
+	public int getMaxHealth() {
+		return health;
+	}
 
 	public void collide(Block block) {
 		Vector2 overlap = getBoundingBox().getOverlap(block.getBoundingBox());

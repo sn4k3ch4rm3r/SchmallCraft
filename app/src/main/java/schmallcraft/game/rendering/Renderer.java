@@ -1,5 +1,6 @@
 package schmallcraft.game.rendering;
 
+import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
@@ -65,9 +66,22 @@ public class Renderer {
 		}
 
 		// Render HUD
+		g.setColor(new Color(23, 32, 56));
+		g.fillRect(0, RENDER_HEIGHT - 2 * TILE_SIZE, RENDER_WIDTH, RENDER_HEIGHT);
+		for (int i = 0; i < gameState.getPlayer().getMaxHealth(); i++) {
+			int hpSpriteId = i < gameState.getPlayer().getHealth() ? 0x132 : 0x232;
+			int staminaSpriteId = i < gameState.getPlayer().getStamina() ? 0x332 : 0x432;
+			BufferedImage hpSprite = getSprite(hpSpriteId);
+			BufferedImage staminaSprite = getSprite(staminaSpriteId);
+			int posX = (int) ((RENDER_WIDTH / 2) - (gameState.getPlayer().getMaxHealth() / 2.0 * hpSprite.getWidth())
+					+ (i * hpSprite.getWidth()));
+			int posY = (int) (RENDER_HEIGHT - TILE_SIZE * 2);
+			g.drawImage(hpSprite, posX, posY + 1, null);
+			g.drawImage(staminaSprite, posX, posY + TILE_SIZE / 2, null);
+		}
 		for (int i = 0; i < INVENTORY_SIZE; i++) {
 			int slotX = (int) ((RENDER_WIDTH / 2) - (INVENTORY_SIZE / 2.0 * TILE_SIZE) + (i * TILE_SIZE));
-			int slotY = (int) (RENDER_HEIGHT - TILE_SIZE * 1.5);
+			int slotY = (int) (RENDER_HEIGHT - TILE_SIZE * 1);
 			g.drawImage(getSprite(gameState.getInventorySelected() == i ? 0x31 : 0x30), slotX, slotY, null);
 			if (i < gameState.getInventory().size()) {
 				Item item = gameState.getInventory().get(i);
