@@ -88,10 +88,15 @@ public class Renderer {
 	}
 
 	private void drawSprite(Graphics2D g, int spriteId, Vector2 position) {
+		int flip = spriteId < 0 ? -1 : 1;
+		spriteId = Math.abs(spriteId);
 		Vector2 renderPos = camera.worldToRenderCoords(position);
-		g.drawImage(getSprite(spriteId),
-				(int) Math.round(renderPos.x),
-				(int) Math.round(renderPos.y), null);
+		BufferedImage sprite = getSprite(spriteId);
+		g.drawImage(sprite,
+				(int) Math.round(renderPos.x) + (flip > 0 ? 0 : (int) sprite.getWidth(null)),
+				(int) Math.round(renderPos.y),
+				flip * sprite.getWidth(null),
+				sprite.getHeight(null), null);
 	}
 
 	public BufferedImage getScreenBuffer() {

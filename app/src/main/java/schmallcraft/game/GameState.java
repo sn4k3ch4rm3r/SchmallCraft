@@ -112,6 +112,17 @@ public class GameState implements Serializable {
 		return null;
 	}
 
+	public void changeDimension() {
+		switch (level) {
+			case OVERWORD:
+				level = Level.UNDERWORLD;
+				break;
+			case UNDERWORLD:
+				level = Level.OVERWORD;
+				break;
+		}
+	}
+
 	// TODO: Return entity if the cursor is on one
 	public GameObject getHighLightedObject(Camera camera) {
 		if (cursorPosition == null) {

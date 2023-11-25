@@ -11,6 +11,7 @@ import java.util.Random;
 import javax.swing.SwingUtilities;
 
 import schmallcraft.game.objects.GameObject;
+import schmallcraft.game.objects.blocks.BlockType;
 import schmallcraft.game.objects.entities.Entity;
 import schmallcraft.game.objects.entities.ItemEntity;
 import schmallcraft.game.objects.entities.Player;
@@ -29,6 +30,8 @@ public class Game implements Runnable {
 
 	private Player player;
 	private ArrayList<Entity> entitiesCreated = new ArrayList<>();
+
+	private boolean onStairs = false;
 
 	public Game(GameState gameState, Renderer gameRenderer) {
 		state = gameState;
@@ -107,6 +110,25 @@ public class Game implements Runnable {
 		// Update every entity
 		for (Entity entity : state.getEntities()) {
 			entity.update(deltaTime);
+		}
+
+		Vector2 playerFeet = player.getFeetPosition();
+		BlockType standingOn = state.getMap()[(int) playerFeet.y][(int) playerFeet.x].getType();
+		player.setSpeedMultiplier(standingOn.getProperties().getMovementSpeedMultiplier());
+		// Check if player is in water
+		if (standingOn == BlockType.WATER) {
+			player.setInWater(true);
+		} else {
+			player.setInWater(false);
+		}
+		// Change dimension if player is on stairs
+		if (standingOn == BlockType.STAIR) {
+			if (!onStairs) {
+				onStairs = true;
+				state.changeDimension();
+			}
+		} else {
+			onStairs = false;
 		}
 
 		// Calculate & update camera position

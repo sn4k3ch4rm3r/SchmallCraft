@@ -47,8 +47,8 @@ public enum BlockType {
 		baseSpriteId.put(BlockType.SAND, 0x03);
 		baseSpriteId.put(BlockType.ROCK, 0x04);
 		baseSpriteId.put(BlockType.WATER, 0x05);
-		baseSpriteId.put(BlockType.DIRT, 0x06);
-		baseSpriteId.put(BlockType.STAIR, 0x07);
+		baseSpriteId.put(BlockType.STAIR, 0x06);
+		baseSpriteId.put(BlockType.DIRT, 0x07);
 	}
 
 	public int baseSpriteId() {
