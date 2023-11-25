@@ -13,6 +13,10 @@ public class Item {
 		return amount;
 	}
 
+	public void setAmount(int amount) {
+		this.amount = Math.min(amount, 99);
+	}
+
 	public ItemType getType() {
 		return type;
 	}

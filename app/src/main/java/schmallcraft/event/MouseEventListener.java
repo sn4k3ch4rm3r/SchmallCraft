@@ -1,15 +1,18 @@
 package schmallcraft.event;
 
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
+import java.awt.event.MouseWheelEvent;
+import java.awt.event.MouseWheelListener;
 
 import schmallcraft.game.Game;
 import schmallcraft.util.Vector2;
 
-public class MouseListener implements java.awt.event.MouseListener, MouseMotionListener {
+public class MouseEventListener implements MouseListener, MouseMotionListener, MouseWheelListener {
 	private Game game;
 
-	public MouseListener(Game game) {
+	public MouseEventListener(Game game) {
 		this.game = game;
 	}
 
@@ -49,6 +52,11 @@ public class MouseListener implements java.awt.event.MouseListener, MouseMotionL
 
 	@Override
 	public void mouseExited(MouseEvent e) {
+	}
+
+	@Override
+	public void mouseWheelMoved(MouseWheelEvent e) {
+		game.scroll(e.getWheelRotation());
 	}
 
 }

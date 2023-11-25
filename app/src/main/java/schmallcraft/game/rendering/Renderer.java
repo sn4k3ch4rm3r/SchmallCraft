@@ -9,6 +9,7 @@ import java.util.List;
 import javax.imageio.ImageIO;
 import schmallcraft.game.GameState;
 import schmallcraft.game.objects.GameObject;
+import schmallcraft.items.Item;
 import schmallcraft.util.Vector2;
 import static schmallcraft.util.Constants.*;
 
@@ -63,6 +64,19 @@ public class Renderer {
 			drawSprite(g, object.getSpriteId(), object.getPosition());
 		}
 
+		// Render HUD
+		for (int i = 0; i < INVENTORY_SIZE; i++) {
+			int slotX = (int) ((RENDER_WIDTH / 2) - (INVENTORY_SIZE / 2.0 * TILE_SIZE) + (i * TILE_SIZE));
+			int slotY = (int) (RENDER_HEIGHT - TILE_SIZE * 1.5);
+			g.drawImage(getSprite(gameState.getInventorySelected() == i ? 0x31 : 0x30), slotX, slotY, null);
+			if (i < gameState.getInventory().size()) {
+				Item item = gameState.getInventory().get(i);
+				g.drawImage(getSprite(item.getType().getSpriteId()), slotX + TILE_SIZE / 4, slotY + TILE_SIZE / 4,
+						null);
+				drawNumber(g, item.getAmount(), new Vector2(slotX + TILE_SIZE - 9, slotY + TILE_SIZE - 7));
+			}
+		}
+
 		g.dispose();
 		if (renderCallback != null) {
 			renderCallback.onRender();
@@ -100,6 +114,20 @@ public class Renderer {
 				(int) Math.round(renderPos.y),
 				flip * sprite.getWidth(null),
 				sprite.getHeight(null), null);
+	}
+
+	private void drawNumber(Graphics2D g, int number, Vector2 position) {
+		int numSpritesRowIndex = 4;
+		int numberWidth = 4;
+		int numberHeight = 5;
+
+		String numberString = String.format("%02d", number);
+		for (int i = 0; i < numberString.length(); i++) {
+			int digit = Integer.parseInt(numberString.substring(i, i + 1));
+			BufferedImage numSprite = spriteSheet.getSubimage(digit * numberWidth, numSpritesRowIndex * TILE_SIZE,
+					numberWidth, numberHeight);
+			g.drawImage(numSprite, (int) (position.x + i * numberWidth), (int) position.y, null);
+		}
 	}
 
 	public BufferedImage getScreenBuffer() {

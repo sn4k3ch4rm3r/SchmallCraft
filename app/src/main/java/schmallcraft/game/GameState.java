@@ -1,5 +1,6 @@
 package schmallcraft.game;
 
+import static schmallcraft.util.Constants.INVENTORY_SIZE;
 import static schmallcraft.util.Constants.WORLD_SIZE;
 
 import java.io.Serializable;
@@ -13,6 +14,7 @@ import schmallcraft.game.objects.blocks.Block;
 import schmallcraft.game.objects.blocks.BlockType;
 import schmallcraft.game.objects.entities.Entity;
 import schmallcraft.game.rendering.Camera;
+import schmallcraft.items.Item;
 import schmallcraft.util.Level;
 import schmallcraft.util.Vector2;
 import schmallcraft.util.WFCPatterns;
@@ -23,6 +25,8 @@ public class GameState implements Serializable {
 	private WorldData underworld;
 	private Level level;
 	private transient Vector2 cursorPosition;
+	private List<Item> inventory = new ArrayList<>();
+	private int inventorySelected = 0;
 
 	public GameState() {
 		Random random = new Random();
@@ -106,6 +110,30 @@ public class GameState implements Serializable {
 
 	public void removeDroppedItem(DroppedItem droppedItem) {
 		getDroppedItems().remove(droppedItem);
+	}
+
+	public List<Item> getInventory() {
+		return inventory;
+	}
+
+	public int getInventorySelected() {
+		return inventorySelected;
+	}
+
+	public void addToInventory(Item item) {
+		Item inInventory = inventory.stream().filter(x -> x.getType() == item.getType()).findFirst().orElse(null);
+		if (inInventory != null) {
+			inInventory.setAmount(inInventory.getAmount() + item.getAmount());
+		} else if (inventory.size() < INVENTORY_SIZE) {
+			inventory.add(item);
+		}
+	}
+
+	public void moveSelection(int amount) {
+		inventorySelected = (inventorySelected + amount) % INVENTORY_SIZE;
+		if (inventorySelected < 0) {
+			inventorySelected += INVENTORY_SIZE;
+		}
 	}
 
 	public List<GameObject> getObjects() {

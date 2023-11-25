@@ -163,7 +163,7 @@ public class Game implements Runnable {
 			DroppedItem droppedItem = droppedItemIterator.next();
 			if (player.collide(droppedItem)) {
 				droppedItemIterator.remove();
-				player.getInventory().add(droppedItem.getItem());
+				state.addToInventory(droppedItem.getItem());
 			}
 		}
 
@@ -222,6 +222,10 @@ public class Game implements Runnable {
 
 	public void actionUse() {
 
+	}
+
+	public void scroll(int scrollAmount) {
+		state.moveSelection(scrollAmount);
 	}
 
 	public void setHighLightPosition(Vector2 highLightPosition) {

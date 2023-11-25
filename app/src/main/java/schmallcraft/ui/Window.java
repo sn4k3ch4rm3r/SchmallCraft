@@ -8,8 +8,8 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.WindowConstants;
 
-import schmallcraft.event.KeyboardListener;
-import schmallcraft.event.MouseListener;
+import schmallcraft.event.KeyboardEventListener;
+import schmallcraft.event.MouseEventListener;
 import schmallcraft.game.Game;
 import schmallcraft.game.GameState;
 import schmallcraft.game.rendering.Renderer;
@@ -25,10 +25,11 @@ public class Window extends JFrame {
 		Renderer gameRenderer = new Renderer(RENDER_WIDTH, RENDER_HEIGHT, RENDER_SCALE, () -> gamePanel.repaint());
 		Game game = new Game(new GameState(), gameRenderer);
 		gamePanel = new GamePanel(gameRenderer);
-		gamePanel.addKeyListener(new KeyboardListener(game));
-		MouseListener mouseListener = new MouseListener(game);
+		gamePanel.addKeyListener(new KeyboardEventListener(game));
+		MouseEventListener mouseListener = new MouseEventListener(game);
 		gamePanel.addMouseListener(mouseListener);
 		gamePanel.addMouseMotionListener(mouseListener);
+		gamePanel.addMouseWheelListener(mouseListener);
 		gamePanel.setFocusable(true);
 		gamePanel.requestFocusInWindow();
 
