@@ -4,9 +4,11 @@ import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.util.List;
+
 import javax.imageio.ImageIO;
 import schmallcraft.game.GameState;
-import schmallcraft.game.objects.entities.Entity;
+import schmallcraft.game.objects.GameObject;
 import schmallcraft.util.Vector2;
 import static schmallcraft.util.Constants.*;
 
@@ -55,9 +57,10 @@ public class Renderer {
 			drawSprite(g, highlight, highlightPos);
 		}
 
-		// Render entities
-		for (Entity entity : camera.getVisibleEntities(gameState.getEntities())) {
-			drawSprite(g, entity.getSpriteId(), entity.getPosition());
+		// Render entities and items
+		List<GameObject> visibleObjects = camera.getVisibleObjects(gameState.getObjects());
+		for (GameObject object : visibleObjects) {
+			drawSprite(g, object.getSpriteId(), object.getPosition());
 		}
 
 		g.dispose();

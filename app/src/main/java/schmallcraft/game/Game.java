@@ -4,16 +4,17 @@ import static schmallcraft.util.Constants.WORLD_SIZE;
 
 import java.awt.Rectangle;
 import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import javax.swing.SwingUtilities;
 
+import schmallcraft.game.objects.DroppedItem;
 import schmallcraft.game.objects.GameObject;
 import schmallcraft.game.objects.blocks.BlockType;
 import schmallcraft.game.objects.entities.Entity;
-import schmallcraft.game.objects.entities.ItemEntity;
 import schmallcraft.game.objects.entities.Player;
 import schmallcraft.game.rendering.Renderer;
 import schmallcraft.items.Item;
@@ -29,7 +30,7 @@ public class Game implements Runnable {
 	private Renderer renderer;
 
 	private Player player;
-	private ArrayList<Entity> entitiesCreated = new ArrayList<>();
+	private List<GameObject> gameObjectCreated = new CopyOnWriteArrayList<>();
 
 	private boolean onStairs = false;
 
@@ -102,12 +103,20 @@ public class Game implements Runnable {
 
 	private void update() {
 		// Add newly created entites to the state
-		for (int i = 0; i < entitiesCreated.size(); i++) {
-			state.addEntity(entitiesCreated.get(i));
+		if (!gameObjectCreated.isEmpty()) {
+			Iterator<GameObject> newObjectIterator = gameObjectCreated.iterator();
+			while (newObjectIterator.hasNext()) {
+				GameObject newObject = newObjectIterator.next();
+				if (newObject instanceof Entity) {
+					state.addEntity((Entity) newObject);
+				} else if (newObject instanceof DroppedItem) {
+					state.addDroppedItem((DroppedItem) newObject);
+				}
+			}
+			gameObjectCreated.removeAll(state.getObjects());
 		}
-		entitiesCreated.clear();
 
-		List<Entity> visibleEntities = renderer.getCamera().getVisibleEntities(state.getEntities());
+		List<Entity> visibleEntities = renderer.getCamera().getVisibleObjects(state.getEntities());
 
 		// Update every entity
 		for (Entity entity : visibleEntities) {
@@ -127,7 +136,9 @@ public class Game implements Runnable {
 		if (standingOn == BlockType.STAIR) {
 			if (!onStairs) {
 				onStairs = true;
+				state.removeEntity(player);
 				state.changeDimension();
+				state.addEntity(player);
 			}
 		} else {
 			onStairs = false;
@@ -158,7 +169,7 @@ public class Game implements Runnable {
 		if (resultingItems != null) {
 			Vector2 tileCenter = target.getPosition().add(new Vector2(0.25, 0.25));
 			for (Item item : resultingItems) {
-				entitiesCreated.add(new ItemEntity(item, tileCenter.add(new Vector2(random.nextDouble() * 0.25,
+				gameObjectCreated.add(new DroppedItem(item, tileCenter.add(new Vector2(random.nextDouble() * 0.25,
 						random.nextDouble() * 0.25))));
 			}
 		}

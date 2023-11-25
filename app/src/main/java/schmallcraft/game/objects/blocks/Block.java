@@ -4,12 +4,14 @@ import java.util.List;
 
 import schmallcraft.game.objects.GameObject;
 import schmallcraft.items.Item;
+import schmallcraft.util.Vector2;
 
 public class Block extends GameObject {
 	private BlockType type;
 
-	public Block(BlockType type) {
+	public Block(BlockType type, Vector2 position) {
 		this.type = type;
+		this.position = position;
 	}
 
 	@Override

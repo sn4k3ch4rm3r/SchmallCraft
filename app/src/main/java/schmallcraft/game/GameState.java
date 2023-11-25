@@ -4,8 +4,10 @@ import static schmallcraft.util.Constants.WORLD_SIZE;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
+import schmallcraft.game.objects.DroppedItem;
 import schmallcraft.game.objects.GameObject;
 import schmallcraft.game.objects.blocks.Block;
 import schmallcraft.game.objects.blocks.BlockType;
@@ -18,14 +20,12 @@ import wfc.WaveFunctionCollapse;
 
 public class GameState implements Serializable {
 	// TODO underworld entities are separate from overworld entities
-	private ArrayList<Entity> entities;
-	private Block[][] overworld;
-	private Block[][] underworld;
+	private WorldData overworld;
+	private WorldData underworld;
 	private Level level;
 	private transient Vector2 cursorPosition;
 
 	public GameState() {
-		entities = new ArrayList<Entity>();
 		Random random = new Random();
 		level = Level.OVERWORD;
 		WaveFunctionCollapse wfcOverworld = new WaveFunctionCollapse(WFCPatterns.overworld,
@@ -48,26 +48,30 @@ public class GameState implements Serializable {
 		// Make sure that there is a path to the underworld
 		wfcOverworld.setFixed(random.nextInt(WORLD_SIZE), random.nextInt(WORLD_SIZE), 37);
 		int[][] overworldBlockIds = wfcOverworld.generateMap();
-		overworld = wfcMapToBlocks(overworldBlockIds);
+		Block[][] overworldBlocks = wfcMapToBlocks(overworldBlockIds);
 
 		// Connect the stairs to the underworld
 		for (int y = 0; y < WORLD_SIZE; y++) {
 			for (int x = 0; x < WORLD_SIZE; x++) {
-				if (overworld[y][x].getType() == BlockType.STAIR) {
+				if (overworldBlocks[y][x].getType() == BlockType.STAIR) {
 					wfcUnderworld.setFixed(x, y, 37);
 				}
 			}
 		}
 		int[][] underworldBlockIds = wfcUnderworld.generateMap();
-		underworld = wfcMapToBlocks(underworldBlockIds);
+		Block[][] underworldBlocks = wfcMapToBlocks(underworldBlockIds);
 		// Remove stairs that don't lead anywhere
 		for (int y = 0; y < WORLD_SIZE; y++) {
 			for (int x = 0; x < WORLD_SIZE; x++) {
-				if (underworld[y][x].getType() == BlockType.STAIR && overworld[y][x].getType() != BlockType.STAIR) {
-					underworld[y][x] = new Block(BlockType.STONE);
+				if (underworldBlocks[y][x].getType() == BlockType.STAIR
+						&& overworldBlocks[y][x].getType() != BlockType.STAIR) {
+					underworldBlocks[y][x] = new Block(BlockType.STONE, new Vector2(x, y));
 				}
 			}
 		}
+
+		this.overworld = new WorldData(overworldBlocks);
+		this.underworld = new WorldData(underworldBlocks);
 	}
 
 	private Block[][] wfcMapToBlocks(int[][] wfcMap) {
@@ -75,23 +79,41 @@ public class GameState implements Serializable {
 		for (int y = 0; y < wfcMap.length; y++) {
 			for (int x = 0; x < wfcMap[0].length; x++) {
 				BlockType type = BlockType.fromId(wfcMap[y][x]);
-				result[y][x] = new Block(type);
-				result[y][x].setPosition(new Vector2(x, y));
+				result[y][x] = new Block(type, new Vector2(x, y));
 			}
 		}
 		return result;
 	}
 
-	public ArrayList<Entity> getEntities() {
-		return entities;
+	public List<Entity> getEntities() {
+		return getWorldData().getEntities();
 	}
 
 	public void addEntity(Entity entity) {
-		entities.add(entity);
+		getEntities().add(entity);
 	}
 
 	public void removeEntity(Entity entity) {
-		entities.remove(entity);
+		getEntities().remove(entity);
+	}
+
+	public List<DroppedItem> getDroppedItems() {
+		return getWorldData().getDroppedItems();
+	}
+
+	public void addDroppedItem(DroppedItem droppedItem) {
+		getDroppedItems().add(droppedItem);
+	}
+
+	public void removeDroppedItem(DroppedItem droppedItem) {
+		getDroppedItems().remove(droppedItem);
+	}
+
+	public List<GameObject> getObjects() {
+		List<GameObject> objects = new ArrayList<>();
+		objects.addAll(getDroppedItems());
+		objects.addAll(getEntities());
+		return objects;
 	}
 
 	public void setCursorPosition(Vector2 cursorPosition) {
@@ -103,13 +125,7 @@ public class GameState implements Serializable {
 	}
 
 	public Block[][] getMap() {
-		switch (level) {
-			case OVERWORD:
-				return overworld;
-			case UNDERWORLD:
-				return underworld;
-		}
-		return null;
+		return getWorldData().getBlocks();
 	}
 
 	public void changeDimension() {
@@ -123,18 +139,22 @@ public class GameState implements Serializable {
 		}
 	}
 
+	public WorldData getWorldData() {
+		switch (level) {
+			case OVERWORD:
+				return overworld;
+			case UNDERWORLD:
+				return underworld;
+		}
+		return null;
+	}
+
 	// TODO: Return entity if the cursor is on one
 	public GameObject getHighLightedObject(Camera camera) {
 		if (cursorPosition == null) {
 			return null;
 		}
 		Vector2 worldPos = camera.screenToWorldCoords(cursorPosition);
-		switch (level) {
-			case OVERWORD:
-				return overworld[(int) worldPos.y][(int) worldPos.x];
-			case UNDERWORLD:
-				return underworld[(int) worldPos.y][(int) worldPos.x];
-		}
-		return null;
+		return getMap()[(int) worldPos.y][(int) worldPos.x];
 	}
 }

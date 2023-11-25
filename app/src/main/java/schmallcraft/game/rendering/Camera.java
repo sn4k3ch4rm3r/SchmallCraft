@@ -1,6 +1,6 @@
 package schmallcraft.game.rendering;
 
-import schmallcraft.game.objects.entities.Entity;
+import schmallcraft.game.objects.GameObject;
 import schmallcraft.util.Vector2;
 import static schmallcraft.util.Constants.*;
 
@@ -50,12 +50,12 @@ public class Camera {
 		return new Rectangle(x, y, width, height);
 	}
 
-	public List<Entity> getVisibleEntities(List<Entity> entities) {
+	public <T extends GameObject> List<T> getVisibleObjects(List<T> objects) {
 		Rectangle bounds = getBoundsInWorldSpace();
-		List<Entity> visibleEntities = new ArrayList<>();
-		for (Entity entity : entities) {
-			if (bounds.contains(entity.getPosition().toPoint())) {
-				visibleEntities.add(entity);
+		List<T> visibleEntities = new ArrayList<>();
+		for (T object : objects) {
+			if (bounds.contains(object.getPosition().toPoint())) {
+				visibleEntities.add(object);
 			}
 		}
 		return visibleEntities;
