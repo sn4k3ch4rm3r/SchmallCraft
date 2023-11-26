@@ -4,6 +4,7 @@ import static schmallcraft.util.Constants.WORLD_SIZE;
 
 import java.awt.Rectangle;
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
@@ -32,6 +33,7 @@ public class Game implements Runnable {
 
 	private Player player;
 	private List<GameObject> gameObjectCreated = new CopyOnWriteArrayList<>();
+	private List<Entity> visibleEntities = new ArrayList<>();
 
 	private boolean onStairs = false;
 
@@ -68,7 +70,7 @@ public class Game implements Runnable {
 			if (deltaFixedUpdate >= 1) {
 				deltaFixedUpdate--;
 				fixedUpdateCount++;
-				// fixedUpdate();
+				fixedUpdate();
 			}
 			if (deltaFrame >= 1) {
 				deltaFrame--;
@@ -100,7 +102,7 @@ public class Game implements Runnable {
 		player.setDirection(direction);
 	}
 
-	private void update() {
+	private void fixedUpdate() {
 		// Add newly created entites to the state
 		if (!gameObjectCreated.isEmpty()) {
 			Iterator<GameObject> newObjectIterator = gameObjectCreated.iterator();
@@ -124,8 +126,26 @@ public class Game implements Runnable {
 			}
 		}
 
-		List<Entity> visibleEntities = renderer.getCamera().getVisibleObjects(state.getEntities());
+		// Calculate which entites are visible
+		visibleEntities = renderer.getCamera().getVisibleObjects(state.getEntities());
 
+		// Run fixed update on every entity
+		for (Entity entity : visibleEntities) {
+			entity.fixedUpdate();
+		}
+
+		// Pick up dropped items if player collides with them
+		Iterator<DroppedItem> droppedItemIterator = state.getDroppedItems().iterator();
+		while (droppedItemIterator.hasNext()) {
+			DroppedItem droppedItem = droppedItemIterator.next();
+			if (player.collide(droppedItem)) {
+				droppedItemIterator.remove();
+				state.addToInventory(droppedItem.getItem());
+			}
+		}
+	}
+
+	private void update() {
 		// Update every entity
 		for (Entity entity : visibleEntities) {
 			entity.update(deltaTime);
@@ -159,16 +179,6 @@ public class Game implements Runnable {
 						entity.collide(state.getMap()[y][x]);
 					}
 				}
-			}
-		}
-
-		// Check for dropped item collision
-		Iterator<DroppedItem> droppedItemIterator = state.getDroppedItems().iterator();
-		while (droppedItemIterator.hasNext()) {
-			DroppedItem droppedItem = droppedItemIterator.next();
-			if (player.collide(droppedItem)) {
-				droppedItemIterator.remove();
-				state.addToInventory(droppedItem.getItem());
 			}
 		}
 

@@ -19,6 +19,10 @@ public abstract class GameObject implements Serializable {
 		this(new Vector2());
 	}
 
+	public void fixedUpdate() {
+		// Animations in the future if I have time.
+	}
+
 	abstract public int getSpriteId();
 
 	public Vector2 getPosition() {
