@@ -238,7 +238,20 @@ public class Game implements Runnable {
 	}
 
 	public void actionUse() {
-
+		Item item = state.getSelectedItem();
+		GameObject target = state.getHighLightedObject(renderer.getCamera());
+		if (item != null && target != null) {
+			List<GameObject> result = item.getType().use(player, target);
+			if (result != null) {
+				for (GameObject object : result) {
+					gameObjectCreated.add(object);
+				}
+			}
+			item.setAmount(item.getAmount() - 1);
+			if (item.getAmount() <= 0) {
+				state.getInventory().remove(item);
+			}
+		}
 	}
 
 	public void scroll(int scrollAmount) {

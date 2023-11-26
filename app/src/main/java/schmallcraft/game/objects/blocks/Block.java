@@ -16,7 +16,7 @@ public class Block extends GameObject {
 
 	@Override
 	public int getSpriteId() {
-		return type.baseSpriteId();
+		return type.getSpriteId();
 	}
 
 	public BlockType getType() {

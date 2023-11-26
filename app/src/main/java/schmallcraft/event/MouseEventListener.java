@@ -35,8 +35,9 @@ public class MouseEventListener implements MouseListener, MouseMotionListener, M
 			case MouseEvent.BUTTON1:
 				game.actionAttack();
 				break;
-			case MouseEvent.BUTTON2:
+			case MouseEvent.BUTTON3:
 				game.actionUse();
+				break;
 			default:
 				break;
 		}

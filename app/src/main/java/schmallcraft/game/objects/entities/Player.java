@@ -2,8 +2,8 @@ package schmallcraft.game.objects.entities;
 
 import static schmallcraft.util.Constants.TILE_SIZE;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 import schmallcraft.game.objects.DroppedItem;
 import schmallcraft.items.Item;
@@ -12,7 +12,7 @@ import schmallcraft.util.Vector2;
 
 public class Player extends Entity {
 	private static final double MOVEMENT_SPEED = 3;
-	private Set<Item> inventory = new HashSet<>();
+	private List<Item> inventory = new ArrayList<>();
 	private boolean inWater = false;
 	private int exhaustion = 0;
 
@@ -36,7 +36,7 @@ public class Player extends Entity {
 		return getPosition().add(new Vector2(0.5, 0.9));
 	}
 
-	public Set<Item> getInventory() {
+	public List<Item> getInventory() {
 		return inventory;
 	}
 

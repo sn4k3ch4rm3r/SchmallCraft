@@ -52,18 +52,20 @@ public class Renderer {
 			}
 		}
 
-		// Render highlight
-		GameObject highlightObject = gameState.getHighLightedObject(camera);
-		if (highlightObject != null) {
-			int highlightSpriteId = (int) (highlightObject.getHighlightSpriteId()
-					* Math.signum(highlightObject.getSpriteId()));
-			drawSprite(g, highlightSpriteId, highlightObject.getPosition());
-		}
-
 		// Render entities and items
 		List<GameObject> visibleObjects = camera.getVisibleObjects(gameState.getObjects());
 		for (GameObject object : visibleObjects) {
 			drawSprite(g, object.getSpriteId(), object.getPosition());
+		}
+
+		// Render highlight
+		GameObject highlightObject = gameState.getHighLightedObject(camera);
+		if (highlightObject != null) {
+			int highlightSpriteId = highlightObject.getHighlightSpriteId();
+			if (highlightObject.getSpriteId() < 0) {
+				highlightSpriteId = -highlightSpriteId;
+			}
+			drawSprite(g, highlightSpriteId, highlightObject.getPosition());
 		}
 
 		// Render HUD

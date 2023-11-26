@@ -23,6 +23,10 @@ public abstract class Entity extends GameObject {
 		this.health = health;
 	}
 
+	public Entity(Vector2 position) {
+		this(position, 1);
+	}
+
 	public void update(double deltaTime) {
 		setPosition(getPosition().add(velocity.multiply(deltaTime * speedMultiplier)));
 	}

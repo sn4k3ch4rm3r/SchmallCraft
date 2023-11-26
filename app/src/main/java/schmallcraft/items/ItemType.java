@@ -1,10 +1,38 @@
 package schmallcraft.items;
 
 import java.util.EnumMap;
+import java.util.List;
 
-public enum ItemType {
+import schmallcraft.game.objects.GameObject;
+import schmallcraft.game.objects.entities.Player;
+import schmallcraft.game.objects.entities.blcokentity.BlockEntity;
+import schmallcraft.game.objects.entities.blcokentity.BlockEntityType;
+import schmallcraft.util.SpriteIdProvider;
+
+public enum ItemType implements SpriteIdProvider, UsableItem {
 	STICK, WOOD, STONE, IRON, IRON_ORE, RAW_PORK, COOKED_PORK, APPLE, COAL, TORCH, SWORD, AXE, PICKAXE, LANTERN, WAND,
-	CRYSTAL, WORKBENCH, FURNACE, ANVIL;
+	CRYSTAL,
+	WORKBENCH {
+		@Override
+		public List<GameObject> use(Player player, GameObject target) {
+			BlockEntity workbench = new BlockEntity(target.getPosition(), BlockEntityType.WORKBENCH);
+			return List.of(workbench);
+		}
+	},
+	FURNACE {
+		@Override
+		public List<GameObject> use(Player player, GameObject target) {
+			BlockEntity furnace = new BlockEntity(target.getPosition(), BlockEntityType.FURNACE);
+			return List.of(furnace);
+		}
+	},
+	ANVIL {
+		@Override
+		public List<GameObject> use(Player player, GameObject target) {
+			BlockEntity anvil = new BlockEntity(target.getPosition(), BlockEntityType.ANVIL);
+			return List.of(anvil);
+		}
+	};
 
 	private static EnumMap<ItemType, Integer> spriteIds = new EnumMap<>(ItemType.class);
 
@@ -30,6 +58,7 @@ public enum ItemType {
 		spriteIds.put(ANVIL, 0x325);
 	}
 
+	@Override
 	public int getSpriteId() {
 		return spriteIds.get(this);
 	}

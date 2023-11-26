@@ -4,8 +4,9 @@ import java.util.EnumMap;
 import java.util.HashMap;
 
 import schmallcraft.items.ItemType;
+import schmallcraft.util.SpriteIdProvider;
 
-public enum BlockType {
+public enum BlockType implements SpriteIdProvider {
 	GRASS, SAND, STONE, DIRT, TREE, WATER, ROCK, STAIR;
 
 	private static HashMap<Integer, BlockType> idToType = new HashMap<>();
@@ -51,7 +52,8 @@ public enum BlockType {
 		baseSpriteId.put(BlockType.DIRT, 0x07);
 	}
 
-	public int baseSpriteId() {
+	@Override
+	public int getSpriteId() {
 		if (baseSpriteId.containsKey(this)) {
 			return baseSpriteId.get(this);
 		} else {

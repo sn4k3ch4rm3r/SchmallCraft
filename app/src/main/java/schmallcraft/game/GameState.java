@@ -18,6 +18,7 @@ import schmallcraft.game.objects.entities.Pig;
 import schmallcraft.game.objects.entities.Player;
 import schmallcraft.game.rendering.Camera;
 import schmallcraft.items.Item;
+import schmallcraft.items.ItemType;
 import schmallcraft.util.Level;
 import schmallcraft.util.Vector2;
 import schmallcraft.util.WFCPatterns;
@@ -28,7 +29,6 @@ public class GameState implements Serializable {
 	private WorldData underworld;
 	private Level level;
 	private transient Vector2 cursorPosition;
-	private List<Item> inventory = new ArrayList<>();
 	private int inventorySelected = 0;
 	private Player player;
 
@@ -82,7 +82,12 @@ public class GameState implements Serializable {
 		this.player = new Player();
 		this.player.setPosition(new Vector2(WORLD_SIZE / 2.0, WORLD_SIZE / 2.0));
 		addEntity(player);
+
+		// TODO: This is for testing purposes remove before flight
 		addEntity(new Pig(player.getPosition().add(new Vector2(3, 4))));
+		getInventory().add(new Item(ItemType.WORKBENCH, 1));
+		getInventory().add(new Item(ItemType.ANVIL, 1));
+		getInventory().add(new Item(ItemType.FURNACE, 1));
 	}
 
 	private Block[][] wfcMapToBlocks(int[][] wfcMap) {
@@ -121,11 +126,18 @@ public class GameState implements Serializable {
 	}
 
 	public List<Item> getInventory() {
-		return inventory;
+		return player.getInventory();
 	}
 
 	public int getInventorySelected() {
 		return inventorySelected;
+	}
+
+	public Item getSelectedItem() {
+		if (inventorySelected < getInventory().size()) {
+			return getInventory().get(inventorySelected);
+		}
+		return null;
 	}
 
 	public Player getPlayer() {
@@ -133,11 +145,11 @@ public class GameState implements Serializable {
 	}
 
 	public void addToInventory(Item item) {
-		Item inInventory = inventory.stream().filter(x -> x.getType() == item.getType()).findFirst().orElse(null);
+		Item inInventory = getInventory().stream().filter(x -> x.getType() == item.getType()).findFirst().orElse(null);
 		if (inInventory != null) {
 			inInventory.setAmount(inInventory.getAmount() + item.getAmount());
-		} else if (inventory.size() < INVENTORY_SIZE) {
-			inventory.add(item);
+		} else if (getInventory().size() < INVENTORY_SIZE) {
+			getInventory().add(item);
 		}
 	}
 
@@ -204,7 +216,7 @@ public class GameState implements Serializable {
 		}
 
 		Block selectedBlock = getMap()[(int) worldPos.y][(int) worldPos.x];
-		if (selectedBlock.getProperties().isBreakable() && player.getDistance(selectedBlock) < PLAYER_REACH) {
+		if (player.getDistance(selectedBlock) < PLAYER_REACH) {
 			return selectedBlock;
 		}
 		return null;
