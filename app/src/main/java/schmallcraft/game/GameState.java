@@ -19,6 +19,7 @@ import schmallcraft.game.objects.entities.Player;
 import schmallcraft.game.rendering.Camera;
 import schmallcraft.items.Item;
 import schmallcraft.items.ItemType;
+import schmallcraft.util.InventoryState;
 import schmallcraft.util.Level;
 import schmallcraft.util.Vector2;
 import schmallcraft.util.WFCPatterns;
@@ -31,6 +32,7 @@ public class GameState implements Serializable {
 	private transient Vector2 cursorPosition;
 	private int inventorySelected = 0;
 	private Player player;
+	transient InventoryState inventoryState = InventoryState.CLOSED;
 
 	public GameState() {
 		Random random = new Random();
@@ -131,6 +133,14 @@ public class GameState implements Serializable {
 
 	public int getInventorySelected() {
 		return inventorySelected;
+	}
+
+	public InventoryState getInventoryState() {
+		return inventoryState;
+	}
+
+	public void setInventoryState(InventoryState inventoryState) {
+		this.inventoryState = inventoryState;
 	}
 
 	public Item getSelectedItem() {

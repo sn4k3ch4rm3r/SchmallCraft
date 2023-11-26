@@ -11,6 +11,7 @@ import javax.imageio.ImageIO;
 import schmallcraft.game.GameState;
 import schmallcraft.game.objects.GameObject;
 import schmallcraft.items.Item;
+import schmallcraft.util.InventoryState;
 import schmallcraft.util.Vector2;
 import static schmallcraft.util.Constants.*;
 
@@ -94,6 +95,36 @@ public class Renderer {
 			}
 		}
 
+		// Render inventory, if open
+		if (gameState.getInventoryState() != InventoryState.CLOSED) {
+			// Background
+			int inventorySize = 5 * TILE_SIZE;
+			int inventoryX = (RENDER_WIDTH / 2) - (inventorySize / 2);
+			int inventoryY = (RENDER_HEIGHT / 2) - (inventorySize / 2);
+			g.drawImage(getSprite(0x80, inventorySize, inventorySize), inventoryX, inventoryY, null);
+			// Title
+			int textX = inventoryX + TILE_SIZE / 2;
+			int textY = inventoryY + TILE_SIZE / 2;
+			g.drawImage(getSprite(gameState.getInventoryState().getTextSpriteId(), TILE_SIZE * 4, TILE_SIZE / 2),
+					textX, textY, null);
+
+			// Grid
+			for (int x = 0; x < 4; x++) {
+				if (x != 2) {
+					for (int y = 0; y < 3; y++) {
+						g.drawImage(getSprite(0x30, TILE_SIZE, TILE_SIZE),
+								inventoryX + TILE_SIZE / 2 + TILE_SIZE * x,
+								inventoryY + (int) (TILE_SIZE * 1.5) + TILE_SIZE * y, null);
+					}
+				}
+			}
+
+			// Arrow
+			int arrowX = inventoryX + inventorySize / 2;
+			int arrowY = inventoryY + inventorySize / 2;
+			g.drawImage(getSprite(0x64), arrowX, arrowY, null);
+		}
+
 		g.dispose();
 		if (renderCallback != null) {
 			renderCallback.onRender();
@@ -108,9 +139,13 @@ public class Renderer {
 	 * @return A kért sprite
 	 */
 	private BufferedImage getSprite(int spriteId) {
+		int spriteSize = Math.abs(spriteId) > 0xFF ? TILE_SIZE / 2 : TILE_SIZE;
+		return getSprite(spriteId, spriteSize, spriteSize);
+	}
+
+	private BufferedImage getSprite(int spriteId, int width, int height) {
 		spriteId = Math.abs(spriteId);
 		int subId = (spriteId & 0xF00) >> 8;
-		int spriteSize = subId > 0 ? TILE_SIZE / 2 : TILE_SIZE;
 		int spriteX = (spriteId & 0x0F) << 4;
 		int spriteY = spriteId & 0xF0;
 
@@ -118,7 +153,8 @@ public class Renderer {
 			spriteX += (TILE_SIZE / 2) * ((subId - 1) % 2);
 			spriteY += (TILE_SIZE / 2) * ((subId - 1) / 2);
 		}
-		return spriteSheet.getSubimage(spriteX, spriteY, spriteSize, spriteSize);
+
+		return spriteSheet.getSubimage(spriteX, spriteY, width, height);
 	}
 
 	private void drawSprite(Graphics2D g, int spriteId, Vector2 position) {

@@ -37,6 +37,12 @@ public class KeyboardEventListener implements KeyListener {
 			case KeyEvent.VK_D:
 				activeDirections.put(Direction.RIGHT, true);
 				break;
+			case KeyEvent.VK_ESCAPE:
+				game.escPressed();
+				break;
+			case KeyEvent.VK_C:
+				game.actionCraft();
+				break;
 			default:
 				break;
 		}

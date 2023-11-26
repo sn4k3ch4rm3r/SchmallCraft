@@ -17,9 +17,11 @@ import schmallcraft.game.objects.GameObject;
 import schmallcraft.game.objects.blocks.BlockType;
 import schmallcraft.game.objects.entities.Entity;
 import schmallcraft.game.objects.entities.Player;
+import schmallcraft.game.objects.entities.blcokentity.BlockEntity;
 import schmallcraft.game.rendering.Renderer;
 import schmallcraft.items.Item;
 import schmallcraft.util.Direction;
+import schmallcraft.util.InventoryState;
 import schmallcraft.util.Vector2;
 
 public class Game implements Runnable {
@@ -237,10 +239,21 @@ public class Game implements Runnable {
 		}
 	}
 
+	public void escPressed() {
+		state.setInventoryState(InventoryState.CLOSED);
+	}
+
+	public void actionCraft() {
+		state.setInventoryState(InventoryState.CRAFTING);
+	}
+
 	public void actionUse() {
 		Item item = state.getSelectedItem();
 		GameObject target = state.getHighLightedObject(renderer.getCamera());
-		if (item != null && target != null) {
+		if (target instanceof BlockEntity) {
+			BlockEntity blockEntity = (BlockEntity) target;
+			state.setInventoryState(blockEntity.getType().getInventoryState());
+		} else if (item != null && target != null) {
 			List<GameObject> result = item.getType().use(player, target);
 			if (result != null) {
 				for (GameObject object : result) {

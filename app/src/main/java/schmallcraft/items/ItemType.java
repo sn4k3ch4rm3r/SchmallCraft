@@ -3,6 +3,7 @@ package schmallcraft.items;
 import java.util.EnumMap;
 import java.util.List;
 
+import schmallcraft.game.objects.DroppedItem;
 import schmallcraft.game.objects.GameObject;
 import schmallcraft.game.objects.entities.Player;
 import schmallcraft.game.objects.entities.blcokentity.BlockEntity;
@@ -56,6 +57,11 @@ public enum ItemType implements SpriteIdProvider, UsableItem {
 		spriteIds.put(WORKBENCH, 0x125);
 		spriteIds.put(FURNACE, 0x225);
 		spriteIds.put(ANVIL, 0x325);
+	}
+
+	@Override
+	public List<GameObject> use(Player player, GameObject target) {
+		return List.of(new DroppedItem(new Item(this, 1), target.getPosition()));
 	}
 
 	@Override
