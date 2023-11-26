@@ -1,6 +1,7 @@
 package schmallcraft.game;
 
 import static schmallcraft.util.Constants.INVENTORY_SIZE;
+import static schmallcraft.util.Constants.PLAYER_REACH;
 import static schmallcraft.util.Constants.WORLD_SIZE;
 
 import java.io.Serializable;
@@ -197,11 +198,15 @@ public class GameState implements Serializable {
 			if (entity instanceof Player) {
 				continue;
 			}
-			if (entity.getBoundingBox().contains(worldPos)) {
+			if (entity.getBoundingBox().contains(worldPos) && player.getDistance(entity) < PLAYER_REACH) {
 				return entity;
 			}
 		}
 
-		return getMap()[(int) worldPos.y][(int) worldPos.x];
+		Block selectedBlock = getMap()[(int) worldPos.y][(int) worldPos.x];
+		if (selectedBlock.getProperties().isBreakable() && player.getDistance(selectedBlock) < PLAYER_REACH) {
+			return selectedBlock;
+		}
+		return null;
 	}
 }

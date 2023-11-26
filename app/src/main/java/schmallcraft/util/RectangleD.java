@@ -44,6 +44,10 @@ public class RectangleD {
 				|| y + height < other.y);
 	}
 
+	public Vector2 getCenter() {
+		return new Vector2(x + width / 2, y + height / 2);
+	}
+
 	public boolean contains(Vector2 point) {
 		return point.x >= x && point.x <= x + width && point.y >= y && point.y <= y + height;
 	}

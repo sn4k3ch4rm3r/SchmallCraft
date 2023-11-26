@@ -53,8 +53,8 @@ public class Renderer {
 		}
 
 		// Render highlight
-		if (gameState.getCursorPosition() != null) {
-			GameObject highlightObject = gameState.getHighLightedObject(camera);
+		GameObject highlightObject = gameState.getHighLightedObject(camera);
+		if (highlightObject != null) {
 			int highlightSpriteId = (int) (highlightObject.getHighlightSpriteId()
 					* Math.signum(highlightObject.getSpriteId()));
 			drawSprite(g, highlightSpriteId, highlightObject.getPosition());

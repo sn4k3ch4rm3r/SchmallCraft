@@ -2,8 +2,12 @@ package schmallcraft.game.objects.entities;
 
 import static schmallcraft.util.Constants.WORLD_SIZE;
 
+import java.util.List;
+
+import schmallcraft.game.objects.DropTable;
 import schmallcraft.game.objects.GameObject;
 import schmallcraft.game.objects.blocks.Block;
+import schmallcraft.items.Item;
 import schmallcraft.util.Direction;
 import schmallcraft.util.Vector2;
 
@@ -12,6 +16,7 @@ public abstract class Entity extends GameObject {
 	private Vector2 velocity = new Vector2();
 	private int health;
 	private double speedMultiplier = 1.0;
+	private DropTable dropTable = new DropTable();
 
 	public Entity(Vector2 position, int health) {
 		super(position);
@@ -20,6 +25,10 @@ public abstract class Entity extends GameObject {
 
 	public void update(double deltaTime) {
 		setPosition(getPosition().add(velocity.multiply(deltaTime * speedMultiplier)));
+	}
+
+	protected DropTable getDropTable() {
+		return dropTable;
 	}
 
 	public int getHealth() {
@@ -90,6 +99,19 @@ public abstract class Entity extends GameObject {
 				getPosition().y = WORLD_SIZE - 1;
 				break;
 		}
+	}
+
+	public boolean isDead() {
+		return getHealth() <= 0;
+	}
+
+	@Override
+	public List<Item> damage(int damage) {
+		super.damage(damage);
+		if (!isDead()) {
+			return null;
+		}
+		return dropTable.getDrops();
 	}
 
 	@Override

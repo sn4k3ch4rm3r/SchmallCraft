@@ -115,6 +115,15 @@ public class Game implements Runnable {
 			gameObjectCreated.removeAll(state.getObjects());
 		}
 
+		// Remove dead entities
+		Iterator<Entity> entityIterator = state.getEntities().iterator();
+		while (entityIterator.hasNext()) {
+			Entity entity = entityIterator.next();
+			if (entity.isDead()) {
+				entityIterator.remove();
+			}
+		}
+
 		List<Entity> visibleEntities = renderer.getCamera().getVisibleObjects(state.getEntities());
 
 		// Update every entity
@@ -206,12 +215,14 @@ public class Game implements Runnable {
 
 	public void actionAttack() {
 		GameObject target = state.getHighLightedObject(renderer.getCamera());
-		List<Item> resultingItems = target.damage(1);
-		if (resultingItems != null) {
-			Vector2 tileCenter = target.getPosition().add(new Vector2(0.25, 0.25));
-			for (Item item : resultingItems) {
-				gameObjectCreated.add(new DroppedItem(item, tileCenter.add(new Vector2(random.nextDouble() * 0.25,
-						random.nextDouble() * 0.25))));
+		if (target != null) {
+			List<Item> resultingItems = target.damage(1);
+			if (resultingItems != null) {
+				Vector2 tileCenter = target.getPosition().add(new Vector2(0.25, 0.25));
+				for (Item item : resultingItems) {
+					gameObjectCreated.add(new DroppedItem(item, tileCenter.add(new Vector2(random.nextDouble() * 0.25,
+							random.nextDouble() * 0.25))));
+				}
 			}
 		}
 	}

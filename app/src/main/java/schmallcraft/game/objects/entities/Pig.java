@@ -4,15 +4,13 @@ import schmallcraft.util.RectangleD;
 import schmallcraft.util.Vector2;
 import static schmallcraft.util.Constants.TILE_SIZE;
 
-import schmallcraft.game.objects.DropTable;
 import schmallcraft.items.ItemType;
 
 public class Pig extends Entity {
-	private DropTable dropTable = new DropTable();
 
 	public Pig(Vector2 position) {
 		super(position, 5);
-		dropTable.setDropRate(ItemType.RAW_PORK, 1.5);
+		getDropTable().setDropRate(ItemType.RAW_PORK, 1.5);
 	}
 
 	@Override

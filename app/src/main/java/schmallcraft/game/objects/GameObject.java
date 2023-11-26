@@ -42,6 +42,10 @@ public abstract class GameObject implements Serializable {
 		return 0x20;
 	}
 
+	public double getDistance(GameObject other) {
+		return getBoundingBox().getCenter().subtract(other.getBoundingBox().getCenter()).magnitude();
+	}
+
 	/**
 	 * Sebzi az objektumot.
 	 * 
