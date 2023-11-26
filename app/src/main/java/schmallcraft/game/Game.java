@@ -132,7 +132,13 @@ public class Game implements Runnable {
 			} else if (entity.getPosition().y >= WORLD_SIZE - 1) {
 				entity.collide(Direction.DOWN);
 			}
-
+			// Check for entity collision
+			for (Entity other : visibleEntities) {
+				if (other == entity) {
+					continue;
+				}
+				entity.collide(other);
+			}
 			// Check for block collision
 			for (int y = (int) entity.getPosition().y - 1; y <= (int) entity.getPosition().y + 1; y++) {
 				for (int x = (int) entity.getPosition().x - 1; x <= (int) entity.getPosition().x + 1; x++) {
@@ -144,14 +150,6 @@ public class Game implements Runnable {
 						entity.collide(state.getMap()[y][x]);
 					}
 				}
-			}
-
-			// Check for entity collision
-			for (Entity other : visibleEntities) {
-				if (other == entity) {
-					continue;
-				}
-				entity.collide(other);
 			}
 		}
 

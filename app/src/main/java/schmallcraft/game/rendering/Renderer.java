@@ -54,9 +54,10 @@ public class Renderer {
 
 		// Render highlight
 		if (gameState.getCursorPosition() != null) {
-			Vector2 highlightPos = camera.screenToWorldCoords(gameState.getCursorPosition()).floor();
-			int highlight = 0x20;
-			drawSprite(g, highlight, highlightPos);
+			GameObject highlightObject = gameState.getHighLightedObject(camera);
+			int highlightSpriteId = (int) (highlightObject.getHighlightSpriteId()
+					* Math.signum(highlightObject.getSpriteId()));
+			drawSprite(g, highlightSpriteId, highlightObject.getPosition());
 		}
 
 		// Render entities and items

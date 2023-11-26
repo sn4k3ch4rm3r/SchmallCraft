@@ -13,6 +13,7 @@ import schmallcraft.game.objects.GameObject;
 import schmallcraft.game.objects.blocks.Block;
 import schmallcraft.game.objects.blocks.BlockType;
 import schmallcraft.game.objects.entities.Entity;
+import schmallcraft.game.objects.entities.Pig;
 import schmallcraft.game.objects.entities.Player;
 import schmallcraft.game.rendering.Camera;
 import schmallcraft.items.Item;
@@ -80,6 +81,7 @@ public class GameState implements Serializable {
 		this.player = new Player();
 		this.player.setPosition(new Vector2(WORLD_SIZE / 2.0, WORLD_SIZE / 2.0));
 		addEntity(player);
+		addEntity(new Pig(player.getPosition().add(new Vector2(3, 4))));
 	}
 
 	private Block[][] wfcMapToBlocks(int[][] wfcMap) {
@@ -185,12 +187,21 @@ public class GameState implements Serializable {
 		return null;
 	}
 
-	// TODO: Return entity if the cursor is on one
 	public GameObject getHighLightedObject(Camera camera) {
 		if (cursorPosition == null) {
 			return null;
 		}
+
 		Vector2 worldPos = camera.screenToWorldCoords(cursorPosition);
+		for (Entity entity : camera.getVisibleObjects(getEntities())) {
+			if (entity instanceof Player) {
+				continue;
+			}
+			if (entity.getBoundingBox().contains(worldPos)) {
+				return entity;
+			}
+		}
+
 		return getMap()[(int) worldPos.y][(int) worldPos.x];
 	}
 }

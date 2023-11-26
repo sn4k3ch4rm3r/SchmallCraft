@@ -1,34 +1,27 @@
 package schmallcraft.game.objects.entities;
 
+import static schmallcraft.util.Constants.TILE_SIZE;
+
 import java.util.HashSet;
 import java.util.Set;
 
 import schmallcraft.game.objects.DroppedItem;
 import schmallcraft.items.Item;
+import schmallcraft.util.RectangleD;
 import schmallcraft.util.Vector2;
 
 public class Player extends Entity {
-	private Vector2 direction = new Vector2(0, 0);
 	private static final double MOVEMENT_SPEED = 3;
-	private double speedMultiplier = 1;
 	private Set<Item> inventory = new HashSet<>();
-	private boolean flip = false;
 	private boolean inWater = false;
 	private int exhaustion = 0;
 
 	public Player() {
-		position = new Vector2(1, 1);
-		health = 10;
+		super(new Vector2(), 10);
 	}
 
 	public int getStamina() {
-		return (int) Math.max(0, health - exhaustion);
-	}
-
-	@Override
-	public void update(double deltaTime) {
-		velocity = direction.normalize().multiply(MOVEMENT_SPEED * speedMultiplier);
-		position = position.add(velocity.multiply(deltaTime));
+		return (int) Math.max(0, getMaxHealth() - exhaustion);
 	}
 
 	public void setInWater(boolean inWater) {
@@ -36,20 +29,11 @@ public class Player extends Entity {
 	}
 
 	public void setDirection(Vector2 direction) {
-		this.direction = direction;
-		if (direction.x < 0) {
-			flip = false;
-		} else if (direction.x > 0) {
-			flip = true;
-		}
-	}
-
-	public void setSpeedMultiplier(double speedMultiplier) {
-		this.speedMultiplier = speedMultiplier;
+		setVelocity(direction.normalize().multiply(MOVEMENT_SPEED));
 	}
 
 	public Vector2 getFeetPosition() {
-		return position.add(new Vector2(0.5, 0.9));
+		return getPosition().add(new Vector2(0.5, 0.9));
 	}
 
 	public Set<Item> getInventory() {
@@ -61,11 +45,21 @@ public class Player extends Entity {
 	}
 
 	@Override
+	public RectangleD getBoundingBox() {
+		RectangleD bbox = super.getBoundingBox();
+		bbox.y += 1.0 / TILE_SIZE;
+		bbox.height -= 1.0 / TILE_SIZE;
+		bbox.x += 2.0 / TILE_SIZE;
+		bbox.width -= 4.0 / TILE_SIZE;
+		return bbox;
+	}
+
+	@Override
 	public int getSpriteId() {
 		int id = 0x10;
 		if (inWater) {
 			id = 0x11;
 		}
-		return id * (flip ? -1 : 1);
+		return id * (isFlipped() ? -1 : 1);
 	}
 }

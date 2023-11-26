@@ -10,8 +10,8 @@ public class Block extends GameObject {
 	private BlockType type;
 
 	public Block(BlockType type, Vector2 position) {
+		super(position);
 		this.type = type;
-		this.position = position;
 	}
 
 	@Override
@@ -31,7 +31,7 @@ public class Block extends GameObject {
 	public List<Item> damage(int damage) {
 		if (getProperties().isBreakable()) {
 			super.damage(damage);
-			if (this.damage >= getProperties().getHardness()) {
+			if (this.getDamage() >= getProperties().getHardness()) {
 				List<Item> drops = getProperties().getDropTable().getDrops();
 				type = getProperties().getWhenBroken();
 				return drops;

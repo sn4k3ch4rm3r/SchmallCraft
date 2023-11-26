@@ -8,8 +8,16 @@ import schmallcraft.util.RectangleD;
 import schmallcraft.util.Vector2;
 
 public abstract class GameObject implements Serializable {
-	protected Vector2 position;
-	protected int damage;
+	private Vector2 position;
+	private int damage = 0;
+
+	public GameObject(Vector2 position) {
+		this.position = position;
+	}
+
+	public GameObject() {
+		this(new Vector2());
+	}
 
 	abstract public int getSpriteId();
 
@@ -24,6 +32,14 @@ public abstract class GameObject implements Serializable {
 	public RectangleD getBoundingBox() {
 		double size = getSpriteId() > 0xFF ? 0.5 : 1.0;
 		return new RectangleD(position, size, size);
+	}
+
+	public int getDamage() {
+		return damage;
+	}
+
+	public int getHighlightSpriteId() {
+		return 0x20;
 	}
 
 	/**

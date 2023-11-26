@@ -7,8 +7,8 @@ public class DroppedItem extends GameObject {
 	private Item item;
 
 	public DroppedItem(Item item, Vector2 position) {
+		super(position);
 		this.item = item;
-		this.position = position;
 	}
 
 	@Override

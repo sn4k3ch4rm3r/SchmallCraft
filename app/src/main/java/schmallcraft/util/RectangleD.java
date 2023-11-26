@@ -43,4 +43,8 @@ public class RectangleD {
 		return !(x > other.x + other.width || x + width < other.x || y > other.y + other.height
 				|| y + height < other.y);
 	}
+
+	public boolean contains(Vector2 point) {
+		return point.x >= x && point.x <= x + width && point.y >= y && point.y <= y + height;
+	}
 }
