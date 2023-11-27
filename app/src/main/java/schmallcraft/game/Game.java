@@ -20,6 +20,7 @@ import schmallcraft.game.objects.entities.Player;
 import schmallcraft.game.objects.entities.workstation.Workstation;
 import schmallcraft.game.rendering.Renderer;
 import schmallcraft.items.Item;
+import schmallcraft.items.ItemType;
 import schmallcraft.util.Direction;
 import schmallcraft.util.InventoryState;
 import schmallcraft.util.Vector2;
@@ -236,14 +237,26 @@ public class Game implements Runnable {
 	}
 
 	public void actionAttack() {
-		GameObject target = state.getHighLightedObject(renderer.getCamera());
-		if (target != null) {
-			List<Item> resultingItems = target.damage(1);
-			if (resultingItems != null) {
-				Vector2 tileCenter = target.getPosition().add(new Vector2(0.25, 0.25));
-				for (Item item : resultingItems) {
-					gameObjectCreated.add(new DroppedItem(item, tileCenter.add(new Vector2(random.nextDouble() * 0.25,
-							random.nextDouble() * 0.25))));
+		if (state.getInventoryState() == InventoryState.CLOSED) {
+			GameObject target = state.getHighLightedObject(renderer.getCamera());
+			if (target != null) {
+				List<Item> resultingItems = target.damage(1);
+				if (resultingItems != null) {
+					Vector2 tileCenter = target.getPosition().add(new Vector2(0.25, 0.25));
+					for (Item item : resultingItems) {
+						gameObjectCreated
+								.add(new DroppedItem(item, tileCenter.add(new Vector2(random.nextDouble() * 0.25,
+										random.nextDouble() * 0.25))));
+					}
+				}
+			}
+		} else {
+			int craftinSelectionId = state.getCraftingSelection();
+			List<ItemType> craftableItems = state.getCraftableItems();
+			if (craftinSelectionId < craftableItems.size()) {
+				ItemType item = craftableItems.get(craftinSelectionId);
+				if (state.canCraft(item)) {
+					state.craft(item);
 				}
 			}
 		}

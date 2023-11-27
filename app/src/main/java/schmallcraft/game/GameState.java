@@ -155,6 +155,31 @@ public class GameState implements Serializable {
 		return player;
 	}
 
+	public boolean canCraft(ItemType item) {
+		for (Item ingredient : item.getRecipe()) {
+			Item inInventory = getInventory().stream().filter(x -> x.getType() == ingredient.getType()).findFirst()
+					.orElse(null);
+			if (inInventory == null || inInventory.getAmount() < ingredient.getAmount()) {
+				return false;
+			}
+		}
+		return true;
+	}
+
+	public void craft(ItemType item) {
+		for (Item ingredient : item.getRecipe()) {
+			Item inInventory = getInventory().stream().filter(x -> x.getType() == ingredient.getType()).findFirst()
+					.orElse(null);
+			if (inInventory != null) {
+				inInventory.setAmount(inInventory.getAmount() - ingredient.getAmount());
+				if (inInventory.getAmount() <= 0) {
+					getInventory().remove(inInventory);
+				}
+			}
+		}
+		addToInventory(new Item(item, 1));
+	}
+
 	public void addToInventory(Item item) {
 		Item inInventory = getInventory().stream().filter(x -> x.getType() == item.getType()).findFirst().orElse(null);
 		if (inInventory != null) {
