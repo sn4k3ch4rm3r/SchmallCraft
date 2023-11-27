@@ -16,6 +16,7 @@ import schmallcraft.game.objects.blocks.BlockType;
 import schmallcraft.game.objects.entities.Entity;
 import schmallcraft.game.objects.entities.Pig;
 import schmallcraft.game.objects.entities.Player;
+import schmallcraft.game.objects.entities.Zombie;
 import schmallcraft.game.rendering.Camera;
 import schmallcraft.items.Item;
 import schmallcraft.items.ItemType;
@@ -88,6 +89,7 @@ public class GameState implements Serializable {
 
 		// TODO: This is for testing purposes remove before flight
 		addEntity(new Pig(player.getPosition().add(new Vector2(3, 4))));
+		addEntity(new Zombie(player.getPosition().add(new Vector2(4, 2)), player));
 		getInventory().add(new Item(ItemType.WORKBENCH, 1));
 		getInventory().add(new Item(ItemType.ANVIL, 1));
 		getInventory().add(new Item(ItemType.FURNACE, 1));

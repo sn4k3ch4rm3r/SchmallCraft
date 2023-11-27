@@ -188,7 +188,9 @@ public class Game implements Runnable {
 						continue;
 					}
 					BlockType blockType = state.getMap()[y][x].getType();
-					if (blockType.getProperties().isSolid()) {
+					// Only the player is allowed to go in water
+					if (blockType.getProperties().isSolid()
+							|| (blockType == BlockType.WATER && !(entity instanceof Player))) {
 						entity.collide(state.getMap()[y][x]);
 					}
 				}
