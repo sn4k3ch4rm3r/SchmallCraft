@@ -14,7 +14,10 @@ import schmallcraft.game.objects.GameObject;
 import schmallcraft.game.objects.blocks.Block;
 import schmallcraft.game.objects.blocks.BlockType;
 import schmallcraft.game.objects.entities.Entity;
+import schmallcraft.game.objects.entities.FireWizard;
+import schmallcraft.game.objects.entities.Pig;
 import schmallcraft.game.objects.entities.Player;
+import schmallcraft.game.objects.entities.Zombie;
 import schmallcraft.game.rendering.Camera;
 import schmallcraft.items.ItemType;
 import schmallcraft.util.Inventory;
@@ -83,6 +86,10 @@ public class GameState implements Serializable {
 		this.player = new Player();
 		this.player.setPosition(new Vector2(WORLD_SIZE / 2.0, WORLD_SIZE / 2.0));
 		addEntity(player);
+
+		addEntity(new Pig(player.getPosition()));
+		addEntity(new Zombie(player.getPosition(), player));
+		addEntity(new FireWizard(player.getPosition(), player));
 	}
 
 	private Block[][] wfcMapToBlocks(int[][] wfcMap) {

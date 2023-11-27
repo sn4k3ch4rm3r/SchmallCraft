@@ -3,22 +3,21 @@ package schmallcraft.game.objects.entities;
 import static schmallcraft.util.Constants.FIXED_UPDATES;
 import static schmallcraft.util.Constants.TILE_SIZE;
 
-import schmallcraft.game.objects.GameObject;
 import schmallcraft.util.RectangleD;
 import schmallcraft.util.Vector2;
 
 public class Zombie extends Entity {
 	private static final double MOVEMENT_SPEED = 2;
-	private GameObject target;
+	private Entity target;
 	private Vector2 targetPosition;
 	private double attackCooldown = 0;
 
-	public Zombie(Vector2 positin, GameObject target) {
+	public Zombie(Vector2 positin, Entity target) {
 		super(positin, 8);
 		this.target = target;
 	}
 
-	public void setTarget(GameObject target) {
+	public void setTarget(Entity target) {
 		this.target = target;
 	}
 
@@ -31,10 +30,10 @@ public class Zombie extends Entity {
 			targetPosition = null;
 		}
 		if (attackCooldown > 0) {
-			attackCooldown -= 1.0 / (1.5 * FIXED_UPDATES);
+			attackCooldown -= 1.0 / (2.5 * FIXED_UPDATES);
 		}
 		if (target != null && target.getDistance(this) < 1.5 && attackCooldown <= 0) {
-			target.damage(1);
+			target.damage(1, this);
 			attackCooldown = 1;
 		}
 	}

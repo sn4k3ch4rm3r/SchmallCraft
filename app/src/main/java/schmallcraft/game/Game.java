@@ -254,7 +254,12 @@ public class Game implements Runnable {
 				if (target != null) {
 					Item tool = player.getInventory().getSelectedItem();
 					int damage = tool != null ? target.getDamageByItem(tool.getType()) : 1;
-					List<Item> resultingItems = target.damage(damage);
+					List<Item> resultingItems;
+					if (target instanceof Entity) {
+						resultingItems = ((Entity) target).damage(damage, player);
+					} else {
+						resultingItems = target.damage(damage);
+					}
 					player.exhaust();
 					if (resultingItems != null) {
 						Vector2 tileCenter = target.getPosition().add(new Vector2(0.25, 0.25));

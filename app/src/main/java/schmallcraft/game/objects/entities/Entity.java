@@ -18,6 +18,7 @@ public abstract class Entity extends GameObject {
 	private int health;
 	private double speedMultiplier = 1.0;
 	private DropTable dropTable = new DropTable();
+	private Vector2 knockback = new Vector2();
 
 	public Entity(Vector2 position, int health) {
 		super(position);
@@ -29,7 +30,8 @@ public abstract class Entity extends GameObject {
 	}
 
 	public void update(double deltaTime) {
-		setPosition(getPosition().add(velocity.multiply(deltaTime * speedMultiplier)));
+		setPosition(getPosition().add(velocity.add(knockback).multiply(deltaTime * speedMultiplier)));
+		knockback = knockback.multiply(Math.pow(0.05, deltaTime));
 	}
 
 	protected DropTable getDropTable() {
@@ -136,6 +138,11 @@ public abstract class Entity extends GameObject {
 			return null;
 		}
 		return dropTable.getDrops();
+	}
+
+	public List<Item> damage(int damage, GameObject source) {
+		knockback = getBoundingBox().getCenter().subtract(source.getBoundingBox().getCenter()).normalize().multiply(6);
+		return damage(damage);
 	}
 
 	@Override
