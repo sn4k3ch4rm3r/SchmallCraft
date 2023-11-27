@@ -240,15 +240,18 @@ public class Game implements Runnable {
 
 	public void actionAttack() {
 		if (state.getInventoryState() == InventoryState.CLOSED) {
-			GameObject target = state.getHighLightedObject(renderer.getCamera());
-			if (target != null) {
-				List<Item> resultingItems = target.damage(1);
-				if (resultingItems != null) {
-					Vector2 tileCenter = target.getPosition().add(new Vector2(0.25, 0.25));
-					for (Item item : resultingItems) {
-						gameObjectCreated
-								.add(new DroppedItem(item, tileCenter.add(new Vector2(random.nextDouble() * 0.25,
-										random.nextDouble() * 0.25))));
+			if (player.getStamina() > 0) {
+				GameObject target = state.getHighLightedObject(renderer.getCamera());
+				if (target != null) {
+					List<Item> resultingItems = target.damage(1);
+					player.exhaust();
+					if (resultingItems != null) {
+						Vector2 tileCenter = target.getPosition().add(new Vector2(0.25, 0.25));
+						for (Item item : resultingItems) {
+							gameObjectCreated
+									.add(new DroppedItem(item, tileCenter.add(new Vector2(random.nextDouble() * 0.25,
+											random.nextDouble() * 0.25))));
+						}
 					}
 				}
 			}

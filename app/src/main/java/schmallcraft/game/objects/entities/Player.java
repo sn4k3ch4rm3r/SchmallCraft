@@ -1,5 +1,6 @@
 package schmallcraft.game.objects.entities;
 
+import static schmallcraft.util.Constants.FIXED_UPDATES;
 import static schmallcraft.util.Constants.TILE_SIZE;
 
 import schmallcraft.game.objects.DroppedItem;
@@ -12,6 +13,7 @@ public class Player extends Entity {
 	private Inventory inventory = new Inventory();
 	private boolean inWater = false;
 	private int exhaustion = 0;
+	private double resting = 0;
 
 	public Player() {
 		super(new Vector2(), 10);
@@ -43,6 +45,22 @@ public class Player extends Entity {
 
 	public void heal(int amount) {
 		setHealth(getHealth() + amount);
+	}
+
+	public void exhaust() {
+		exhaustion++;
+		resting = 0;
+	}
+
+	@Override
+	public void fixedUpdate() {
+		resting += 2.0 / FIXED_UPDATES;
+		if (resting >= 1 && exhaustion > 0) {
+			exhaustion--;
+			resting = 0;
+		}
+
+		super.fixedUpdate();
 	}
 
 	@Override

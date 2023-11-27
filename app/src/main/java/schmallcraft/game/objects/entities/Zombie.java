@@ -35,7 +35,7 @@ public class Zombie extends Entity {
 			targetPosition = null;
 		}
 		if (attackCooldown > 0) {
-			attackCooldown -= 1 / (1.5 * FIXED_UPDATES);
+			attackCooldown -= 1.0 / (1.5 * FIXED_UPDATES);
 		}
 		if (target != null && target.getDistance(this) < 1.5 && attackCooldown <= 0) {
 			target.damage(1);
