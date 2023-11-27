@@ -29,10 +29,10 @@ public class Zombie extends Entity {
 		} else {
 			targetPosition = null;
 		}
-		if (attackCooldown > 0) {
+		if (attackCooldown > 0 && target != null && target.getDistance(this) < 2) {
 			attackCooldown -= 1.0 / (2.5 * FIXED_UPDATES);
 		}
-		if (target != null && target.getDistance(this) < 1.5 && attackCooldown <= 0) {
+		if (target != null && target.getDistance(this) < 1 && attackCooldown <= 0) {
 			target.damage(1, this);
 			attackCooldown = 1;
 		}

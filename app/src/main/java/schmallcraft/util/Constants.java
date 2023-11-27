@@ -10,4 +10,5 @@ public class Constants {
 	public static final double PLAYER_REACH = 1.9;
 	public static final int TARGET_FPS = 120;
 	public static final int FIXED_UPDATES = 20;
+	public static final double MOB_DENISTY = 0.03;
 }

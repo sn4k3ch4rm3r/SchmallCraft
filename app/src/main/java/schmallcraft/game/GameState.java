@@ -1,5 +1,6 @@
 package schmallcraft.game;
 
+import static schmallcraft.util.Constants.MOB_DENISTY;
 import static schmallcraft.util.Constants.PLAYER_REACH;
 import static schmallcraft.util.Constants.WORLD_SIZE;
 
@@ -23,7 +24,6 @@ import schmallcraft.game.objects.entities.Pig;
 import schmallcraft.game.objects.entities.Player;
 import schmallcraft.game.objects.entities.Zombie;
 import schmallcraft.game.rendering.Camera;
-import schmallcraft.items.Item;
 import schmallcraft.items.ItemType;
 import schmallcraft.util.Inventory;
 import schmallcraft.util.InventoryState;
@@ -94,10 +94,25 @@ public class GameState implements Serializable {
 		this.player.setPosition(new Vector2(WORLD_SIZE / 2.0, WORLD_SIZE / 2.0));
 		addEntity(player);
 
-		player.getInventory().add(new Item(ItemType.WAND, 1));
-		addEntity(new Pig(player.getPosition()));
-		addEntity(new Zombie(player.getPosition(), player));
-		addEntity(new FireWizard(player.getPosition(), player));
+		int mobCount = (int) (WORLD_SIZE * WORLD_SIZE * MOB_DENISTY);
+		boolean fireWizardSpawned = false;
+		for (int i = 0; i < mobCount; i++) {
+			int x = random.nextInt(WORLD_SIZE);
+			int y = random.nextInt(WORLD_SIZE);
+			if (overworldBlocks[y][x].getType() == BlockType.GRASS) {
+				addEntity(new Pig(new Vector2(x, y)));
+			}
+			if (underworldBlocks[y][x].getType() == BlockType.STONE) {
+				Entity entity;
+				if (!fireWizardSpawned) {
+					entity = new FireWizard(new Vector2(x, y), player);
+					fireWizardSpawned = true;
+				} else {
+					entity = new Zombie(new Vector2(x, y), player);
+				}
+				underworld.getEntities().add(entity);
+			}
+		}
 	}
 
 	private Block[][] wfcMapToBlocks(int[][] wfcMap) {
