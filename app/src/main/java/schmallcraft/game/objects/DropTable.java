@@ -1,5 +1,6 @@
 package schmallcraft.game.objects;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.List;
@@ -9,7 +10,7 @@ import schmallcraft.game.Game;
 import schmallcraft.items.Item;
 import schmallcraft.items.ItemType;
 
-public class DropTable {
+public class DropTable implements Serializable {
 	EnumMap<ItemType, Double> drops = new EnumMap<>(ItemType.class);
 
 	public void setDropRate(ItemType item, double rate) {

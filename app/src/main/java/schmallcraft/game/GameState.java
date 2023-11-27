@@ -4,6 +4,9 @@ import static schmallcraft.util.Constants.PLAYER_REACH;
 import static schmallcraft.util.Constants.WORLD_SIZE;
 
 import java.awt.Rectangle;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -35,10 +38,12 @@ public class GameState implements Serializable {
 	private Level level;
 	private transient Vector2 cursorPosition;
 	private Player player;
-	transient InventoryState inventoryState = InventoryState.CLOSED;
-	transient int craftingSelection = 0;
+	private transient InventoryState inventoryState = InventoryState.CLOSED;
+	private transient int craftingSelection = 0;
+	private transient String saveLocation;
 
-	public GameState() {
+	public GameState(String saveLocation) {
+		this.saveLocation = saveLocation;
 		Random random = new Random();
 		level = Level.OVERWORD;
 		WaveFunctionCollapse wfcOverworld = new WaveFunctionCollapse(WFCPatterns.overworld,
@@ -228,5 +233,24 @@ public class GameState implements Serializable {
 			}
 		}
 		return null;
+	}
+
+	public void setSaveLocation(String saveLocation) {
+		this.saveLocation = saveLocation;
+	}
+
+	public void save() {
+		try (ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(saveLocation))) {
+			out.writeObject(this);
+			out.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	private void readObject(java.io.ObjectInputStream ois) throws IOException, ClassNotFoundException {
+		ois.defaultReadObject();
+		inventoryState = InventoryState.CLOSED;
 	}
 }

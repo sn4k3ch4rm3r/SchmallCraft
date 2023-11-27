@@ -2,13 +2,14 @@ package schmallcraft.util;
 
 import static schmallcraft.util.Constants.INVENTORY_SIZE;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 import schmallcraft.items.Item;
 import schmallcraft.items.ItemType;
 
-public class Inventory {
+public class Inventory implements Serializable {
 	private List<Item> items = new ArrayList<>();
 	private int selected = 0;
 

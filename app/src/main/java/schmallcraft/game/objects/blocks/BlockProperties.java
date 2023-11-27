@@ -8,8 +8,6 @@ public class BlockProperties {
 	private double movementSpeedMultiplier;
 	private BlockType whenBroken;
 	private DropTable dropTable;
-	// TODO:
-	// - tool
 
 	public BlockProperties(int hardness, double speedMultiplier, BlockType whenBroken) {
 		this.hardness = hardness;

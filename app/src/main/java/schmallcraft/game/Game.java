@@ -31,6 +31,7 @@ import schmallcraft.util.Vector2;
 public class Game implements Runnable {
 	private double deltaTime = 0;
 	public static Random random = new Random();
+	private double saveTimer = 1;
 
 	private GameState state;
 	private Renderer renderer;
@@ -164,6 +165,13 @@ public class Game implements Runnable {
 					state.setCraftingSelection(i);
 				}
 			}
+		}
+
+		// Autosave
+		saveTimer -= 1.0 / FIXED_UPDATES;
+		if (saveTimer <= 0) {
+			saveTimer = 1;
+			state.save();
 		}
 	}
 

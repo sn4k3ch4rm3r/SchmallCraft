@@ -22,8 +22,17 @@ public class Window extends JFrame {
 		this.setResizable(false);
 		this.setTitle("SchmallCraft");
 
+		MenuPanel menuPanel = new MenuPanel(gameState -> startGame(gameState));
+		this.setContentPane(menuPanel);
+		this.pack();
+
+		this.setLocationRelativeTo(null);
+		this.setVisible(true);
+	}
+
+	public void startGame(GameState gameState) {
 		Renderer gameRenderer = new Renderer(RENDER_WIDTH, RENDER_HEIGHT, RENDER_SCALE, () -> gamePanel.repaint());
-		Game game = new Game(new GameState(), gameRenderer);
+		Game game = new Game(gameState, gameRenderer);
 		gamePanel = new GamePanel(gameRenderer);
 		gamePanel.addKeyListener(new KeyboardEventListener(game));
 		MouseEventListener mouseListener = new MouseEventListener(game);
@@ -35,8 +44,7 @@ public class Window extends JFrame {
 
 		this.setContentPane(gamePanel);
 		this.pack();
-
+		this.setLocationRelativeTo(null);
 		game.start();
-		this.setVisible(true);
 	}
 }
