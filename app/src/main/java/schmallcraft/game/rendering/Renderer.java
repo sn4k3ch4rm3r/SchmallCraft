@@ -88,9 +88,9 @@ public class Renderer {
 		for (int i = 0; i < INVENTORY_SIZE; i++) {
 			int slotX = (int) ((getWidth() / 2) - (INVENTORY_SIZE / 2.0 * TILE_SIZE) + (i * TILE_SIZE));
 			int slotY = (int) (getHeight() - TILE_SIZE * 1);
-			g.drawImage(getSprite(gameState.getInventorySelected() == i ? 0x31 : 0x30), slotX, slotY, null);
-			if (i < gameState.getInventory().size()) {
-				Item item = gameState.getInventory().get(i);
+			g.drawImage(getSprite(gameState.getInventory().getSelectedIndex() == i ? 0x31 : 0x30), slotX, slotY, null);
+			Item item = gameState.getInventory().getItem(i);
+			if (item != null) {
 				g.drawImage(getSprite(item.getType().getSpriteId()), slotX + TILE_SIZE / 4, slotY + TILE_SIZE / 4,
 						null);
 				drawNumber(g, item.getAmount(), new Vector2(slotX + TILE_SIZE - 9, slotY + TILE_SIZE - 7));

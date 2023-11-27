@@ -43,6 +43,10 @@ public abstract class Entity extends GameObject {
 		return health;
 	}
 
+	public void setHealth(int health) {
+		setDamage(getMaxHealth() - health);
+	}
+
 	public void setSpeedMultiplier(double speedMultiplier) {
 		this.speedMultiplier = speedMultiplier;
 	}

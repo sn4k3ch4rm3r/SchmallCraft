@@ -2,17 +2,14 @@ package schmallcraft.game.objects.entities;
 
 import static schmallcraft.util.Constants.TILE_SIZE;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import schmallcraft.game.objects.DroppedItem;
-import schmallcraft.items.Item;
+import schmallcraft.util.Inventory;
 import schmallcraft.util.RectangleD;
 import schmallcraft.util.Vector2;
 
 public class Player extends Entity {
 	private static final double MOVEMENT_SPEED = 3;
-	private List<Item> inventory = new ArrayList<>();
+	private Inventory inventory = new Inventory();
 	private boolean inWater = false;
 	private int exhaustion = 0;
 
@@ -36,12 +33,16 @@ public class Player extends Entity {
 		return getPosition().add(new Vector2(0.5, 0.9));
 	}
 
-	public List<Item> getInventory() {
+	public Inventory getInventory() {
 		return inventory;
 	}
 
 	public boolean collide(DroppedItem item) {
 		return this.getBoundingBox().intersects(item.getBoundingBox());
+	}
+
+	public void heal(int amount) {
+		setHealth(getHealth() + amount);
 	}
 
 	@Override

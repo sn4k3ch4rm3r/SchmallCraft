@@ -8,4 +8,6 @@ public class Constants {
 	public static final int WORLD_SIZE = 32;
 	public static final int INVENTORY_SIZE = RENDER_WIDTH / TILE_SIZE;
 	public static final double PLAYER_REACH = 1.9;
+	public static final int TARGET_FPS = 120;
+	public static final int FIXED_UPDATES = 20;
 }

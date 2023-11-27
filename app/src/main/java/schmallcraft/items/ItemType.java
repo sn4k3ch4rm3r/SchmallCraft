@@ -14,8 +14,22 @@ public enum ItemType implements SpriteIdProvider {
 	WOOD,
 	STONE,
 	IRON_ORE,
-	RAW_PORK,
-	APPLE,
+	RAW_PORK {
+		@Override
+		public List<GameObject> use(Player player, GameObject target) {
+			player.heal(1);
+			player.getInventory().remove(new Item(this, 1));
+			return null;
+		}
+	},
+	APPLE {
+		@Override
+		public List<GameObject> use(Player player, GameObject target) {
+			player.heal(2);
+			player.getInventory().remove(new Item(this, 1));
+			return null;
+		}
+	},
 	COAL,
 	CRYSTAL,
 	STICK {
@@ -28,6 +42,13 @@ public enum ItemType implements SpriteIdProvider {
 		@Override
 		public List<Item> getRecipe() {
 			return List.of(new Item(RAW_PORK, 1), new Item(COAL, 1));
+		}
+
+		@Override
+		public List<GameObject> use(Player player, GameObject target) {
+			player.heal(3);
+			player.getInventory().remove(new Item(this, 1));
+			return null;
 		}
 	},
 	IRON {
@@ -75,8 +96,12 @@ public enum ItemType implements SpriteIdProvider {
 	WORKBENCH {
 		@Override
 		public List<GameObject> use(Player player, GameObject target) {
-			Workstation workbench = new Workstation(target.getPosition(), WorkstationType.WORKBENCH);
-			return List.of(workbench);
+			if (target != null) {
+				Workstation workstation = new Workstation(target.getPosition(), WorkstationType.WORKBENCH);
+				player.getInventory().remove(new Item(this, 1));
+				return List.of(workstation);
+			}
+			return null;
 		}
 
 		@Override
@@ -87,8 +112,12 @@ public enum ItemType implements SpriteIdProvider {
 	FURNACE {
 		@Override
 		public List<GameObject> use(Player player, GameObject target) {
-			Workstation furnace = new Workstation(target.getPosition(), WorkstationType.FURNACE);
-			return List.of(furnace);
+			if (target != null) {
+				Workstation workstation = new Workstation(target.getPosition(), WorkstationType.FURNACE);
+				player.getInventory().remove(new Item(this, 1));
+				return List.of(workstation);
+			}
+			return null;
 		}
 
 		@Override
@@ -99,8 +128,12 @@ public enum ItemType implements SpriteIdProvider {
 	ANVIL {
 		@Override
 		public List<GameObject> use(Player player, GameObject target) {
-			Workstation anvil = new Workstation(target.getPosition(), WorkstationType.ANVIL);
-			return List.of(anvil);
+			if (target != null) {
+				Workstation workstation = new Workstation(target.getPosition(), WorkstationType.ANVIL);
+				player.getInventory().remove(new Item(this, 1));
+				return List.of(workstation);
+			}
+			return null;
 		}
 
 		@Override
@@ -134,7 +167,12 @@ public enum ItemType implements SpriteIdProvider {
 	}
 
 	public List<GameObject> use(Player player, GameObject target) {
-		return List.of(new DroppedItem(new Item(this, 1), target.getPosition()));
+		if (target != null) {
+			Item item = new Item(this, 1);
+			player.getInventory().remove(item);
+			return List.of(new DroppedItem(item, target.getPosition()));
+		}
+		return null;
 	}
 
 	@Override

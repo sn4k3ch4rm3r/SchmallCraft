@@ -1,5 +1,7 @@
 package schmallcraft.game;
 
+import static schmallcraft.util.Constants.FIXED_UPDATES;
+import static schmallcraft.util.Constants.TARGET_FPS;
 import static schmallcraft.util.Constants.WORLD_SIZE;
 
 import java.awt.Rectangle;
@@ -26,8 +28,6 @@ import schmallcraft.util.InventoryState;
 import schmallcraft.util.Vector2;
 
 public class Game implements Runnable {
-	private static final int TARGET_FPS = 120;
-	private static final int FIXED_UPDATES = 20;
 	private double deltaTime = 0;
 	public static Random random = new Random();
 
@@ -143,7 +143,7 @@ public class Game implements Runnable {
 			DroppedItem droppedItem = droppedItemIterator.next();
 			if (player.collide(droppedItem)) {
 				droppedItemIterator.remove();
-				state.addToInventory(droppedItem.getItem());
+				player.getInventory().add(droppedItem.getItem());
 			}
 		}
 
@@ -257,8 +257,8 @@ public class Game implements Runnable {
 			List<ItemType> craftableItems = state.getCraftableItems();
 			if (craftinSelectionId < craftableItems.size()) {
 				ItemType item = craftableItems.get(craftinSelectionId);
-				if (state.canCraft(item)) {
-					state.craft(item);
+				if (player.getInventory().canCraft(item)) {
+					player.getInventory().craft(item);
 				}
 			}
 		}
@@ -273,21 +273,17 @@ public class Game implements Runnable {
 	}
 
 	public void actionUse() {
-		Item item = state.getSelectedItem();
+		Item item = player.getInventory().getSelectedItem();
 		GameObject target = state.getHighLightedObject(renderer.getCamera());
 		if (target instanceof Workstation) {
 			Workstation blockEntity = (Workstation) target;
 			state.setInventoryState(blockEntity.getType().getInventoryState());
-		} else if (item != null && target != null) {
+		} else if (item != null) {
 			List<GameObject> result = item.getType().use(player, target);
 			if (result != null) {
 				for (GameObject object : result) {
 					gameObjectCreated.add(object);
 				}
-			}
-			item.setAmount(item.getAmount() - 1);
-			if (item.getAmount() <= 0) {
-				state.getInventory().remove(item);
 			}
 		}
 	}

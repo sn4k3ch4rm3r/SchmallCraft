@@ -42,6 +42,10 @@ public abstract class GameObject implements Serializable {
 		return damage;
 	}
 
+	public void setDamage(int damage) {
+		this.damage = damage;
+	}
+
 	public int getHighlightSpriteId() {
 		return 0x20;
 	}

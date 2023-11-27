@@ -1,5 +1,6 @@
 package schmallcraft.game.objects.entities;
 
+import static schmallcraft.util.Constants.FIXED_UPDATES;
 import static schmallcraft.util.Constants.TILE_SIZE;
 
 import schmallcraft.game.objects.GameObject;
@@ -10,6 +11,7 @@ public class Zombie extends Entity {
 	private static final double MOVEMENT_SPEED = 2;
 	private GameObject target;
 	private Vector2 targetPosition;
+	private double attackCooldown = 0;
 
 	public Zombie(Vector2 position) {
 		super(position, 10);
@@ -31,6 +33,13 @@ public class Zombie extends Entity {
 			targetPosition = target.getPosition();
 		} else {
 			targetPosition = null;
+		}
+		if (attackCooldown > 0) {
+			attackCooldown -= 1 / (1.5 * FIXED_UPDATES);
+		}
+		if (target != null && target.getDistance(this) < 1.5 && attackCooldown <= 0) {
+			target.damage(1);
+			attackCooldown = 1;
 		}
 	}
 

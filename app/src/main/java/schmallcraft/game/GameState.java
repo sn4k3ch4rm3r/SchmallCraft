@@ -1,6 +1,5 @@
 package schmallcraft.game;
 
-import static schmallcraft.util.Constants.INVENTORY_SIZE;
 import static schmallcraft.util.Constants.PLAYER_REACH;
 import static schmallcraft.util.Constants.WORLD_SIZE;
 
@@ -20,6 +19,7 @@ import schmallcraft.game.objects.entities.Zombie;
 import schmallcraft.game.rendering.Camera;
 import schmallcraft.items.Item;
 import schmallcraft.items.ItemType;
+import schmallcraft.util.Inventory;
 import schmallcraft.util.InventoryState;
 import schmallcraft.util.Level;
 import schmallcraft.util.Vector2;
@@ -31,7 +31,6 @@ public class GameState implements Serializable {
 	private WorldData underworld;
 	private Level level;
 	private transient Vector2 cursorPosition;
-	private int inventorySelected = 0;
 	private Player player;
 	transient InventoryState inventoryState = InventoryState.CLOSED;
 	transient int craftingSelection = 0;
@@ -130,12 +129,8 @@ public class GameState implements Serializable {
 		getDroppedItems().remove(droppedItem);
 	}
 
-	public List<Item> getInventory() {
+	public Inventory getInventory() {
 		return player.getInventory();
-	}
-
-	public int getInventorySelected() {
-		return inventorySelected;
 	}
 
 	public InventoryState getInventoryState() {
@@ -146,56 +141,12 @@ public class GameState implements Serializable {
 		this.inventoryState = inventoryState;
 	}
 
-	public Item getSelectedItem() {
-		if (inventorySelected < getInventory().size()) {
-			return getInventory().get(inventorySelected);
-		}
-		return null;
-	}
-
 	public Player getPlayer() {
 		return player;
 	}
 
-	public boolean canCraft(ItemType item) {
-		for (Item ingredient : item.getRecipe()) {
-			Item inInventory = getInventory().stream().filter(x -> x.getType() == ingredient.getType()).findFirst()
-					.orElse(null);
-			if (inInventory == null || inInventory.getAmount() < ingredient.getAmount()) {
-				return false;
-			}
-		}
-		return true;
-	}
-
-	public void craft(ItemType item) {
-		for (Item ingredient : item.getRecipe()) {
-			Item inInventory = getInventory().stream().filter(x -> x.getType() == ingredient.getType()).findFirst()
-					.orElse(null);
-			if (inInventory != null) {
-				inInventory.setAmount(inInventory.getAmount() - ingredient.getAmount());
-				if (inInventory.getAmount() <= 0) {
-					getInventory().remove(inInventory);
-				}
-			}
-		}
-		addToInventory(new Item(item, 1));
-	}
-
-	public void addToInventory(Item item) {
-		Item inInventory = getInventory().stream().filter(x -> x.getType() == item.getType()).findFirst().orElse(null);
-		if (inInventory != null) {
-			inInventory.setAmount(inInventory.getAmount() + item.getAmount());
-		} else if (getInventory().size() < INVENTORY_SIZE) {
-			getInventory().add(item);
-		}
-	}
-
 	public void moveSelection(int amount) {
-		inventorySelected = (inventorySelected + amount) % INVENTORY_SIZE;
-		if (inventorySelected < 0) {
-			inventorySelected += INVENTORY_SIZE;
-		}
+		getInventory().moveSelection(amount);
 	}
 
 	public List<GameObject> getObjects() {
