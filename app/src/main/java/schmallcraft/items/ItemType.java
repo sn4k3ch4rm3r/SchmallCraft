@@ -5,10 +5,12 @@ import java.util.List;
 
 import schmallcraft.game.objects.DroppedItem;
 import schmallcraft.game.objects.GameObject;
+import schmallcraft.game.objects.entities.Fireball;
 import schmallcraft.game.objects.entities.Player;
 import schmallcraft.game.objects.entities.workstation.Workstation;
 import schmallcraft.game.objects.entities.workstation.WorkstationType;
 import schmallcraft.util.SpriteIdProvider;
+import schmallcraft.util.Vector2;
 
 public enum ItemType implements SpriteIdProvider {
 	WOOD,
@@ -91,6 +93,15 @@ public enum ItemType implements SpriteIdProvider {
 		@Override
 		public List<Item> getRecipe() {
 			return List.of(new Item(STICK, 1), new Item(IRON, 1), new Item(CRYSTAL, 1));
+		}
+
+		@Override
+		public List<GameObject> use(Player player, GameObject target) {
+			if (target != null) {
+				Vector2 direction = target.getBoundingBox().getCenter().subtract(player.getBoundingBox().getCenter());
+				return List.of(new Fireball(player.getBoundingBox().getCenter(), direction, player));
+			}
+			return null;
 		}
 	},
 	WORKBENCH {

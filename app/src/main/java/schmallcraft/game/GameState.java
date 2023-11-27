@@ -15,10 +15,12 @@ import schmallcraft.game.objects.blocks.Block;
 import schmallcraft.game.objects.blocks.BlockType;
 import schmallcraft.game.objects.entities.Entity;
 import schmallcraft.game.objects.entities.FireWizard;
+import schmallcraft.game.objects.entities.Fireball;
 import schmallcraft.game.objects.entities.Pig;
 import schmallcraft.game.objects.entities.Player;
 import schmallcraft.game.objects.entities.Zombie;
 import schmallcraft.game.rendering.Camera;
+import schmallcraft.items.Item;
 import schmallcraft.items.ItemType;
 import schmallcraft.util.Inventory;
 import schmallcraft.util.InventoryState;
@@ -87,6 +89,7 @@ public class GameState implements Serializable {
 		this.player.setPosition(new Vector2(WORLD_SIZE / 2.0, WORLD_SIZE / 2.0));
 		addEntity(player);
 
+		player.getInventory().add(new Item(ItemType.WAND, 1));
 		addEntity(new Pig(player.getPosition()));
 		addEntity(new Zombie(player.getPosition(), player));
 		addEntity(new FireWizard(player.getPosition(), player));
@@ -205,18 +208,22 @@ public class GameState implements Serializable {
 		}
 
 		Vector2 worldPos = camera.screenToWorldCoords(cursorPosition);
+		double reach = PLAYER_REACH;
+		if (player.getInventory().getSelectedItemType() == ItemType.WAND) {
+			reach = 10;
+		}
 		for (Entity entity : camera.getVisibleObjects(getEntities())) {
-			if (entity instanceof Player) {
+			if (entity instanceof Player || entity instanceof Fireball) {
 				continue;
 			}
-			if (entity.getBoundingBox().contains(worldPos) && player.getDistance(entity) < PLAYER_REACH) {
+			if (entity.getBoundingBox().contains(worldPos) && player.getDistance(entity) < reach) {
 				return entity;
 			}
 		}
 
 		if (new Rectangle(0, 0, WORLD_SIZE, WORLD_SIZE).contains(worldPos.toPoint())) {
 			Block selectedBlock = getMap()[(int) worldPos.y][(int) worldPos.x];
-			if (player.getDistance(selectedBlock) < PLAYER_REACH) {
+			if (player.getDistance(selectedBlock) < reach) {
 				return selectedBlock;
 			}
 		}

@@ -40,7 +40,7 @@ public class FireWizard extends Entity {
 		}
 		if (target != null && target.getDistance(this) <= ATTACK_RANGE && attackCooldown <= 0) {
 			Vector2 origin = getBoundingBox().getCenter();
-			summoningQueue.add(new Fireball(origin, target.getBoundingBox().getCenter().subtract(origin)));
+			summoningQueue.add(new Fireball(origin, target.getBoundingBox().getCenter().subtract(origin), this));
 			attackCooldown = 1;
 		}
 	}

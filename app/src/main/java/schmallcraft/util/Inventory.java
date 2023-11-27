@@ -27,6 +27,14 @@ public class Inventory {
 		return null;
 	}
 
+	public ItemType getSelectedItemType() {
+		Item item = getSelectedItem();
+		if (item != null) {
+			return item.getType();
+		}
+		return null;
+	}
+
 	public Item getItem(ItemType type) {
 		return items.stream().filter(x -> x.getType() == type).findFirst().orElse(null);
 	}

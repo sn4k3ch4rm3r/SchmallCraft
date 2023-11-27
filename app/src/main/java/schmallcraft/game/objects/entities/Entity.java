@@ -60,7 +60,7 @@ public abstract class Entity extends GameObject {
 
 	public boolean collide(Block block) {
 		Vector2 overlap = getBoundingBox().getOverlap(block.getBoundingBox());
-		if (overlap.magnitude() == 0) {
+		if (overlap.x == 0 || overlap.y == 0) {
 			return false;
 		}
 
