@@ -3,12 +3,16 @@ package schmallcraft.game.objects.entities;
 import static schmallcraft.util.Constants.FIXED_UPDATES;
 import static schmallcraft.util.Constants.TILE_SIZE;
 
+import java.awt.Color;
+
 import schmallcraft.game.objects.DroppedItem;
+import schmallcraft.game.rendering.Lightsource;
+import schmallcraft.items.ItemType;
 import schmallcraft.util.Inventory;
 import schmallcraft.util.RectangleD;
 import schmallcraft.util.Vector2;
 
-public class Player extends Entity {
+public class Player extends Entity implements Lightsource {
 	private static final double MOVEMENT_SPEED = 3;
 	private Inventory inventory = new Inventory();
 	private boolean inWater = false;
@@ -80,5 +84,25 @@ public class Player extends Entity {
 			id = 0x11;
 		}
 		return id * (isFlipped() ? -1 : 1);
+	}
+
+	@Override
+	public int getLightLevel() {
+		if (inventory.hasType(ItemType.LANTERN)) {
+			return 120;
+		} else if (inventory.hasType(ItemType.TORCH)) {
+			return 60;
+		}
+		return 30;
+	}
+
+	@Override
+	public Color getLightColor() {
+		return Color.WHITE;
+	}
+
+	@Override
+	public Vector2 getLightPosition() {
+		return getBoundingBox().getCenter();
 	}
 }
