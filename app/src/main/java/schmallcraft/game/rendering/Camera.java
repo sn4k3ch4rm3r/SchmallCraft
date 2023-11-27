@@ -42,6 +42,10 @@ public class Camera {
 		return renderCoordinates.multiply(1.0 / TILE_SIZE).add(position);
 	}
 
+	public Vector2 screenToRenderCoords(Vector2 screenCoordinates) {
+		return screenCoordinates.multiply(1.0 / RENDER_SCALE);
+	}
+
 	public Rectangle getBoundsInWorldSpace() {
 		int x = (int) position.x - 1;
 		int y = (int) position.y - 1;

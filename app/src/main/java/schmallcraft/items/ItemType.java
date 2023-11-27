@@ -6,32 +6,106 @@ import java.util.List;
 import schmallcraft.game.objects.DroppedItem;
 import schmallcraft.game.objects.GameObject;
 import schmallcraft.game.objects.entities.Player;
-import schmallcraft.game.objects.entities.blcokentity.BlockEntity;
-import schmallcraft.game.objects.entities.blcokentity.BlockEntityType;
+import schmallcraft.game.objects.entities.workstation.Workstation;
+import schmallcraft.game.objects.entities.workstation.WorkstationType;
 import schmallcraft.util.SpriteIdProvider;
 
-public enum ItemType implements SpriteIdProvider, UsableItem {
-	STICK, WOOD, STONE, IRON, IRON_ORE, RAW_PORK, COOKED_PORK, APPLE, COAL, TORCH, SWORD, AXE, PICKAXE, LANTERN, WAND,
+public enum ItemType implements SpriteIdProvider {
+	WOOD,
+	STONE,
+	IRON_ORE,
+	RAW_PORK,
+	APPLE,
+	COAL,
 	CRYSTAL,
+	STICK {
+		@Override
+		public List<Item> getRecipe() {
+			return List.of(new Item(WOOD, 1));
+		}
+	},
+	COOKED_PORK {
+		@Override
+		public List<Item> getRecipe() {
+			return List.of(new Item(RAW_PORK, 1), new Item(COAL, 1));
+		}
+	},
+	IRON {
+		@Override
+		public List<Item> getRecipe() {
+			return List.of(new Item(IRON_ORE, 1), new Item(COAL, 1));
+		}
+	},
+	TORCH {
+		@Override
+		public List<Item> getRecipe() {
+			return List.of(new Item(STICK, 1), new Item(COAL, 1));
+		}
+	},
+	SWORD {
+		@Override
+		public List<Item> getRecipe() {
+			return List.of(new Item(STICK, 1), new Item(IRON, 2));
+		}
+	},
+	AXE {
+		@Override
+		public List<Item> getRecipe() {
+			return List.of(new Item(STICK, 1), new Item(IRON, 3));
+		}
+	},
+	PICKAXE {
+		@Override
+		public List<Item> getRecipe() {
+			return List.of(new Item(STICK, 1), new Item(IRON, 3));
+		}
+	},
+	LANTERN {
+		@Override
+		public List<Item> getRecipe() {
+			return List.of(new Item(TORCH, 1), new Item(IRON, 2));
+		}
+	},
+	WAND {
+		@Override
+		public List<Item> getRecipe() {
+			return List.of(new Item(STICK, 1), new Item(IRON, 1), new Item(CRYSTAL, 1));
+		}
+	},
 	WORKBENCH {
 		@Override
 		public List<GameObject> use(Player player, GameObject target) {
-			BlockEntity workbench = new BlockEntity(target.getPosition(), BlockEntityType.WORKBENCH);
+			Workstation workbench = new Workstation(target.getPosition(), WorkstationType.WORKBENCH);
 			return List.of(workbench);
+		}
+
+		@Override
+		public List<Item> getRecipe() {
+			return List.of(new Item(WOOD, 4));
 		}
 	},
 	FURNACE {
 		@Override
 		public List<GameObject> use(Player player, GameObject target) {
-			BlockEntity furnace = new BlockEntity(target.getPosition(), BlockEntityType.FURNACE);
+			Workstation furnace = new Workstation(target.getPosition(), WorkstationType.FURNACE);
 			return List.of(furnace);
+		}
+
+		@Override
+		public List<Item> getRecipe() {
+			return List.of(new Item(STONE, 8));
 		}
 	},
 	ANVIL {
 		@Override
 		public List<GameObject> use(Player player, GameObject target) {
-			BlockEntity anvil = new BlockEntity(target.getPosition(), BlockEntityType.ANVIL);
+			Workstation anvil = new Workstation(target.getPosition(), WorkstationType.ANVIL);
 			return List.of(anvil);
+		}
+
+		@Override
+		public List<Item> getRecipe() {
+			return List.of(new Item(IRON, 4));
 		}
 	};
 
@@ -59,7 +133,6 @@ public enum ItemType implements SpriteIdProvider, UsableItem {
 		spriteIds.put(ANVIL, 0x325);
 	}
 
-	@Override
 	public List<GameObject> use(Player player, GameObject target) {
 		return List.of(new DroppedItem(new Item(this, 1), target.getPosition()));
 	}
@@ -67,5 +140,9 @@ public enum ItemType implements SpriteIdProvider, UsableItem {
 	@Override
 	public int getSpriteId() {
 		return spriteIds.get(this);
+	}
+
+	public List<Item> getRecipe() {
+		return null;
 	}
 }

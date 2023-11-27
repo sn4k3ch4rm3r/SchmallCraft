@@ -8,9 +8,11 @@ import java.io.IOException;
 import java.util.List;
 
 import javax.imageio.ImageIO;
+
 import schmallcraft.game.GameState;
 import schmallcraft.game.objects.GameObject;
 import schmallcraft.items.Item;
+import schmallcraft.items.ItemType;
 import schmallcraft.util.InventoryState;
 import schmallcraft.util.Vector2;
 import static schmallcraft.util.Constants.*;
@@ -71,21 +73,21 @@ public class Renderer {
 
 		// Render HUD
 		g.setColor(new Color(23, 32, 56));
-		g.fillRect(0, RENDER_HEIGHT - 2 * TILE_SIZE, RENDER_WIDTH, RENDER_HEIGHT);
+		g.fillRect(0, getHeight() - 2 * TILE_SIZE, getWidth(), getHeight());
 		for (int i = 0; i < gameState.getPlayer().getMaxHealth(); i++) {
 			int hpSpriteId = i < gameState.getPlayer().getHealth() ? 0x132 : 0x232;
 			int staminaSpriteId = i < gameState.getPlayer().getStamina() ? 0x332 : 0x432;
 			BufferedImage hpSprite = getSprite(hpSpriteId);
 			BufferedImage staminaSprite = getSprite(staminaSpriteId);
-			int posX = (int) ((RENDER_WIDTH / 2) - (gameState.getPlayer().getMaxHealth() / 2.0 * hpSprite.getWidth())
+			int posX = (int) ((getWidth() / 2) - (gameState.getPlayer().getMaxHealth() / 2.0 * hpSprite.getWidth())
 					+ (i * hpSprite.getWidth()));
-			int posY = (int) (RENDER_HEIGHT - TILE_SIZE * 2);
+			int posY = (int) (getHeight() - TILE_SIZE * 2);
 			g.drawImage(hpSprite, posX, posY + 1, null);
 			g.drawImage(staminaSprite, posX, posY + TILE_SIZE / 2, null);
 		}
 		for (int i = 0; i < INVENTORY_SIZE; i++) {
-			int slotX = (int) ((RENDER_WIDTH / 2) - (INVENTORY_SIZE / 2.0 * TILE_SIZE) + (i * TILE_SIZE));
-			int slotY = (int) (RENDER_HEIGHT - TILE_SIZE * 1);
+			int slotX = (int) ((getWidth() / 2) - (INVENTORY_SIZE / 2.0 * TILE_SIZE) + (i * TILE_SIZE));
+			int slotY = (int) (getHeight() - TILE_SIZE * 1);
 			g.drawImage(getSprite(gameState.getInventorySelected() == i ? 0x31 : 0x30), slotX, slotY, null);
 			if (i < gameState.getInventory().size()) {
 				Item item = gameState.getInventory().get(i);
@@ -98,31 +100,58 @@ public class Renderer {
 		// Render inventory, if open
 		if (gameState.getInventoryState() != InventoryState.CLOSED) {
 			// Background
-			int inventorySize = 5 * TILE_SIZE;
-			int inventoryX = (RENDER_WIDTH / 2) - (inventorySize / 2);
-			int inventoryY = (RENDER_HEIGHT / 2) - (inventorySize / 2);
-			g.drawImage(getSprite(0x80, inventorySize, inventorySize), inventoryX, inventoryY, null);
+			Rectangle inventoryBbox = getInventoryBbox();
+			g.drawImage(getSprite(0x80, inventoryBbox.width, inventoryBbox.height),
+					inventoryBbox.x, inventoryBbox.y,
+					null);
 			// Title
-			int textX = inventoryX + TILE_SIZE / 2;
-			int textY = inventoryY + TILE_SIZE / 2;
+			int textX = inventoryBbox.x + TILE_SIZE / 2;
+			int textY = inventoryBbox.y + TILE_SIZE / 2;
 			g.drawImage(getSprite(gameState.getInventoryState().getTextSpriteId(), TILE_SIZE * 4, TILE_SIZE / 2),
 					textX, textY, null);
 
 			// Grid
+			int craftingSelection = gameState.getCraftingSelection();
 			for (int x = 0; x < 4; x++) {
 				if (x != 2) {
 					for (int y = 0; y < 3; y++) {
-						g.drawImage(getSprite(0x30, TILE_SIZE, TILE_SIZE),
-								inventoryX + TILE_SIZE / 2 + TILE_SIZE * x,
-								inventoryY + (int) (TILE_SIZE * 1.5) + TILE_SIZE * y, null);
+						int cellIndex = y * 2 + x;
+						int cellSpriteId = 0x30;
+						if (craftingSelection == cellIndex && x < 2) {
+							cellSpriteId = 0x31;
+						}
+						Rectangle cellBbox = getInventoryCellBbox(x, y);
+						g.drawImage(getSprite(cellSpriteId, cellBbox.width, cellBbox.height), cellBbox.x, cellBbox.y,
+								null);
 					}
 				}
 			}
 
 			// Arrow
-			int arrowX = inventoryX + inventorySize / 2;
-			int arrowY = inventoryY + inventorySize / 2;
+			int arrowX = inventoryBbox.x + inventoryBbox.width / 2;
+			int arrowY = inventoryBbox.y + inventoryBbox.height / 2;
 			g.drawImage(getSprite(0x64), arrowX, arrowY, null);
+
+			// Items
+			List<ItemType> craftableItems = gameState.getCraftableItems();
+			for (int i = 0; i < craftableItems.size(); i++) {
+				ItemType item = craftableItems.get(i);
+				Rectangle cellBbox = getInventoryCellBbox(i % 2, i / 2);
+				g.drawImage(getSprite(item.getSpriteId()), cellBbox.x + TILE_SIZE / 4, cellBbox.y + TILE_SIZE / 4,
+						null);
+			}
+			if (craftingSelection < craftableItems.size()) {
+				ItemType item = craftableItems.get(craftingSelection);
+				List<Item> recipe = item.getRecipe();
+				for (int i = 0; i < recipe.size(); i++) {
+					ItemType recipeItem = recipe.get(i).getType();
+					int amount = recipe.get(i).getAmount();
+					Rectangle cellBbox = getInventoryCellBbox(3, i);
+					g.drawImage(getSprite(recipeItem.getSpriteId()), cellBbox.x + TILE_SIZE / 4,
+							cellBbox.y + TILE_SIZE / 4, null);
+					drawNumber(g, amount, new Vector2(cellBbox.x + TILE_SIZE - 9, cellBbox.y + TILE_SIZE - 7));
+				}
+			}
 		}
 
 		g.dispose();
@@ -205,6 +234,19 @@ public class Renderer {
 
 	public void setCameraPosition(Vector2 cameraPosition) {
 		this.camera.setPosition(cameraPosition);
+	}
+
+	public Rectangle getInventoryBbox() {
+		int inventorySize = 5 * TILE_SIZE;
+		int inventoryX = (getWidth() / 2) - (inventorySize / 2);
+		int inventoryY = (getHeight() / 2) - (inventorySize / 2);
+		return new Rectangle(inventoryX, inventoryY, inventorySize, inventorySize);
+	}
+
+	public Rectangle getInventoryCellBbox(int cellX, int cellY) {
+		Rectangle inventoryBbox = getInventoryBbox();
+		return new Rectangle(inventoryBbox.x + TILE_SIZE / 2 + TILE_SIZE * cellX,
+				inventoryBbox.y + (int) (TILE_SIZE * 1.5) + TILE_SIZE * cellY, TILE_SIZE, TILE_SIZE);
 	}
 
 	public Camera getCamera() {

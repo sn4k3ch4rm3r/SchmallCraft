@@ -1,4 +1,4 @@
-package schmallcraft.game.objects.entities.blcokentity;
+package schmallcraft.game.objects.entities.workstation;
 
 import java.util.List;
 
@@ -6,10 +6,10 @@ import schmallcraft.game.objects.entities.Entity;
 import schmallcraft.items.Item;
 import schmallcraft.util.Vector2;
 
-public class BlockEntity extends Entity {
-	private BlockEntityType type;
+public class Workstation extends Entity {
+	private WorkstationType type;
 
-	public BlockEntity(Vector2 position, BlockEntityType type) {
+	public Workstation(Vector2 position, WorkstationType type) {
 		super(position);
 		this.type = type;
 	}
@@ -21,13 +21,13 @@ public class BlockEntity extends Entity {
 
 	@Override
 	public int getHighlightSpriteId() {
-		if (type == BlockEntityType.ANVIL) {
+		if (type == WorkstationType.ANVIL) {
 			return 0x54;
 		}
 		return 0x53;
 	}
 
-	public BlockEntityType getType() {
+	public WorkstationType getType() {
 		return type;
 	}
 

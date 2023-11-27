@@ -17,7 +17,7 @@ import schmallcraft.game.objects.GameObject;
 import schmallcraft.game.objects.blocks.BlockType;
 import schmallcraft.game.objects.entities.Entity;
 import schmallcraft.game.objects.entities.Player;
-import schmallcraft.game.objects.entities.blcokentity.BlockEntity;
+import schmallcraft.game.objects.entities.workstation.Workstation;
 import schmallcraft.game.rendering.Renderer;
 import schmallcraft.items.Item;
 import schmallcraft.util.Direction;
@@ -145,6 +145,16 @@ public class Game implements Runnable {
 				state.addToInventory(droppedItem.getItem());
 			}
 		}
+
+		// Select hovered item in crafting menu
+		if (state.getInventoryState() != InventoryState.CLOSED) {
+			for (int i = 0; i < 6; i++) {
+				if (renderer.getInventoryCellBbox(i % 2, i / 2)
+						.contains(renderer.getCamera().screenToRenderCoords(state.getCursorPosition()).toPoint())) {
+					state.setCraftingSelection(i);
+				}
+			}
+		}
 	}
 
 	private void update() {
@@ -244,14 +254,14 @@ public class Game implements Runnable {
 	}
 
 	public void actionCraft() {
-		state.setInventoryState(InventoryState.CRAFTING);
+		state.setInventoryState(InventoryState.INVENTORY_CRAFTING);
 	}
 
 	public void actionUse() {
 		Item item = state.getSelectedItem();
 		GameObject target = state.getHighLightedObject(renderer.getCamera());
-		if (target instanceof BlockEntity) {
-			BlockEntity blockEntity = (BlockEntity) target;
+		if (target instanceof Workstation) {
+			Workstation blockEntity = (Workstation) target;
 			state.setInventoryState(blockEntity.getType().getInventoryState());
 		} else if (item != null && target != null) {
 			List<GameObject> result = item.getType().use(player, target);

@@ -33,6 +33,7 @@ public class GameState implements Serializable {
 	private int inventorySelected = 0;
 	private Player player;
 	transient InventoryState inventoryState = InventoryState.CLOSED;
+	transient int craftingSelection = 0;
 
 	public GameState() {
 		Random random = new Random();
@@ -189,6 +190,10 @@ public class GameState implements Serializable {
 		return getWorldData().getBlocks();
 	}
 
+	public List<ItemType> getCraftableItems() {
+		return inventoryState.getCraftableItems();
+	}
+
 	public void changeDimension() {
 		switch (level) {
 			case OVERWORD:
@@ -198,6 +203,14 @@ public class GameState implements Serializable {
 				level = Level.OVERWORD;
 				break;
 		}
+	}
+
+	public void setCraftingSelection(int craftingSelection) {
+		this.craftingSelection = craftingSelection;
+	}
+
+	public int getCraftingSelection() {
+		return craftingSelection;
 	}
 
 	public WorldData getWorldData() {
