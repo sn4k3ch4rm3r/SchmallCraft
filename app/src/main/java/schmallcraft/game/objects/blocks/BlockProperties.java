@@ -10,7 +10,6 @@ public class BlockProperties {
 	private DropTable dropTable;
 	// TODO:
 	// - tool
-	// - after breaking
 
 	public BlockProperties(int hardness, double speedMultiplier, BlockType whenBroken) {
 		this.hardness = hardness;

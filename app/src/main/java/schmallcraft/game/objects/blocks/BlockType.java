@@ -7,10 +7,64 @@ import schmallcraft.items.ItemType;
 import schmallcraft.util.SpriteIdProvider;
 
 public enum BlockType implements SpriteIdProvider {
-	GRASS, SAND, STONE, DIRT, TREE, WATER, ROCK, STAIR;
+	UNKNOWN,
+	GRASS,
+	SAND,
+	STONE,
+	STAIR,
+	WATER {
+		@Override
+		public BlockProperties getProperties() {
+			return new BlockProperties(0.6);
+		}
+	},
+	TREE {
+		@Override
+		public BlockProperties getProperties() {
+			BlockProperties blockProperties = new BlockProperties(1, 1, BlockType.GRASS);
+			blockProperties.getDropTable().setDropRate(ItemType.WOOD, 2.5);
+			blockProperties.getDropTable().setDropRate(ItemType.STICK, 0.3);
+			blockProperties.getDropTable().setDropRate(ItemType.APPLE, 0.1);
+			return blockProperties;
+		}
+	},
+	ROCK {
+		@Override
+		public BlockProperties getProperties() {
+			BlockProperties blockProperties = new BlockProperties(1, 1, BlockType.STONE);
+			blockProperties.getDropTable().setDropRate(ItemType.STONE, 2.5);
+			blockProperties.getDropTable().setDropRate(ItemType.COAL, 0.1);
+			blockProperties.getDropTable().setDropRate(ItemType.IRON_ORE, 0.05);
+			blockProperties.getDropTable().setDropRate(ItemType.CRYSTAL, 0.01);
+			return blockProperties;
+		}
+	},
+	COAL_ORE {
+		@Override
+		public BlockProperties getProperties() {
+			BlockProperties blockProperties = new BlockProperties(1, 1, BlockType.STONE);
+			blockProperties.getDropTable().setDropRate(ItemType.COAL, 1);
+			return blockProperties;
+		}
+	},
+	IRON_ORE {
+		@Override
+		public BlockProperties getProperties() {
+			BlockProperties blockProperties = new BlockProperties(1, 1, BlockType.STONE);
+			blockProperties.getDropTable().setDropRate(ItemType.IRON_ORE, 1);
+			return blockProperties;
+		}
+	},
+	CRYSTAL_ORE {
+		@Override
+		public BlockProperties getProperties() {
+			BlockProperties blockProperties = new BlockProperties(1, 1, BlockType.STONE);
+			blockProperties.getDropTable().setDropRate(ItemType.CRYSTAL, 1);
+			return blockProperties;
+		}
+	};
 
 	private static HashMap<Integer, BlockType> idToType = new HashMap<>();
-	private static EnumMap<BlockType, BlockProperties> typeProperties = new EnumMap<>(BlockType.class);
 	private static EnumMap<BlockType, Integer> baseSpriteId = new EnumMap<>(BlockType.class);
 
 	static {
@@ -23,24 +77,9 @@ public enum BlockType implements SpriteIdProvider {
 		idToType.put(6, BlockType.GRASS);
 		idToType.put(37, BlockType.STAIR);
 		idToType.put(45, BlockType.STONE);
-
-		BlockProperties defauBlockProperties = new BlockProperties(1);
-		BlockProperties treeBlockProperties = new BlockProperties(1, 1, BlockType.GRASS);
-		treeBlockProperties.getDropTable().setDropRate(ItemType.WOOD, 2.5);
-		treeBlockProperties.getDropTable().setDropRate(ItemType.STICK, 0.3);
-		treeBlockProperties.getDropTable().setDropRate(ItemType.APPLE, 0.1);
-
-		BlockProperties rockBlockProperties = new BlockProperties(1, 1, BlockType.STONE);
-		rockBlockProperties.getDropTable().setDropRate(ItemType.STONE, 3);
-
-		typeProperties.put(BlockType.GRASS, defauBlockProperties);
-		typeProperties.put(BlockType.SAND, defauBlockProperties);
-		typeProperties.put(BlockType.STONE, defauBlockProperties);
-		typeProperties.put(BlockType.DIRT, defauBlockProperties);
-		typeProperties.put(BlockType.TREE, treeBlockProperties);
-		typeProperties.put(BlockType.WATER, new BlockProperties(0.5));
-		typeProperties.put(BlockType.ROCK, rockBlockProperties);
-		typeProperties.put(BlockType.STAIR, defauBlockProperties);
+		idToType.put(36, BlockType.COAL_ORE);
+		idToType.put(44, IRON_ORE);
+		idToType.put(27, CRYSTAL_ORE);
 
 		baseSpriteId.put(BlockType.GRASS, 0x00);
 		baseSpriteId.put(BlockType.STONE, 0x01);
@@ -49,7 +88,9 @@ public enum BlockType implements SpriteIdProvider {
 		baseSpriteId.put(BlockType.ROCK, 0x04);
 		baseSpriteId.put(BlockType.WATER, 0x05);
 		baseSpriteId.put(BlockType.STAIR, 0x06);
-		baseSpriteId.put(BlockType.DIRT, 0x07);
+		baseSpriteId.put(BlockType.COAL_ORE, 0x07);
+		baseSpriteId.put(BlockType.IRON_ORE, 0x08);
+		baseSpriteId.put(BlockType.CRYSTAL_ORE, 0x09);
 	}
 
 	@Override
@@ -65,10 +106,10 @@ public enum BlockType implements SpriteIdProvider {
 		if (idToType.containsKey(id)) {
 			return idToType.get(id);
 		}
-		return BlockType.DIRT;
+		return BlockType.UNKNOWN;
 	}
 
 	public BlockProperties getProperties() {
-		return typeProperties.get(this);
+		return new BlockProperties(1);
 	}
 }
