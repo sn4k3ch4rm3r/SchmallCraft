@@ -55,10 +55,10 @@ public abstract class Entity extends GameObject {
 		this.velocity = velocity;
 	}
 
-	public void collide(Block block) {
+	public boolean collide(Block block) {
 		Vector2 overlap = getBoundingBox().getOverlap(block.getBoundingBox());
 		if (overlap.magnitude() == 0) {
-			return;
+			return false;
 		}
 
 		if (overlap.x < overlap.y) {
@@ -66,12 +66,16 @@ public abstract class Entity extends GameObject {
 		} else {
 			getPosition().y += overlap.y * Math.signum(getPosition().y - block.getPosition().y);
 		}
+		return true;
 	}
 
-	public void collide(Entity other) {
+	public boolean collide(Entity other) {
 		Vector2 overlap = getBoundingBox().getOverlap(other.getBoundingBox());
-		if (overlap.magnitude() == 0) {
-			return;
+		if (overlap.x == 0 || overlap.y == 0 || other instanceof Fireball) {
+			return false;
+		}
+		if (this instanceof Fireball) {
+			return true;
 		}
 
 		if (overlap.x < overlap.y) {
@@ -81,15 +85,7 @@ public abstract class Entity extends GameObject {
 			this.getPosition().y += overlap.y / 2;
 			other.getPosition().y -= overlap.y / 2;
 		}
-	}
-
-	protected boolean isFlipped() {
-		if (velocity.x < 0) {
-			spriteFlipped = false;
-		} else if (velocity.x > 0) {
-			spriteFlipped = true;
-		}
-		return spriteFlipped;
+		return true;
 	}
 
 	public void collide(Direction edge) {
@@ -107,6 +103,15 @@ public abstract class Entity extends GameObject {
 				getPosition().y = WORLD_SIZE - 1;
 				break;
 		}
+	}
+
+	protected boolean isFlipped() {
+		if (velocity.x < 0) {
+			spriteFlipped = false;
+		} else if (velocity.x > 0) {
+			spriteFlipped = true;
+		}
+		return spriteFlipped;
 	}
 
 	public boolean isDead() {

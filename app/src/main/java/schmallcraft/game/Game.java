@@ -18,6 +18,7 @@ import schmallcraft.game.objects.DroppedItem;
 import schmallcraft.game.objects.GameObject;
 import schmallcraft.game.objects.blocks.BlockType;
 import schmallcraft.game.objects.entities.Entity;
+import schmallcraft.game.objects.entities.FireWizard;
 import schmallcraft.game.objects.entities.Player;
 import schmallcraft.game.objects.entities.workstation.Workstation;
 import schmallcraft.game.rendering.Renderer;
@@ -135,6 +136,14 @@ public class Game implements Runnable {
 		// Run fixed update on every entity
 		for (Entity entity : visibleEntities) {
 			entity.fixedUpdate();
+			if (entity instanceof FireWizard) {
+				Iterator<Entity> summoningQueue = ((FireWizard) entity).getSummoningQueue().iterator();
+				while (summoningQueue.hasNext()) {
+					Entity summonedEntity = summoningQueue.next();
+					state.addEntity(summonedEntity);
+					summoningQueue.remove();
+				}
+			}
 		}
 
 		// Pick up dropped items if player collides with them

@@ -1,20 +1,23 @@
 package schmallcraft.game.objects.entities;
 
 import static schmallcraft.util.Constants.FIXED_UPDATES;
-import static schmallcraft.util.Constants.TILE_SIZE;
+
+import java.util.LinkedList;
+import java.util.Queue;
 
 import schmallcraft.game.objects.GameObject;
-import schmallcraft.util.RectangleD;
 import schmallcraft.util.Vector2;
 
-public class Zombie extends Entity {
+public class FireWizard extends Entity {
 	private static final double MOVEMENT_SPEED = 2;
+	private static final double ATTACK_RANGE = 10;
 	private GameObject target;
 	private Vector2 targetPosition;
 	private double attackCooldown = 0;
+	private Queue<Entity> summoningQueue = new LinkedList<Entity>();
 
-	public Zombie(Vector2 positin, GameObject target) {
-		super(positin, 8);
+	public FireWizard(Vector2 position, GameObject target) {
+		super(position, 10);
 		this.target = target;
 	}
 
@@ -25,16 +28,19 @@ public class Zombie extends Entity {
 	@Override
 	public void fixedUpdate() {
 		super.fixedUpdate();
-		if (target != null && target.getDistance(this) < 10 && target.getDistance(this) > 1) {
+		if (target != null && target.getDistance(this) < ATTACK_RANGE && target.getDistance(this) > 3.5) {
 			targetPosition = target.getPosition();
+		} else if (target != null && target.getDistance(this) < 2.5) {
+			targetPosition = getPosition().multiply(2).subtract(target.getPosition());
 		} else {
 			targetPosition = null;
 		}
 		if (attackCooldown > 0) {
-			attackCooldown -= 1.0 / (1.5 * FIXED_UPDATES);
+			attackCooldown -= 1.0 / (2 * FIXED_UPDATES);
 		}
-		if (target != null && target.getDistance(this) < 1.5 && attackCooldown <= 0) {
-			target.damage(1);
+		if (target != null && target.getDistance(this) <= ATTACK_RANGE && attackCooldown <= 0) {
+			Vector2 origin = getBoundingBox().getCenter();
+			summoningQueue.add(new Fireball(origin, target.getBoundingBox().getCenter().subtract(origin)));
 			attackCooldown = 1;
 		}
 	}
@@ -50,18 +56,12 @@ public class Zombie extends Entity {
 		super.update(deltaTime);
 	}
 
-	@Override
-	public RectangleD getBoundingBox() {
-		RectangleD bbox = super.getBoundingBox();
-		bbox.y += 1.0 / TILE_SIZE;
-		bbox.height -= 1.0 / TILE_SIZE;
-		bbox.x += 2.0 / TILE_SIZE;
-		bbox.width -= 4.0 / TILE_SIZE;
-		return bbox;
+	public Queue<Entity> getSummoningQueue() {
+		return summoningQueue;
 	}
 
 	@Override
 	public int getSpriteId() {
-		return 0x12;
+		return 0x13 * (isFlipped() ? -1 : 1);
 	}
 }

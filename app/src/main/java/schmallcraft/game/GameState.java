@@ -3,6 +3,7 @@ package schmallcraft.game;
 import static schmallcraft.util.Constants.PLAYER_REACH;
 import static schmallcraft.util.Constants.WORLD_SIZE;
 
+import java.awt.Rectangle;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -13,6 +14,7 @@ import schmallcraft.game.objects.GameObject;
 import schmallcraft.game.objects.blocks.Block;
 import schmallcraft.game.objects.blocks.BlockType;
 import schmallcraft.game.objects.entities.Entity;
+import schmallcraft.game.objects.entities.FireWizard;
 import schmallcraft.game.objects.entities.Pig;
 import schmallcraft.game.objects.entities.Player;
 import schmallcraft.game.objects.entities.Zombie;
@@ -88,7 +90,7 @@ public class GameState implements Serializable {
 
 		// TODO: This is for testing purposes remove before flight
 		addEntity(new Pig(player.getPosition().add(new Vector2(3, 4))));
-		addEntity(new Zombie(player.getPosition().add(new Vector2(4, 2)), player));
+		addEntity(new FireWizard(player.getPosition().add(new Vector2(4, 2)), player));
 		getInventory().add(new Item(ItemType.WORKBENCH, 1));
 		getInventory().add(new Item(ItemType.ANVIL, 1));
 		getInventory().add(new Item(ItemType.FURNACE, 1));
@@ -216,9 +218,11 @@ public class GameState implements Serializable {
 			}
 		}
 
-		Block selectedBlock = getMap()[(int) worldPos.y][(int) worldPos.x];
-		if (player.getDistance(selectedBlock) < PLAYER_REACH) {
-			return selectedBlock;
+		if (new Rectangle(0, 0, WORLD_SIZE, WORLD_SIZE).contains(worldPos.toPoint())) {
+			Block selectedBlock = getMap()[(int) worldPos.y][(int) worldPos.x];
+			if (player.getDistance(selectedBlock) < PLAYER_REACH) {
+				return selectedBlock;
+			}
 		}
 		return null;
 	}
