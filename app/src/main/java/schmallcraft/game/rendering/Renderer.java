@@ -4,10 +4,10 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
-import java.awt.image.WritableRaster;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 import javax.imageio.ImageIO;
 
@@ -42,96 +42,6 @@ public class Renderer {
 		}
 	}
 
-	float[][] palette = {
-			{ 23f, 32f, 56f },
-			{ 37f, 58f, 94f },
-			{ 60f, 94f, 139f },
-			{ 79f, 143f, 186f },
-			{ 115f, 190f, 211f },
-			{ 164f, 221f, 219f },
-			{ 25f, 51f, 45f },
-			{ 37f, 86f, 46f },
-			{ 70f, 130f, 50f },
-			{ 117f, 167f, 67f },
-			{ 168f, 202f, 88f },
-			{ 208f, 218f, 145f },
-			{ 77f, 43f, 50f },
-			{ 122f, 72f, 65f },
-			{ 173f, 119f, 87f },
-			{ 192f, 148f, 115f },
-			{ 215f, 181f, 148f },
-			{ 231f, 213f, 179f },
-			{ 52f, 28f, 39f },
-			{ 96f, 44f, 44f },
-			{ 136f, 75f, 43f },
-			{ 190f, 119f, 43f },
-			{ 222f, 158f, 65f },
-			{ 232f, 193f, 112f },
-			{ 36f, 21f, 39f },
-			{ 65f, 29f, 49f },
-			{ 117f, 36f, 56f },
-			{ 165f, 48f, 48f },
-			{ 207f, 87f, 60f },
-			{ 218f, 134f, 62f },
-			{ 30f, 29f, 57f },
-			{ 64f, 39f, 81f },
-			{ 122f, 54f, 123f },
-			{ 162f, 62f, 140f },
-			{ 198f, 81f, 151f },
-			{ 223f, 132f, 165f },
-			{ 9f, 10f, 20f },
-			{ 16f, 20f, 31f },
-			{ 21f, 29f, 40f },
-			{ 32f, 46f, 55f },
-			{ 57f, 74f, 80f },
-			{ 87f, 114f, 119f },
-			{ 129f, 151f, 150f },
-			{ 168f, 181f, 178f },
-			{ 199f, 207f, 204f },
-			{ 235f, 237f, 233f }
-	};
-
-	private double colorDistance(float[] c1RGB, float[] c2RGB) {
-		float distance = 0;
-		for (int i = 0; i < 3; i++) {
-			distance += (c1RGB[i] - c2RGB[i]) * (c1RGB[i] - c2RGB[i]);
-		}
-		return Math.sqrt(distance);
-	}
-
-	// 2x2 dithering matrix
-	int[][] M = {
-			{ 0, 2 },
-			{ 3, 1 }
-	};
-	// int[][] M = { { 0, 8, 2, 10 },
-	// { 12, 4, 14, 6 },
-	// { 3, 11, 1, 9 },
-	// { 15, 7, 13, 5 } }; // 4x4 dithering matrix
-	int n = M[0].length;
-	double s = 16 / Math.pow(n, 2);
-
-	private float[] ditherColor(float[] cRGB, int x, int y) {
-		float[] c2RGB = new float[3];
-		for (int i = 0; i < 3; i++) {
-			c2RGB[i] = (float) (cRGB[i] + s * (M[x % n][y % n]));
-		}
-
-		return getNearestColor(c2RGB);
-	}
-
-	private float[] getNearestColor(float[] c) {
-		float[] nearestColor = palette[0];
-		double minDistance = colorDistance(nearestColor, c);
-		for (int i = 1; i < palette.length; i++) {
-			if (colorDistance(palette[i], c) < minDistance) {
-				nearestColor = palette[i];
-				minDistance = colorDistance(nearestColor, c);
-			}
-		}
-		return nearestColor;
-	}
-
 	public void render(GameState gameState) {
 
 		Graphics2D g = (Graphics2D) screenBuffer.getGraphics();
@@ -159,39 +69,12 @@ public class Renderer {
 			drawSprite(g, object.getSpriteId(), object.getPosition());
 		}
 
+		// Render lights in the underworld only
 		if (gameState.getLevel() == Level.UNDERWORLD) {
-			WritableRaster[] lightBuffers = new WritableRaster[lights.size()];
-			WritableRaster raster = screenBuffer.getRaster();
-			for (int i = 0; i < lights.size(); i++) {
-				lightBuffers[i] = screenBuffer.copyData(null);
-			}
-			for (int x = 0; x < screenBuffer.getWidth(); x++) {
-				for (int y = 0; y < screenBuffer.getHeight() - TILE_SIZE * 2; y++) {
-					for (Lightsource light : lights) {
-						Vector2 lightPos = camera.worldToRenderCoords(light.getLightPosition());
-						double distance = Math.sqrt(Math.pow(lightPos.x - x, 2) +
-								Math.pow(lightPos.y - y, 2));
-						double[] pixel = new double[3];
-						if (distance < light.getLightLevel()) {
-							for (int i = 0; i < 3; i++) {
-								pixel[i] = (Math.pow((light.getLightLevel() - distance) / light.getLightLevel(), 2))
-										* light.getLightColor().getRGBColorComponents(null)[i]
-										* raster.getPixel(x, y, (double[]) null)[i];
-							}
-						}
-						lightBuffers[lights.indexOf(light)].setPixel(x, y, pixel);
-					}
-					float[] pixel = lightBuffers[0].getPixel(x, y, (float[]) null);
-					for (int i = 1; i < lightBuffers.length; i++) {
-						float[] pixel2 = lightBuffers[i].getPixel(x, y, (float[]) null);
-						for (int j = 0; j < 3; j++) {
-							pixel[j] = pixel[j] + pixel2[j];
-							pixel[j] = Math.min(pixel[j], 255);
-						}
-					}
-					// float[] pixel = raster.getPixel(x, y, (float[]) null);
-					raster.setPixel(x, y, ditherColor(pixel, x, y));
-				}
+			try {
+				PixelLighShader.renderLights(screenBuffer, lights, camera);
+			} catch (InterruptedException | ExecutionException e) {
+				// Do nothing and hope the next frame will render fine
 			}
 		}
 
