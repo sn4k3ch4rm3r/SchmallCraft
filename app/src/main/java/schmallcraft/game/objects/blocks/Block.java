@@ -4,6 +4,7 @@ import java.util.List;
 
 import schmallcraft.game.objects.GameObject;
 import schmallcraft.items.Item;
+import schmallcraft.items.ItemType;
 import schmallcraft.util.Vector2;
 
 public class Block extends GameObject {
@@ -25,6 +26,14 @@ public class Block extends GameObject {
 
 	public BlockProperties getProperties() {
 		return type.getProperties();
+	}
+
+	@Override
+	public int getDamageByItem(ItemType item) {
+		if (BlockType.blocksOfTool(item).contains(type)) {
+			return 3;
+		}
+		return super.getDamageByItem(item);
 	}
 
 	@Override

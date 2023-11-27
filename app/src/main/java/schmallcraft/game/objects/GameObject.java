@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.List;
 
 import schmallcraft.items.Item;
+import schmallcraft.items.ItemType;
 import schmallcraft.util.RectangleD;
 import schmallcraft.util.Vector2;
 
@@ -44,6 +45,15 @@ public abstract class GameObject implements Serializable {
 
 	public void setDamage(int damage) {
 		this.damage = damage;
+	}
+
+	public int getDamageByItem(ItemType item) {
+		if (item == ItemType.STICK) {
+			return 2;
+		} else if (item == ItemType.STONE) {
+			return 3;
+		}
+		return 1;
 	}
 
 	public int getHighlightSpriteId() {

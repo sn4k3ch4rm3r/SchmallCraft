@@ -8,6 +8,7 @@ import schmallcraft.game.objects.DropTable;
 import schmallcraft.game.objects.GameObject;
 import schmallcraft.game.objects.blocks.Block;
 import schmallcraft.items.Item;
+import schmallcraft.items.ItemType;
 import schmallcraft.util.Direction;
 import schmallcraft.util.Vector2;
 
@@ -116,6 +117,16 @@ public abstract class Entity extends GameObject {
 
 	public boolean isDead() {
 		return getHealth() <= 0;
+	}
+
+	@Override
+	public int getDamageByItem(ItemType item) {
+		if (item == ItemType.SWORD || item == ItemType.AXE) {
+			return 5;
+		} else if (item == ItemType.PICKAXE) {
+			return 4;
+		}
+		return super.getDamageByItem(item);
 	}
 
 	@Override

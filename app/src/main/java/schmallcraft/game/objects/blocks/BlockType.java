@@ -2,6 +2,7 @@ package schmallcraft.game.objects.blocks;
 
 import java.util.EnumMap;
 import java.util.HashMap;
+import java.util.List;
 
 import schmallcraft.items.ItemType;
 import schmallcraft.util.SpriteIdProvider;
@@ -21,7 +22,7 @@ public enum BlockType implements SpriteIdProvider {
 	TREE {
 		@Override
 		public BlockProperties getProperties() {
-			BlockProperties blockProperties = new BlockProperties(1, 1, BlockType.GRASS);
+			BlockProperties blockProperties = new BlockProperties(9, 1, BlockType.GRASS);
 			blockProperties.getDropTable().setDropRate(ItemType.WOOD, 2.5);
 			blockProperties.getDropTable().setDropRate(ItemType.STICK, 0.3);
 			blockProperties.getDropTable().setDropRate(ItemType.APPLE, 0.1);
@@ -31,7 +32,7 @@ public enum BlockType implements SpriteIdProvider {
 	ROCK {
 		@Override
 		public BlockProperties getProperties() {
-			BlockProperties blockProperties = new BlockProperties(1, 1, BlockType.STONE);
+			BlockProperties blockProperties = new BlockProperties(9, 1, BlockType.STONE);
 			blockProperties.getDropTable().setDropRate(ItemType.STONE, 2.5);
 			blockProperties.getDropTable().setDropRate(ItemType.COAL, 0.1);
 			blockProperties.getDropTable().setDropRate(ItemType.IRON_ORE, 0.05);
@@ -42,7 +43,7 @@ public enum BlockType implements SpriteIdProvider {
 	COAL_ORE {
 		@Override
 		public BlockProperties getProperties() {
-			BlockProperties blockProperties = new BlockProperties(1, 1, BlockType.STONE);
+			BlockProperties blockProperties = new BlockProperties(12, 1, BlockType.STONE);
 			blockProperties.getDropTable().setDropRate(ItemType.COAL, 1);
 			return blockProperties;
 		}
@@ -50,7 +51,7 @@ public enum BlockType implements SpriteIdProvider {
 	IRON_ORE {
 		@Override
 		public BlockProperties getProperties() {
-			BlockProperties blockProperties = new BlockProperties(1, 1, BlockType.STONE);
+			BlockProperties blockProperties = new BlockProperties(12, 1, BlockType.STONE);
 			blockProperties.getDropTable().setDropRate(ItemType.IRON_ORE, 1);
 			return blockProperties;
 		}
@@ -58,7 +59,7 @@ public enum BlockType implements SpriteIdProvider {
 	CRYSTAL_ORE {
 		@Override
 		public BlockProperties getProperties() {
-			BlockProperties blockProperties = new BlockProperties(1, 1, BlockType.STONE);
+			BlockProperties blockProperties = new BlockProperties(15, 1, BlockType.STONE);
 			blockProperties.getDropTable().setDropRate(ItemType.CRYSTAL, 1);
 			return blockProperties;
 		}
@@ -107,6 +108,16 @@ public enum BlockType implements SpriteIdProvider {
 			return idToType.get(id);
 		}
 		return BlockType.UNKNOWN;
+	}
+
+	public static List<BlockType> blocksOfTool(ItemType tool) {
+		if (tool == ItemType.PICKAXE) {
+			return List.of(BlockType.ROCK, BlockType.COAL_ORE, BlockType.IRON_ORE,
+					BlockType.CRYSTAL_ORE);
+		} else if (tool == ItemType.AXE) {
+			return List.of(BlockType.TREE);
+		}
+		return List.of();
 	}
 
 	public BlockProperties getProperties() {

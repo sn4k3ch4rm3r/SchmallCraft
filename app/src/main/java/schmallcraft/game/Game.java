@@ -252,7 +252,9 @@ public class Game implements Runnable {
 			if (player.getStamina() > 0) {
 				GameObject target = state.getHighLightedObject(renderer.getCamera());
 				if (target != null) {
-					List<Item> resultingItems = target.damage(1);
+					Item tool = player.getInventory().getSelectedItem();
+					int damage = tool != null ? target.getDamageByItem(tool.getType()) : 1;
+					List<Item> resultingItems = target.damage(damage);
 					player.exhaust();
 					if (resultingItems != null) {
 						Vector2 tileCenter = target.getPosition().add(new Vector2(0.25, 0.25));

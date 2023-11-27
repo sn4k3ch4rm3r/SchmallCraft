@@ -14,12 +14,8 @@ import schmallcraft.game.objects.GameObject;
 import schmallcraft.game.objects.blocks.Block;
 import schmallcraft.game.objects.blocks.BlockType;
 import schmallcraft.game.objects.entities.Entity;
-import schmallcraft.game.objects.entities.FireWizard;
-import schmallcraft.game.objects.entities.Pig;
 import schmallcraft.game.objects.entities.Player;
-import schmallcraft.game.objects.entities.Zombie;
 import schmallcraft.game.rendering.Camera;
-import schmallcraft.items.Item;
 import schmallcraft.items.ItemType;
 import schmallcraft.util.Inventory;
 import schmallcraft.util.InventoryState;
@@ -87,13 +83,6 @@ public class GameState implements Serializable {
 		this.player = new Player();
 		this.player.setPosition(new Vector2(WORLD_SIZE / 2.0, WORLD_SIZE / 2.0));
 		addEntity(player);
-
-		// TODO: This is for testing purposes remove before flight
-		addEntity(new Pig(player.getPosition().add(new Vector2(3, 4))));
-		addEntity(new FireWizard(player.getPosition().add(new Vector2(4, 2)), player));
-		getInventory().add(new Item(ItemType.WORKBENCH, 1));
-		getInventory().add(new Item(ItemType.ANVIL, 1));
-		getInventory().add(new Item(ItemType.FURNACE, 1));
 	}
 
 	private Block[][] wfcMapToBlocks(int[][] wfcMap) {

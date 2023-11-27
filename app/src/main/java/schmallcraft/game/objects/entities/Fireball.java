@@ -21,7 +21,7 @@ public class Fireball extends Entity {
 	@Override
 	public boolean collide(Entity other) {
 		if (super.collide(other) && !(other instanceof FireWizard) && !dead) {
-			other.damage(3);
+			other.damage(4);
 			dead = true;
 			return true;
 		}
