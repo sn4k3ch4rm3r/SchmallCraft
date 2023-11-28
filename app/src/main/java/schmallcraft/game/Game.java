@@ -157,12 +157,19 @@ public class Game implements Runnable {
 			}
 		}
 
-		// Select hovered item in crafting menu
+		// Select hovered item in crafting menu or hovered button if in menu
 		if (state.getInventoryState() != InventoryState.CLOSED) {
 			for (int i = 0; i < 6; i++) {
 				if (renderer.getInventoryCellBbox(i % 2, i / 2)
 						.contains(renderer.getCamera().screenToRenderCoords(state.getCursorPosition()).toPoint())) {
 					state.setCraftingSelection(i);
+				}
+			}
+			state.setButtonHovered(-1);
+			for (int i = 0; i < 2; i++) {
+				if (renderer.getButtonBbox(i)
+						.contains(renderer.getCamera().screenToRenderCoords(state.getCursorPosition()).toPoint())) {
+					state.setButtonHovered(i);
 				}
 			}
 		}
@@ -292,7 +299,11 @@ public class Game implements Runnable {
 	}
 
 	public void escPressed() {
-		state.setInventoryState(InventoryState.CLOSED);
+		if (state.getInventoryState() == InventoryState.CLOSED) {
+			state.setInventoryState(InventoryState.MENU);
+		} else {
+			state.setInventoryState(InventoryState.CLOSED);
+		}
 	}
 
 	public void actionCraft() {

@@ -41,6 +41,7 @@ public class GameState implements Serializable {
 	private Player player;
 	private transient InventoryState inventoryState = InventoryState.CLOSED;
 	private transient int craftingSelection = 0;
+	private transient int buttonHovered = -1;
 	private transient String saveLocation;
 
 	public GameState(String saveLocation) {
@@ -261,6 +262,14 @@ public class GameState implements Serializable {
 
 	public void setSaveLocation(String saveLocation) {
 		this.saveLocation = saveLocation;
+	}
+
+	public int getButtonHovered() {
+		return buttonHovered;
+	}
+
+	public void setButtonHovered(int buttonHovered) {
+		this.buttonHovered = buttonHovered;
 	}
 
 	public void save() {

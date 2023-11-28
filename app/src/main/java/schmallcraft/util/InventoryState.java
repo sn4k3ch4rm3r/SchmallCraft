@@ -30,7 +30,9 @@ public enum InventoryState {
 		public List<ItemType> getCraftableItems() {
 			return List.of(ItemType.SWORD, ItemType.AXE, ItemType.PICKAXE, ItemType.WAND);
 		}
-	};
+	},
+	MENU(0x382),
+	DEAD(0x370);
 
 	private int textSpriteId;
 

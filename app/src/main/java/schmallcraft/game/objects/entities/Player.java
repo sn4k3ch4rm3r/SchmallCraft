@@ -48,7 +48,7 @@ public class Player extends Entity implements Lightsource {
 	}
 
 	public void heal(int amount) {
-		setHealth(getHealth() + amount);
+		setHealth(Math.max(getMaxHealth(), getHealth() + amount));
 	}
 
 	public void exhaust() {

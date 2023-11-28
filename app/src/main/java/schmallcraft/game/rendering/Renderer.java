@@ -128,46 +128,75 @@ public class Renderer {
 			g.drawImage(getSprite(gameState.getInventoryState().getTextSpriteId(), TILE_SIZE * 4, TILE_SIZE / 2),
 					textX, textY, null);
 
-			// Grid
-			int craftingSelection = gameState.getCraftingSelection();
-			for (int x = 0; x < 4; x++) {
-				if (x != 2) {
-					for (int y = 0; y < 3; y++) {
-						int cellIndex = y * 2 + x;
-						int cellSpriteId = 0x30;
-						if (craftingSelection == cellIndex && x < 2) {
-							cellSpriteId = 0x31;
+			// Item grid if it's a crafting menu
+			if (gameState.getInventoryState() == InventoryState.CRAFTING ||
+					gameState.getInventoryState() == InventoryState.SMELTING ||
+					gameState.getInventoryState() == InventoryState.SMITHING ||
+					gameState.getInventoryState() == InventoryState.INVENTORY_CRAFTING) {
+
+				int craftingSelection = gameState.getCraftingSelection();
+				for (int x = 0; x < 4; x++) {
+					if (x != 2) {
+						for (int y = 0; y < 3; y++) {
+							int cellIndex = y * 2 + x;
+							int cellSpriteId = 0x30;
+							if (craftingSelection == cellIndex && x < 2) {
+								cellSpriteId = 0x31;
+							}
+							Rectangle cellBbox = getInventoryCellBbox(x, y);
+							g.drawImage(getSprite(cellSpriteId, cellBbox.width, cellBbox.height), cellBbox.x,
+									cellBbox.y,
+									null);
 						}
-						Rectangle cellBbox = getInventoryCellBbox(x, y);
-						g.drawImage(getSprite(cellSpriteId, cellBbox.width, cellBbox.height), cellBbox.x, cellBbox.y,
-								null);
+					}
+				}
+
+				// Arrow
+				int arrowX = inventoryBbox.x + inventoryBbox.width / 2;
+				int arrowY = inventoryBbox.y + inventoryBbox.height / 2;
+				g.drawImage(getSprite(0x64), arrowX, arrowY, null);
+
+				// Items
+				List<ItemType> craftableItems = gameState.getCraftableItems();
+				for (int i = 0; i < craftableItems.size(); i++) {
+					ItemType item = craftableItems.get(i);
+					Rectangle cellBbox = getInventoryCellBbox(i % 2, i / 2);
+					g.drawImage(getSprite(item.getSpriteId()), cellBbox.x + TILE_SIZE / 4, cellBbox.y + TILE_SIZE / 4,
+							null);
+				}
+				if (craftingSelection < craftableItems.size()) {
+					ItemType item = craftableItems.get(craftingSelection);
+					List<Item> recipe = item.getRecipe();
+					for (int i = 0; i < recipe.size(); i++) {
+						ItemType recipeItem = recipe.get(i).getType();
+						int amount = recipe.get(i).getAmount();
+						Rectangle cellBbox = getInventoryCellBbox(3, i);
+						g.drawImage(getSprite(recipeItem.getSpriteId()), cellBbox.x + TILE_SIZE / 4,
+								cellBbox.y + TILE_SIZE / 4, null);
+						drawNumber(g, amount, new Vector2(cellBbox.x + TILE_SIZE - 9, cellBbox.y + TILE_SIZE - 7));
 					}
 				}
 			}
+			// Buttons if it's not
+			else {
+				for (int i = 0; i < 2; i++) {
+					Rectangle buttonBbox = getButtonBbox(i);
+					int buttonSpriteId = 0xE0;
+					if (gameState.getButtonHovered() == i) {
+						buttonSpriteId = 0xF0;
+					}
+					g.drawImage(getSprite(buttonSpriteId, buttonBbox.width, buttonBbox.height), buttonBbox.x,
+							buttonBbox.y, null);
 
-			// Arrow
-			int arrowX = inventoryBbox.x + inventoryBbox.width / 2;
-			int arrowY = inventoryBbox.y + inventoryBbox.height / 2;
-			g.drawImage(getSprite(0x64), arrowX, arrowY, null);
-
-			// Items
-			List<ItemType> craftableItems = gameState.getCraftableItems();
-			for (int i = 0; i < craftableItems.size(); i++) {
-				ItemType item = craftableItems.get(i);
-				Rectangle cellBbox = getInventoryCellBbox(i % 2, i / 2);
-				g.drawImage(getSprite(item.getSpriteId()), cellBbox.x + TILE_SIZE / 4, cellBbox.y + TILE_SIZE / 4,
-						null);
-			}
-			if (craftingSelection < craftableItems.size()) {
-				ItemType item = craftableItems.get(craftingSelection);
-				List<Item> recipe = item.getRecipe();
-				for (int i = 0; i < recipe.size(); i++) {
-					ItemType recipeItem = recipe.get(i).getType();
-					int amount = recipe.get(i).getAmount();
-					Rectangle cellBbox = getInventoryCellBbox(3, i);
-					g.drawImage(getSprite(recipeItem.getSpriteId()), cellBbox.x + TILE_SIZE / 4,
-							cellBbox.y + TILE_SIZE / 4, null);
-					drawNumber(g, amount, new Vector2(cellBbox.x + TILE_SIZE - 9, cellBbox.y + TILE_SIZE - 7));
+					// Button Text
+					int textSprite = 0x380;
+					if (i == 0 && gameState.getInventoryState() == InventoryState.MENU) {
+						textSprite = 0x180;
+					} else if (i == 0 && gameState.getInventoryState() == InventoryState.DEAD) {
+						textSprite = 0x182;
+					}
+					g.drawImage(getSprite(textSprite, TILE_SIZE * 2, TILE_SIZE / 2), buttonBbox.x + TILE_SIZE,
+							buttonBbox.y + TILE_SIZE / 4, null);
 				}
 			}
 		}
@@ -265,6 +294,13 @@ public class Renderer {
 		Rectangle inventoryBbox = getInventoryBbox();
 		return new Rectangle(inventoryBbox.x + TILE_SIZE / 2 + TILE_SIZE * cellX,
 				inventoryBbox.y + (int) (TILE_SIZE * 1.5) + TILE_SIZE * cellY, TILE_SIZE, TILE_SIZE);
+	}
+
+	public Rectangle getButtonBbox(int index) {
+		Rectangle inventoryBbox = getInventoryBbox();
+		return new Rectangle(inventoryBbox.x + inventoryBbox.width / 2 - TILE_SIZE * 2,
+				(int) (inventoryBbox.y + TILE_SIZE * 1.75 + index * TILE_SIZE * 1.25),
+				TILE_SIZE * 4, TILE_SIZE);
 	}
 
 	public Camera getCamera() {
