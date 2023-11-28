@@ -29,9 +29,12 @@ import schmallcraft.util.InventoryState;
 import schmallcraft.util.Vector2;
 
 public class Game implements Runnable {
+	public interface GameOverCallback {
+		void gameOver();
+	}
+
 	private double deltaTime = 0;
 	public static Random random = new Random();
-	private double saveTimer = 1;
 
 	private GameState state;
 	private Renderer renderer;
@@ -42,7 +45,11 @@ public class Game implements Runnable {
 
 	private boolean onStairs = false;
 
-	public Game(GameState gameState, Renderer gameRenderer) {
+	private GameOverCallback gameOverCallback;
+	private boolean gameOver = false;
+
+	public Game(GameState gameState, Renderer gameRenderer, GameOverCallback gameOverCallback) {
+		this.gameOverCallback = gameOverCallback;
 		state = gameState;
 		renderer = gameRenderer;
 		player = state.getPlayer();
@@ -64,7 +71,7 @@ public class Game implements Runnable {
 		double deltaFixedUpdate = 0;
 		long now;
 
-		while (true) {
+		while (!gameOver) {
 			now = System.nanoTime();
 			deltaFrame += (now - lastFrame) / (1e9 / TARGET_FPS);
 			deltaFixedUpdate += (now - lastFrame) / (1e9 / FIXED_UPDATES);
@@ -101,6 +108,7 @@ public class Game implements Runnable {
 				frameCount = 0;
 			}
 		}
+		gameOverCallback.gameOver();
 	}
 
 	public void setPlayerDirection(Vector2 direction) {
@@ -174,11 +182,9 @@ public class Game implements Runnable {
 			}
 		}
 
-		// Autosave
-		saveTimer -= 1.0 / FIXED_UPDATES;
-		if (saveTimer <= 0) {
-			saveTimer = 1;
-			state.save();
+		// Check if player is dead
+		if (player.isDead()) {
+			state.setInventoryState(InventoryState.DEAD);
 		}
 	}
 
@@ -285,6 +291,18 @@ public class Game implements Runnable {
 						}
 					}
 				}
+			}
+		} else if (state.getInventoryState() == InventoryState.MENU ||
+				state.getInventoryState() == InventoryState.DEAD) {
+			if (state.getButtonHovered() == 0) {
+				if (state.getInventoryState() == InventoryState.MENU) {
+					state.save();
+				} else {
+					state = state.load();
+					player = state.getPlayer();
+				}
+			} else {
+				gameOver = true;
 			}
 		} else {
 			int craftinSelectionId = state.getCraftingSelection();

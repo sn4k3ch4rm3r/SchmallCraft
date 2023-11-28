@@ -5,7 +5,6 @@ import static schmallcraft.util.Constants.RENDER_SCALE;
 import static schmallcraft.util.Constants.RENDER_WIDTH;
 
 import javax.swing.JFrame;
-import javax.swing.JPanel;
 import javax.swing.WindowConstants;
 
 import schmallcraft.event.KeyboardEventListener;
@@ -15,14 +14,15 @@ import schmallcraft.game.GameState;
 import schmallcraft.game.rendering.Renderer;
 
 public class Window extends JFrame {
-	private JPanel gamePanel;
+	private GamePanel gamePanel;
+	private MenuPanel menuPanel;
 
 	public Window() {
 		this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 		this.setResizable(false);
 		this.setTitle("SchmallCraft");
 
-		MenuPanel menuPanel = new MenuPanel(gameState -> startGame(gameState));
+		menuPanel = new MenuPanel(gameState -> startGame(gameState));
 		this.setContentPane(menuPanel);
 		this.pack();
 
@@ -32,7 +32,11 @@ public class Window extends JFrame {
 
 	public void startGame(GameState gameState) {
 		Renderer gameRenderer = new Renderer(RENDER_WIDTH, RENDER_HEIGHT, RENDER_SCALE, () -> gamePanel.repaint());
-		Game game = new Game(gameState, gameRenderer);
+		Game game = new Game(gameState, gameRenderer, () -> {
+			this.setContentPane(menuPanel);
+			this.pack();
+			this.setLocationRelativeTo(null);
+		});
 		gamePanel = new GamePanel(gameRenderer);
 		gamePanel.addKeyListener(new KeyboardEventListener(game));
 		MouseEventListener mouseListener = new MouseEventListener(game);

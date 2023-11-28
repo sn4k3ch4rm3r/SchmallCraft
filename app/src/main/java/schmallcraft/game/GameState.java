@@ -5,8 +5,10 @@ import static schmallcraft.util.Constants.PLAYER_REACH;
 import static schmallcraft.util.Constants.WORLD_SIZE;
 
 import java.awt.Rectangle;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -280,6 +282,22 @@ public class GameState implements Serializable {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+
+	public GameState load() {
+		try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(saveLocation))) {
+			Object obj = ois.readObject();
+			if (obj instanceof GameState) {
+				GameState gameState = (GameState) obj;
+				gameState.setSaveLocation(saveLocation);
+				return gameState;
+			}
+			ois.close();
+		} catch (ClassNotFoundException | IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
 	}
 
 	private void readObject(java.io.ObjectInputStream ois) throws IOException, ClassNotFoundException {
