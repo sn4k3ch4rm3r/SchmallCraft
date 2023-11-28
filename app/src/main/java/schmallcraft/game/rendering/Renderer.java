@@ -14,6 +14,7 @@ import javax.imageio.ImageIO;
 import schmallcraft.Main;
 import schmallcraft.game.GameState;
 import schmallcraft.game.objects.GameObject;
+import schmallcraft.game.objects.blocks.Block;
 import schmallcraft.items.Item;
 import schmallcraft.items.ItemType;
 import schmallcraft.util.InventoryState;
@@ -59,15 +60,25 @@ public class Renderer {
 			}
 		}
 
-		ArrayList<Lightsource> lights = new ArrayList<>();
+		// Render highlight if it's a block, so it's under the entites
+		GameObject highlightObject = gameState.getHighLightedObject(camera);
+		if (highlightObject instanceof Block) {
+			renderHighlight(g, highlightObject);
+		}
 
 		// Render entities and items
+		ArrayList<Lightsource> lights = new ArrayList<>();
 		List<GameObject> visibleObjects = camera.getVisibleObjects(gameState.getObjects());
 		for (GameObject object : visibleObjects) {
 			if (object instanceof Lightsource) {
 				lights.add((Lightsource) object);
 			}
 			drawSprite(g, object.getSpriteId(), object.getPosition());
+		}
+
+		// Render highlight if it's not a block
+		if (highlightObject != null && !(highlightObject instanceof Block)) {
+			renderHighlight(g, highlightObject);
 		}
 
 		// Render lights in the underworld only
@@ -77,16 +88,6 @@ public class Renderer {
 			} catch (InterruptedException | ExecutionException e) {
 				// Do nothing and hope the next frame will render fine
 			}
-		}
-
-		// Render highlight
-		GameObject highlightObject = gameState.getHighLightedObject(camera);
-		if (highlightObject != null) {
-			int highlightSpriteId = highlightObject.getHighlightSpriteId();
-			if (highlightObject.getSpriteId() < 0) {
-				highlightSpriteId = -highlightSpriteId;
-			}
-			drawSprite(g, highlightSpriteId, highlightObject.getPosition());
 		}
 
 		// Render HUD
@@ -257,6 +258,14 @@ public class Renderer {
 					numberWidth, numberHeight);
 			g.drawImage(numSprite, (int) (position.x + i * numberWidth), (int) position.y, null);
 		}
+	}
+
+	private void renderHighlight(Graphics2D g, GameObject highlightObject) {
+		int highlightSpriteId = highlightObject.getHighlightSpriteId();
+		if (highlightObject.getSpriteId() < 0) {
+			highlightSpriteId = -highlightSpriteId;
+		}
+		drawSprite(g, highlightSpriteId, highlightObject.getPosition());
 	}
 
 	public BufferedImage getScreenBuffer() {
