@@ -1,10 +1,13 @@
 package schmallcraft.game.objects.entities;
 
+import java.awt.Color;
+
 import schmallcraft.game.objects.blocks.Block;
+import schmallcraft.game.rendering.Lightsource;
 import schmallcraft.util.Direction;
 import schmallcraft.util.Vector2;
 
-public class Fireball extends Entity {
+public class Fireball extends Entity implements Lightsource {
 	private static final double MOVEMENT_SPEED = 4;
 	private Entity castBy;
 	boolean dead = false;
@@ -48,5 +51,20 @@ public class Fireball extends Entity {
 	@Override
 	public int getSpriteId() {
 		return 0x133;
+	}
+
+	@Override
+	public int getLightLevel() {
+		return 25;
+	}
+
+	@Override
+	public Color getLightColor() {
+		return Color.RED;
+	}
+
+	@Override
+	public Vector2 getLightPosition() {
+		return getBoundingBox().getCenter();
 	}
 }

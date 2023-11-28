@@ -24,6 +24,7 @@ import schmallcraft.game.objects.entities.Pig;
 import schmallcraft.game.objects.entities.Player;
 import schmallcraft.game.objects.entities.Zombie;
 import schmallcraft.game.rendering.Camera;
+import schmallcraft.items.Item;
 import schmallcraft.items.ItemType;
 import schmallcraft.util.Inventory;
 import schmallcraft.util.InventoryState;
@@ -113,6 +114,10 @@ public class GameState implements Serializable {
 				underworld.getEntities().add(entity);
 			}
 		}
+
+		getInventory().add(new Item(ItemType.WAND, 1));
+		getInventory().add(new Item(ItemType.TORCH, 1));
+		getInventory().add(new Item(ItemType.LANTERN, 1));
 	}
 
 	private Block[][] wfcMapToBlocks(int[][] wfcMap) {
@@ -164,6 +169,10 @@ public class GameState implements Serializable {
 
 	public Player getPlayer() {
 		return player;
+	}
+
+	public Level getLevel() {
+		return level;
 	}
 
 	public void moveSelection(int amount) {

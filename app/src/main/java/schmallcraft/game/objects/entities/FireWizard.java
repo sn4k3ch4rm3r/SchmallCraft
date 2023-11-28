@@ -2,13 +2,15 @@ package schmallcraft.game.objects.entities;
 
 import static schmallcraft.util.Constants.FIXED_UPDATES;
 
+import java.awt.Color;
 import java.util.LinkedList;
 import java.util.Queue;
 
 import schmallcraft.game.objects.GameObject;
+import schmallcraft.game.rendering.Lightsource;
 import schmallcraft.util.Vector2;
 
-public class FireWizard extends Entity {
+public class FireWizard extends Entity implements Lightsource {
 	private static final double MOVEMENT_SPEED = 2;
 	private static final double ATTACK_RANGE = 10;
 	private GameObject target;
@@ -63,5 +65,20 @@ public class FireWizard extends Entity {
 	@Override
 	public int getSpriteId() {
 		return 0x13 * (isFlipped() ? -1 : 1);
+	}
+
+	@Override
+	public int getLightLevel() {
+		return 30;
+	}
+
+	@Override
+	public Color getLightColor() {
+		return Color.ORANGE;
+	}
+
+	@Override
+	public Vector2 getLightPosition() {
+		return getBoundingBox().getCenter();
 	}
 }

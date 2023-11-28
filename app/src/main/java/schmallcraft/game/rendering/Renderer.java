@@ -5,7 +5,9 @@ import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 import javax.imageio.ImageIO;
 
@@ -14,6 +16,7 @@ import schmallcraft.game.objects.GameObject;
 import schmallcraft.items.Item;
 import schmallcraft.items.ItemType;
 import schmallcraft.util.InventoryState;
+import schmallcraft.util.Level;
 import schmallcraft.util.Vector2;
 import static schmallcraft.util.Constants.*;
 
@@ -55,10 +58,24 @@ public class Renderer {
 			}
 		}
 
+		ArrayList<Lightsource> lights = new ArrayList<>();
+
 		// Render entities and items
 		List<GameObject> visibleObjects = camera.getVisibleObjects(gameState.getObjects());
 		for (GameObject object : visibleObjects) {
+			if (object instanceof Lightsource) {
+				lights.add((Lightsource) object);
+			}
 			drawSprite(g, object.getSpriteId(), object.getPosition());
+		}
+
+		// Render lights in the underworld only
+		if (gameState.getLevel() == Level.UNDERWORLD) {
+			try {
+				PixelLighShader.renderLights(screenBuffer, lights, camera);
+			} catch (InterruptedException | ExecutionException e) {
+				// Do nothing and hope the next frame will render fine
+			}
 		}
 
 		// Render highlight

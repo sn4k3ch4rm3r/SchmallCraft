@@ -87,4 +87,8 @@ public class Inventory implements Serializable {
 		}
 		add(new Item(item, 1));
 	}
+
+	public boolean hasType(ItemType item) {
+		return getItem(item) != null;
+	}
 }
