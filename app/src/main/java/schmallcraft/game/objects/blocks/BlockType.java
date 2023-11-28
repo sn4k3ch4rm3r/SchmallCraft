@@ -35,7 +35,7 @@ public enum BlockType implements SpriteIdProvider {
 			BlockProperties blockProperties = new BlockProperties(9, 1, BlockType.STONE);
 			blockProperties.getDropTable().setDropRate(ItemType.STONE, 2.5);
 			blockProperties.getDropTable().setDropRate(ItemType.COAL, 0.1);
-			blockProperties.getDropTable().setDropRate(ItemType.IRON_ORE, 0.05);
+			blockProperties.getDropTable().setDropRate(ItemType.IRON_ORE, 0.07);
 			blockProperties.getDropTable().setDropRate(ItemType.CRYSTAL, 0.01);
 			return blockProperties;
 		}
@@ -44,7 +44,7 @@ public enum BlockType implements SpriteIdProvider {
 		@Override
 		public BlockProperties getProperties() {
 			BlockProperties blockProperties = new BlockProperties(12, 1, BlockType.STONE);
-			blockProperties.getDropTable().setDropRate(ItemType.COAL, 1);
+			blockProperties.getDropTable().setDropRate(ItemType.COAL, 2.3);
 			return blockProperties;
 		}
 	},
@@ -52,7 +52,7 @@ public enum BlockType implements SpriteIdProvider {
 		@Override
 		public BlockProperties getProperties() {
 			BlockProperties blockProperties = new BlockProperties(12, 1, BlockType.STONE);
-			blockProperties.getDropTable().setDropRate(ItemType.IRON_ORE, 1);
+			blockProperties.getDropTable().setDropRate(ItemType.IRON_ORE, 2.2);
 			return blockProperties;
 		}
 	},

@@ -76,7 +76,7 @@ public class Player extends Entity implements Lightsource {
 	 * @param amount Mennyivel regenerálja
 	 */
 	public void heal(int amount) {
-		setHealth(Math.max(getMaxHealth(), getHealth() + amount));
+		setHealth(Math.min(getMaxHealth(), getHealth() + amount));
 	}
 
 	/**

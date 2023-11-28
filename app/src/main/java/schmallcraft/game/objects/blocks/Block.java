@@ -44,7 +44,7 @@ public class Block extends GameObject {
 	@Override
 	public int getDamageByItem(ItemType item) {
 		if (BlockType.blocksOfTool(item).contains(type)) {
-			return 3;
+			return 5;
 		}
 		return super.getDamageByItem(item);
 	}
