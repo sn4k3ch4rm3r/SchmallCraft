@@ -8,6 +8,10 @@ import schmallcraft.util.Direction;
 import java.util.HashSet;
 import java.util.EnumMap;
 
+/**
+ * Wave Function Collapse-ben használt minta osztály ami alapján a szabályokat
+ * kiszámítjuk
+ */
 public class Pattern {
 	private int[][] rawPattern;
 	private int weight;
@@ -22,10 +26,22 @@ public class Pattern {
 		this.weight = 1;
 	}
 
+	/**
+	 * Megadja, hogy a két minta egymás mellé illeszthető-e adott irányban.
+	 * 
+	 * @param neigbour           A szomszéd minta
+	 * @param neighbourDirection A szomszéd iránya ehhez a mintához képest
+	 * @return Igaz, ha a két minta egymás mellé illeszthető, hamis, ha nem.
+	 */
 	public boolean compatible(Pattern neigbour, Direction neighbourDirection) {
 		return compatiblePatterns.get(neighbourDirection).contains(neigbour);
 	}
 
+	/**
+	 * Kiszámítja, hogy az összes minta közül melyik kompatibilis ezzel a mintával
+	 * 
+	 * @param allPatterns
+	 */
 	public void calculateCompatibilities(Pattern[] allPatterns) {
 		compatiblePatterns = new EnumMap<>(Direction.class);
 		for (Direction direction : Direction.values()) {
@@ -93,25 +109,6 @@ public class Pattern {
 		}
 	}
 
-	public Pattern rotate(int amount) {
-		int w = width;
-		int h = height;
-		int[][] res = rawPattern;
-		for (int r = 0; r < amount; r++) {
-			int[][] rotated = new int[w][h];
-			for (int y = 0; y < h; y++) {
-				for (int x = 0; x < w; x++) {
-					rotated[x][y] = res[y][x];
-				}
-			}
-			res = rotated;
-			int temp = w;
-			w = h;
-			h = temp;
-		}
-		return new Pattern(res);
-	}
-
 	public int getWidth() {
 		return width;
 	}
@@ -157,11 +154,17 @@ public class Pattern {
 		return true;
 	}
 
+	/**
+	 * A mintát tároló tömb alapján vizsgál egyediséget.
+	 */
 	@Override
 	public int hashCode() {
 		return Arrays.deepHashCode(rawPattern);
 	}
 
+	/**
+	 * Növeli a minta súlyát
+	 */
 	public void increaseWeight() {
 		weight++;
 	}

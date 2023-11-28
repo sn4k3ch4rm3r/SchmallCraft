@@ -37,6 +37,11 @@ public class Renderer {
 		this.spriteSheet = Main.spriteSheet;
 	}
 
+	/**
+	 * Kirajzolja a játék aktuális állapotát a képernyőre
+	 * 
+	 * @param gameState A játék aktuális állapota
+	 */
 	public void render(GameState gameState) {
 
 		Graphics2D g = (Graphics2D) screenBuffer.getGraphics();
@@ -281,10 +286,19 @@ public class Renderer {
 		return getHeight() * scale;
 	}
 
+	/**
+	 * Beállítja a kamera pozícióját
+	 * 
+	 * @param cameraPosition
+	 */
 	public void setCameraPosition(Vector2 cameraPosition) {
 		this.camera.setPosition(cameraPosition);
 	}
 
+	/**
+	 * 
+	 * @return Inventory körvonala
+	 */
 	public Rectangle getInventoryBbox() {
 		int inventorySize = 5 * TILE_SIZE;
 		int inventoryX = (getWidth() / 2) - (inventorySize / 2);
@@ -292,12 +306,22 @@ public class Renderer {
 		return new Rectangle(inventoryX, inventoryY, inventorySize, inventorySize);
 	}
 
+	/**
+	 * @param cellX
+	 * @param cellY
+	 * @return Inventory cella körvonala
+	 */
 	public Rectangle getInventoryCellBbox(int cellX, int cellY) {
 		Rectangle inventoryBbox = getInventoryBbox();
 		return new Rectangle(inventoryBbox.x + TILE_SIZE / 2 + TILE_SIZE * cellX,
 				inventoryBbox.y + (int) (TILE_SIZE * 1.5) + TILE_SIZE * cellY, TILE_SIZE, TILE_SIZE);
 	}
 
+	/**
+	 * 
+	 * @param index
+	 * @return Gomb körvonala
+	 */
 	public Rectangle getButtonBbox(int index) {
 		Rectangle inventoryBbox = getInventoryBbox();
 		return new Rectangle(inventoryBbox.x + inventoryBbox.width / 2 - TILE_SIZE * 2,

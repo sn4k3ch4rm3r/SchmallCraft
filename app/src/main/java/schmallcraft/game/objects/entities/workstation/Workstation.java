@@ -27,6 +27,9 @@ public class Workstation extends Entity {
 		return 0x53;
 	}
 
+	/**
+	 * Visszaadja a munkaállomás típusát
+	 */
 	public WorkstationType getType() {
 		return type;
 	}

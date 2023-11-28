@@ -12,16 +12,6 @@ public enum WorkstationType implements SpriteIdProvider {
 
 	private final ItemType itemType;
 	private final InventoryState inventoryState;
-
-	private WorkstationType(ItemType itemType, InventoryState inventoryState) {
-		this.itemType = itemType;
-		this.inventoryState = inventoryState;
-	}
-
-	public ItemType getItemType() {
-		return itemType;
-	}
-
 	private static EnumMap<WorkstationType, Integer> spriteIds = new EnumMap<>(WorkstationType.class);
 
 	static {
@@ -30,6 +20,21 @@ public enum WorkstationType implements SpriteIdProvider {
 		spriteIds.put(ANVIL, 0x52);
 	}
 
+	private WorkstationType(ItemType itemType, InventoryState inventoryState) {
+		this.itemType = itemType;
+		this.inventoryState = inventoryState;
+	}
+
+	/**
+	 * Visszaadja a workstation-höz tartozó item típusát
+	 */
+	public ItemType getItemType() {
+		return itemType;
+	}
+
+	/**
+	 * Megadja, hogy milyen állapotba kerül az inventory a workstation használatakor
+	 */
 	public InventoryState getInventoryState() {
 		return inventoryState;
 	}

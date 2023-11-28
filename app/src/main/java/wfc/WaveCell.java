@@ -5,6 +5,9 @@ import java.util.Random;
 
 import schmallcraft.util.Direction;
 
+/**
+ * Wave Function Collapse-ben a cellákat kezeli
+ */
 public class WaveCell {
 	private Random random;
 	private Pattern[] allStates;
@@ -21,10 +24,16 @@ public class WaveCell {
 		this.entropy = allStates.length;
 	}
 
+	/**
+	 * Megadja, ennek a cellának hány lehetséges állapota van.
+	 */
 	public int getEntropy() {
 		return entropy;
 	}
 
+	/**
+	 * @return A cella lehetséges állapotai
+	 */
 	public Pattern[] getValidStates() {
 		Pattern[] validStates = new Pattern[entropy];
 		if (state != null) {
@@ -41,6 +50,13 @@ public class WaveCell {
 		return validStates;
 	}
 
+	/**
+	 * Szomszéd módosításainak kiterjesztése erre a cellára
+	 * 
+	 * @param neighbour          Szomszéd cella
+	 * @param neighbourDirection Szomszéd cella irány ehhez képest
+	 * @return Igaz, ha változott a cella állapota
+	 */
 	public boolean propagate(WaveCell neighbour, Direction neighbourDirection) {
 		if (state != null) {
 			return false;
@@ -71,6 +87,9 @@ public class WaveCell {
 		return changed;
 	}
 
+	/**
+	 * Egy állapot véletlenszerű kiválasztása a lehetséges állapotok közül
+	 */
 	public void collapse() {
 		Pattern[] validStates = getValidStates();
 		int[] weights = new int[validStates.length];
@@ -89,6 +108,11 @@ public class WaveCell {
 		}
 	}
 
+	/**
+	 * Egy adott állapotra kényszerítés
+	 * 
+	 * @param p Minta, amire kényszerítjuük
+	 */
 	public void collapseTo(Pattern p) {
 		state = p;
 		entropy = 1;
@@ -101,6 +125,11 @@ public class WaveCell {
 		}
 	}
 
+	/**
+	 * A cella állapota
+	 * 
+	 * @return A cella állapota, ha már ki van választva, null, ha nincs
+	 */
 	public Pattern getState() {
 		return state;
 	}

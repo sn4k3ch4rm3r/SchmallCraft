@@ -7,6 +7,9 @@ import schmallcraft.items.Item;
 import schmallcraft.items.ItemType;
 import schmallcraft.util.Vector2;
 
+/**
+ * Statikus objektumok ősosztálya
+ */
 public class Block extends GameObject {
 	private BlockType type;
 
@@ -20,10 +23,20 @@ public class Block extends GameObject {
 		return type.getSpriteId();
 	}
 
+	/**
+	 * Visszaadja a blokk típusát
+	 * 
+	 * @return A blokk típusa
+	 */
 	public BlockType getType() {
 		return type;
 	}
 
+	/**
+	 * Visszaadja a blokk tulajdonságait
+	 * 
+	 * @return A blokk tulajdonságai
+	 */
 	public BlockProperties getProperties() {
 		return type.getProperties();
 	}

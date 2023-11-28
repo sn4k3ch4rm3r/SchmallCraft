@@ -10,6 +10,10 @@ import javax.swing.JPanel;
 
 import schmallcraft.Main;
 
+/**
+ * A játék címét megjelenítő panel.
+ * Igazáből csak kép megjelenítése miatt van rá szükség.
+ */
 public class TitlePanel extends JPanel {
 	public TitlePanel() {
 		this.setPreferredSize(new Dimension(96 * RENDER_SCALE, 16 * RENDER_SCALE));

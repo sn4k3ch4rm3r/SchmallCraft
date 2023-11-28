@@ -177,6 +177,13 @@ public enum ItemType implements SpriteIdProvider {
 		spriteIds.put(ANVIL, 0x325);
 	}
 
+	/**
+	 * Az item használatát végrehajtó metódus.
+	 * 
+	 * @param player a használó játékos
+	 * @param target gameobject amin használjuk az itemet
+	 * @return A használat során keletkező objektumok listája
+	 */
 	public List<GameObject> use(Player player, GameObject target) {
 		if (target != null) {
 			Item item = new Item(this, 1);
@@ -191,6 +198,11 @@ public enum ItemType implements SpriteIdProvider {
 		return spriteIds.get(this);
 	}
 
+	/**
+	 * Visszaadja az item receptjét.
+	 * 
+	 * @return
+	 */
 	public List<Item> getRecipe() {
 		return null;
 	}

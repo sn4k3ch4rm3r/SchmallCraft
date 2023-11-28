@@ -11,6 +11,9 @@ import javax.swing.JButton;
 
 import schmallcraft.Main;
 
+/**
+ * Saját gomb osztály, a saját kinézet érdekében.
+ */
 public class Button extends JButton {
 	private Rectangle textSpriteBounds;
 	private Rectangle baseSpriteBounds = new Rectangle(0, 224, TILE_SIZE * 4, TILE_SIZE);

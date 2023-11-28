@@ -26,7 +26,6 @@ import schmallcraft.game.objects.entities.Pig;
 import schmallcraft.game.objects.entities.Player;
 import schmallcraft.game.objects.entities.Zombie;
 import schmallcraft.game.rendering.Camera;
-import schmallcraft.items.Item;
 import schmallcraft.items.ItemType;
 import schmallcraft.util.Inventory;
 import schmallcraft.util.InventoryState;
@@ -35,6 +34,9 @@ import schmallcraft.util.Vector2;
 import schmallcraft.util.WFCPatterns;
 import wfc.WaveFunctionCollapse;
 
+/**
+ * A játék állapotát tároló osztály
+ */
 public class GameState implements Serializable {
 	private WorldData overworld;
 	private WorldData underworld;
@@ -58,8 +60,6 @@ public class GameState implements Serializable {
 				3, 3,
 				WORLD_SIZE, WORLD_SIZE,
 				random);
-
-		// TODO: Add reverse id lookup instead of magic numbers
 
 		// Make sure that the palyer spawns on grass
 		for (int y = (int) Math.ceil(WORLD_SIZE / 2.0); y < Math.floor(WORLD_SIZE / 2.0) + 1; y++) {
@@ -117,12 +117,14 @@ public class GameState implements Serializable {
 				underworld.getEntities().add(entity);
 			}
 		}
-
-		getInventory().add(new Item(ItemType.WAND, 1));
-		getInventory().add(new Item(ItemType.TORCH, 1));
-		getInventory().add(new Item(ItemType.LANTERN, 1));
 	}
 
+	/**
+	 * WFC eredményét konvertálja Blokkokká
+	 * 
+	 * @param wfcMap id tömb
+	 * @return Blokk tömb
+	 */
 	private Block[][] wfcMapToBlocks(int[][] wfcMap) {
 		Block[][] result = new Block[wfcMap.length][wfcMap[0].length];
 		for (int y = 0; y < wfcMap.length; y++) {
@@ -182,6 +184,11 @@ public class GameState implements Serializable {
 		getInventory().moveSelection(amount);
 	}
 
+	/**
+	 * Visszaadja az Entitásokat és az eldobott Itemeket
+	 * 
+	 * @return
+	 */
 	public List<GameObject> getObjects() {
 		List<GameObject> objects = new ArrayList<>();
 		objects.addAll(getDroppedItems());
@@ -205,6 +212,9 @@ public class GameState implements Serializable {
 		return inventoryState.getCraftableItems();
 	}
 
+	/**
+	 * Dimenziót vált a felszín és az alvilág között
+	 */
 	public void changeDimension() {
 		switch (level) {
 			case OVERWORD:
@@ -224,6 +234,11 @@ public class GameState implements Serializable {
 		return craftingSelection;
 	}
 
+	/**
+	 * Visszaadja a jelenlegi dimenzió adatait
+	 * 
+	 * @return WorldData: aktuálsi dimenzió adatai
+	 */
 	public WorldData getWorldData() {
 		switch (level) {
 			case OVERWORD:
@@ -234,6 +249,9 @@ public class GameState implements Serializable {
 		return null;
 	}
 
+	/**
+	 * Visszaadja a kurzor alatt lévő objektumot
+	 */
 	public GameObject getHighLightedObject(Camera camera) {
 		if (cursorPosition == null) {
 			return null;
@@ -274,6 +292,9 @@ public class GameState implements Serializable {
 		this.buttonHovered = buttonHovered;
 	}
 
+	/**
+	 * Fájlba írja a játék állapotát
+	 */
 	public void save() {
 		try (ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(saveLocation))) {
 			out.writeObject(this);
@@ -284,6 +305,11 @@ public class GameState implements Serializable {
 		}
 	}
 
+	/**
+	 * Betölti a legutóbbi mentést
+	 * 
+	 * @return a mentett játékállapot
+	 */
 	public GameState load() {
 		try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(saveLocation))) {
 			Object obj = ois.readObject();
@@ -300,6 +326,9 @@ public class GameState implements Serializable {
 		return null;
 	}
 
+	/**
+	 * Deszerializálás után beállítja az inventoryState-et bezártra
+	 */
 	private void readObject(java.io.ObjectInputStream ois) throws IOException, ClassNotFoundException {
 		ois.defaultReadObject();
 		inventoryState = InventoryState.CLOSED;

@@ -4,6 +4,9 @@ import java.io.File;
 
 import javax.swing.filechooser.FileFilter;
 
+/**
+ * Fájltípus szűrő
+ */
 public class SCSaveFilter extends FileFilter {
 	public static final String SCSAVE_EXTENSION = ".scsave";
 

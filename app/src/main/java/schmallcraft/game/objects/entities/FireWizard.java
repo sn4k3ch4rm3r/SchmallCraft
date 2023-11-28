@@ -23,6 +23,11 @@ public class FireWizard extends Entity implements Lightsource {
 		this.target = target;
 	}
 
+	/**
+	 * Beállítja a Varázsló által támadott entitást
+	 * 
+	 * @param target
+	 */
 	public void setTarget(GameObject target) {
 		this.target = target;
 	}
@@ -58,6 +63,11 @@ public class FireWizard extends Entity implements Lightsource {
 		super.update(deltaTime);
 	}
 
+	/**
+	 * Az előző update óta a Varázsló által kilőtt tüzes golyók listája
+	 * 
+	 * @return
+	 */
 	public Queue<Entity> getSummoningQueue() {
 		return summoningQueue;
 	}

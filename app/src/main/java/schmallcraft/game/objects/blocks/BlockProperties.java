@@ -21,27 +21,46 @@ public class BlockProperties {
 		this(0, speedMultiplier, null);
 	}
 
+	/**
+	 * @return A blokk keménysége
+	 */
 	public int getHardness() {
 		return hardness;
 	}
 
+	/**
+	 * Milyen gyorsan tud a játékos az adott blokkon mozogni
+	 * 
+	 * @return A mozgási sebesség szorzója
+	 */
 	public double getMovementSpeedMultiplier() {
 		return movementSpeedMultiplier;
 	}
 
+	/**
+	 * Milyen blokkra változik miután kibányászták
+	 */
 	public BlockType getWhenBroken() {
 		return whenBroken;
 	}
 
+	/**
+	 * Megadja, hogy a blokk bányászható-e
+	 */
 	public boolean isBreakable() {
 		return breakable;
 	}
 
-	// TODO: Maybe a better method
+	/**
+	 * Megadja, hogy a blokkra rá lehet-e lépni
+	 */
 	public boolean isSolid() {
 		return isBreakable();
 	}
 
+	/**
+	 * Visszaadja a blokkhoz tartozó drop táblát
+	 */
 	public DropTable getDropTable() {
 		return dropTable;
 	}

@@ -1,5 +1,8 @@
 package schmallcraft.util;
 
+/**
+ * A világ generáláshoz használt minták.
+ */
 public final class WFCPatterns {
 	public static int[][] overworld = {
 			{ 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8,

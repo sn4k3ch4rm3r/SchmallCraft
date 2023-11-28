@@ -9,6 +9,9 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
+/**
+ * Kirendereli a világban lévő fényeket, majd korlátozott paláttával megjeleníti
+ */
 public class PixelLighShader {
 	private static ExecutorService executorService = Executors.newFixedThreadPool(8);
 
@@ -68,6 +71,12 @@ public class PixelLighShader {
 	private static int n = M[0].length;
 	private static double s = 16 / Math.pow(n, 2);
 
+	/**
+	 * Kiszámolja két szín közötti távolságot
+	 * 
+	 * @param c1RGB
+	 * @param c2RGB
+	 */
 	private static double colorDistance(float[] c1RGB, float[] c2RGB) {
 		float distance = 0;
 		for (int i = 0; i < 3; i++) {
@@ -76,6 +85,14 @@ public class PixelLighShader {
 		return Math.sqrt(distance);
 	}
 
+	/**
+	 * Dither algoritmussal alakít egy akármilyen színt a palettában lévő színekre
+	 * 
+	 * @param cRGB
+	 * @param x
+	 * @param y
+	 * @return paletta beli szín
+	 */
 	private static float[] ditherColor(float[] cRGB, int x, int y) {
 		float[] c2RGB = new float[3];
 		for (int i = 0; i < 3; i++) {
@@ -85,6 +102,10 @@ public class PixelLighShader {
 		return getNearestColor(c2RGB);
 	}
 
+	/**
+	 * @param c Bármilyen szín
+	 * @return Bármilyen színhez legközelebbi szín a palettából
+	 */
 	private static float[] getNearestColor(float[] c) {
 		float[] nearestColor = palette[0];
 		double minDistance = colorDistance(nearestColor, c);
@@ -97,6 +118,13 @@ public class PixelLighShader {
 		return nearestColor;
 	}
 
+	/**
+	 * Fények renderelése párhuzamosítva
+	 * 
+	 * @param baseScreenBuffer
+	 * @param lightSources
+	 * @param camera
+	 */
 	public static void renderLights(BufferedImage baseScreenBuffer, List<Lightsource> lightSources, Camera camera)
 			throws InterruptedException, ExecutionException {
 		List<Future<WritableRaster>> futures = new ArrayList<>();

@@ -23,34 +23,65 @@ public class Player extends Entity implements Lightsource {
 		super(new Vector2(), 10);
 	}
 
+	/**
+	 * 
+	 * @return A játékos enerigája
+	 */
 	public int getStamina() {
 		return (int) Math.max(0, getMaxHealth() - exhaustion);
 	}
 
+	/**
+	 * Beállítja, hogy a játékos vízben van-e
+	 * 
+	 * @param inWater
+	 */
 	public void setInWater(boolean inWater) {
 		this.inWater = inWater;
 	}
 
+	/**
+	 * Beállítja a játékos mozgásirányát
+	 */
 	public void setDirection(Vector2 direction) {
 		setVelocity(direction.normalize().multiply(MOVEMENT_SPEED));
 	}
 
+	/**
+	 * A játékos lábának pozíciója
+	 * 
+	 * @return
+	 */
 	public Vector2 getFeetPosition() {
 		return getPosition().add(new Vector2(0.5, 0.9));
 	}
 
+	/**
+	 * @return Inventory
+	 */
 	public Inventory getInventory() {
 		return inventory;
 	}
 
+	/**
+	 * Ütközés vizsgálata egy dobott tárggyal
+	 */
 	public boolean collide(DroppedItem item) {
 		return this.getBoundingBox().intersects(item.getBoundingBox());
 	}
 
+	/**
+	 * Regenerálja a játékos életerejét
+	 * 
+	 * @param amount Mennyivel regenerálja
+	 */
 	public void heal(int amount) {
 		setHealth(Math.max(getMaxHealth(), getHealth() + amount));
 	}
 
+	/**
+	 * Fáradtság növelése
+	 */
 	public void exhaust() {
 		exhaustion++;
 		resting = 0;

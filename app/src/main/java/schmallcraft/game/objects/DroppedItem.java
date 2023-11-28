@@ -16,6 +16,9 @@ public class DroppedItem extends GameObject {
 		return item.getType().getSpriteId();
 	}
 
+	/**
+	 * @return Az eldobott item
+	 */
 	public Item getItem() {
 		return item;
 	}

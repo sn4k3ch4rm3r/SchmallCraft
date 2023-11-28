@@ -9,6 +9,9 @@ import java.util.List;
 import schmallcraft.items.Item;
 import schmallcraft.items.ItemType;
 
+/**
+ * Az inventory tartalmát kezelő osztály
+ */
 public class Inventory implements Serializable {
 	private List<Item> items = new ArrayList<>();
 	private int selected = 0;
@@ -21,6 +24,9 @@ public class Inventory implements Serializable {
 		selected = index;
 	}
 
+	/**
+	 * A hotbar-on kiválasztott itemet
+	 */
 	public Item getSelectedItem() {
 		if (selected < items.size()) {
 			return items.get(selected);
@@ -28,6 +34,9 @@ public class Inventory implements Serializable {
 		return null;
 	}
 
+	/**
+	 * A hotbar-on kiválasztott item típusa
+	 */
 	public ItemType getSelectedItemType() {
 		Item item = getSelectedItem();
 		if (item != null) {
@@ -36,10 +45,16 @@ public class Inventory implements Serializable {
 		return null;
 	}
 
+	/**
+	 * A hotbar-on kiválasztott item típusa
+	 */
 	public Item getItem(ItemType type) {
 		return items.stream().filter(x -> x.getType() == type).findFirst().orElse(null);
 	}
 
+	/**
+	 * Item típusa adott indexen.
+	 */
 	public Item getItem(int index) {
 		if (index < items.size()) {
 			return items.get(index);
@@ -47,6 +62,9 @@ public class Inventory implements Serializable {
 		return null;
 	}
 
+	/**
+	 * Item hozzáadása az inventoryhoz.
+	 */
 	public void add(Item item) {
 		Item inInventory = getItem(item.getType());
 		if (inInventory != null) {
@@ -56,6 +74,9 @@ public class Inventory implements Serializable {
 		}
 	}
 
+	/**
+	 * Item eltávolítása az inventoryból.
+	 */
 	public void remove(Item item) {
 		Item inInventory = getItem(item.getType());
 		inInventory.setAmount(inInventory.getAmount() - item.getAmount());
@@ -64,6 +85,9 @@ public class Inventory implements Serializable {
 		}
 	}
 
+	/**
+	 * A kiválasztást mozgatja hotbar-on
+	 */
 	public void moveSelection(int amount) {
 		selected = (selected + amount) % INVENTORY_SIZE;
 		if (selected < 0) {
@@ -71,6 +95,12 @@ public class Inventory implements Serializable {
 		}
 	}
 
+	/**
+	 * Megnézi, hogy az adott típusú item craftolására van-e elég nyersanyag.
+	 * 
+	 * @param item
+	 * @return Igaz, ha van elég nyersanyag
+	 */
 	public boolean canCraft(ItemType item) {
 		for (Item ingredient : item.getRecipe()) {
 			Item inInventory = getItem(ingredient.getType());
@@ -81,6 +111,12 @@ public class Inventory implements Serializable {
 		return true;
 	}
 
+	/**
+	 * Craftolja az adott típusú itemet.
+	 * Az eredményt hozzáadja az inventory-hoz, az alapanyagokat eltávolítja.
+	 * 
+	 * @param item
+	 */
 	public void craft(ItemType item) {
 		for (Item ingredient : item.getRecipe()) {
 			remove(ingredient);
@@ -88,6 +124,12 @@ public class Inventory implements Serializable {
 		add(new Item(item, 1));
 	}
 
+	/**
+	 * Megnézi, hogy van-e az inventoryban adott típusú item.
+	 * 
+	 * @param item
+	 * @return Igaz, ha van az inventoryban
+	 */
 	public boolean hasType(ItemType item) {
 		return getItem(item) != null;
 	}

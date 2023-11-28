@@ -13,6 +13,12 @@ public class KeyboardEventListener implements KeyListener {
 	private Game game;
 	private Map<Direction, Boolean> activeDirections = new HashMap<Direction, Boolean>();
 
+	/**
+	 * KeyboardEventListener konstruktor, átveszi a játék referenciáját, így tudja
+	 * az eseményeket továbbítani a játéknak
+	 * 
+	 * @param game Referencia a játékra
+	 */
 	public KeyboardEventListener(Game game) {
 		this.game = game;
 	}

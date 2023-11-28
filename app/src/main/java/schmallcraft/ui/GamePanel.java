@@ -5,6 +5,9 @@ import schmallcraft.game.rendering.Renderer;
 import java.awt.*;
 import javax.swing.JPanel;
 
+/**
+ * A játékot megjelnítő panel.
+ */
 public class GamePanel extends JPanel {
 
 	private Renderer gameRenderer;

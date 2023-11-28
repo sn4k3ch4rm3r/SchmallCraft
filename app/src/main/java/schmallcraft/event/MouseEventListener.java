@@ -12,6 +12,12 @@ import schmallcraft.util.Vector2;
 public class MouseEventListener implements MouseListener, MouseMotionListener, MouseWheelListener {
 	private Game game;
 
+	/**
+	 * MouseEventListener konstruktor, átveszi a játék referenciáját, így tudja az
+	 * eseményeket továbbítani a játéknak
+	 * 
+	 * @param game Referencia a játékra
+	 */
 	public MouseEventListener(Game game) {
 		this.game = game;
 	}

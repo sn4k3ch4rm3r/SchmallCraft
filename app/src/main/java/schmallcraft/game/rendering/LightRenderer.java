@@ -6,6 +6,9 @@ import java.util.concurrent.Callable;
 
 import schmallcraft.util.Vector2;
 
+/**
+ * A világban lévő fényeket rendereli külön szálon.
+ */
 public class LightRenderer implements Callable<WritableRaster> {
 	private Lightsource lightsource;
 	private Vector2 lightRenderPosition;

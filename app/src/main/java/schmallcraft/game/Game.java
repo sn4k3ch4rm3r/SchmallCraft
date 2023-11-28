@@ -28,6 +28,10 @@ import schmallcraft.util.Direction;
 import schmallcraft.util.InventoryState;
 import schmallcraft.util.Vector2;
 
+/**
+ * A játék főosztálya
+ * Ez vezérel mindent a játékban.
+ */
 public class Game implements Runnable {
 	public interface GameOverCallback {
 		void gameOver();
@@ -55,6 +59,9 @@ public class Game implements Runnable {
 		player = state.getPlayer();
 	}
 
+	/**
+	 * Elindítja a játékot egy új szálon
+	 */
 	public void start() {
 		Thread gameThread = new Thread(this);
 		gameThread.start();
@@ -111,10 +118,16 @@ public class Game implements Runnable {
 		gameOverCallback.gameOver();
 	}
 
+	/**
+	 * A játékos mozgásirányát állítja be
+	 */
 	public void setPlayerDirection(Vector2 direction) {
 		player.setDirection(direction);
 	}
 
+	/**
+	 * Fix időközönként futó ritka frissítés
+	 */
 	private void fixedUpdate() {
 		// Add newly created entites to the state
 		if (!gameObjectCreated.isEmpty()) {
@@ -188,6 +201,9 @@ public class Game implements Runnable {
 		}
 	}
 
+	/**
+	 * Frissítés metódus, olyan gyorsan fut ahogy csak lehet
+	 */
 	private void update() {
 		// Update every entity
 		for (Entity entity : visibleEntities) {
@@ -268,6 +284,9 @@ public class Game implements Runnable {
 		renderer.setCameraPosition(cameraPosition);
 	}
 
+	/**
+	 * Támadás / Jobb klikk esemény
+	 */
 	public void actionAttack() {
 		if (state.getInventoryState() == InventoryState.CLOSED) {
 			if (player.getStamina() > 0) {
@@ -316,6 +335,9 @@ public class Game implements Runnable {
 		}
 	}
 
+	/**
+	 * ESC gomb lenyomása esemény
+	 */
 	public void escPressed() {
 		if (state.getInventoryState() == InventoryState.CLOSED) {
 			state.setInventoryState(InventoryState.MENU);
@@ -324,10 +346,16 @@ public class Game implements Runnable {
 		}
 	}
 
+	/**
+	 * Eszköz nélküli barkácsolás inventory megnyitása
+	 */
 	public void actionCraft() {
 		state.setInventoryState(InventoryState.INVENTORY_CRAFTING);
 	}
 
+	/**
+	 * Használat / Bal klikk esemény
+	 */
 	public void actionUse() {
 		Item item = player.getInventory().getSelectedItem();
 		GameObject target = state.getHighLightedObject(renderer.getCamera());
@@ -344,10 +372,20 @@ public class Game implements Runnable {
 		}
 	}
 
+	/**
+	 * Görgetés esemény
+	 * 
+	 * @param scrollAmount A görgetés mértéke
+	 */
 	public void scroll(int scrollAmount) {
 		state.moveSelection(scrollAmount);
 	}
 
+	/**
+	 * Kurzor pozíció beállítása
+	 * 
+	 * @param highLightPosition
+	 */
 	public void setHighLightPosition(Vector2 highLightPosition) {
 		state.setCursorPosition(highLightPosition);
 	}

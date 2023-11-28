@@ -4,6 +4,9 @@ import java.util.List;
 
 import schmallcraft.items.ItemType;
 
+/**
+ * Különböző játékon belüli menük állapot enum-ja
+ */
 public enum InventoryState {
 	CLOSED(0),
 	CRAFTING(0x160) {

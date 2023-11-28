@@ -9,6 +9,9 @@ import java.util.Random;
 
 import schmallcraft.util.Direction;
 
+/**
+ * Wave Function Collapse algoritmust megvalósító osztály
+ */
 public class WaveFunctionCollapse {
 	private Random random;
 	WaveCell[][] wave;
@@ -20,6 +23,16 @@ public class WaveFunctionCollapse {
 	private int resultWidth;
 	private int resultHeight;
 
+	/**
+	 * Inicializálja az algoritmushoz használt mintákat.
+	 * 
+	 * @param inputPattern
+	 * @param patternWidth
+	 * @param patternHeight
+	 * @param resultWidth
+	 * @param resultHeight
+	 * @param random
+	 */
 	public WaveFunctionCollapse(int[][] inputPattern, int patternWidth, int patternHeight, int resultWidth,
 			int resultHeight, Random random) {
 		this.random = random;
@@ -65,13 +78,20 @@ public class WaveFunctionCollapse {
 		}
 	}
 
+	/**
+	 * Kényszerít egy adott cellát, úgy hogy a végső eredményben adott érték legyen
+	 * adott x,y pozícióban.
+	 * 
+	 * @param x
+	 * @param y
+	 * @param value
+	 */
 	public void setFixed(int x, int y, int value) {
 		int wx = x / patternWidth;
 		int wy = y / patternHeight;
 		int px = x % patternWidth;
 		int py = y % patternHeight;
 
-		// TODO: Find all patterns that satisfy the fixed value and choose one randomly
 		for (int i = 0; i < patterns.length; i++) {
 			if (patterns[i].getRawPattern()[py][px] == value) {
 				wave[wy][wx].collapseTo(patterns[i]);
@@ -81,6 +101,12 @@ public class WaveFunctionCollapse {
 		}
 	}
 
+	/**
+	 * Változások kiterjesztése szomszédos cellákra
+	 * 
+	 * @param index A cella koordinátái
+	 * @return Igaz, ha nem volt hiba.
+	 */
 	private boolean propagate(Point index) {
 		Deque<Point> stack = new ArrayDeque<>();
 		stack.push(index);
@@ -109,6 +135,11 @@ public class WaveFunctionCollapse {
 		return true;
 	}
 
+	/**
+	 * Térkép generálása
+	 * 
+	 * @return A bemeneti mintához hasonló, adott méretű int tömb
+	 */
 	public int[][] generateMap() {
 
 		int entropy;

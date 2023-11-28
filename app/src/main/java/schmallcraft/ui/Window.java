@@ -13,6 +13,9 @@ import schmallcraft.game.Game;
 import schmallcraft.game.GameState;
 import schmallcraft.game.rendering.Renderer;
 
+/**
+ * Az ablak, amiben a játék fut.
+ */
 public class Window extends JFrame {
 	private GamePanel gamePanel;
 	private MenuPanel menuPanel;
@@ -30,6 +33,11 @@ public class Window extends JFrame {
 		this.setVisible(true);
 	}
 
+	/**
+	 * Játék elindítása a menüből.
+	 * 
+	 * @param gameState Játékállapot, új ha új játék, fájlból betöltött ha betöltés.
+	 */
 	public void startGame(GameState gameState) {
 		Renderer gameRenderer = new Renderer(RENDER_WIDTH, RENDER_HEIGHT, RENDER_SCALE, () -> gamePanel.repaint());
 		Game game = new Game(gameState, gameRenderer, () -> {

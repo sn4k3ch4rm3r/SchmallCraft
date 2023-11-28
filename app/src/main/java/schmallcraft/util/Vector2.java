@@ -28,10 +28,6 @@ public class Vector2 implements Serializable {
 		return new Vector2(x * scalar, y * scalar);
 	}
 
-	public double dot(Vector2 other) {
-		return x * other.x + y * other.y;
-	}
-
 	public double magnitude() {
 		return Math.sqrt(x * x + y * y);
 	}

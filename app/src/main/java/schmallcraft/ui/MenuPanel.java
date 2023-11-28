@@ -17,6 +17,9 @@ import javax.swing.JPanel;
 
 import schmallcraft.game.GameState;
 
+/**
+ * A menüt megjelenítő panel.
+ */
 public class MenuPanel extends JPanel {
 	public interface GameSelectedCallback {
 		public void onGameSelected(GameState gameState);

@@ -103,6 +103,15 @@ public enum BlockType implements SpriteIdProvider {
 		}
 	}
 
+	/**
+	 * Megadja az adott id-hez tartozó blokk típusát
+	 * Itt a nem determinisztikusnak tőnű id-k oka, hogy a, ami alapján a világot
+	 * generálja a WFC algoritmus eredetileg egy indexelt palettás képből készült,
+	 * ahol a blokkok fő színéhez tartozó szín adja meg az adott blokkot.
+	 * 
+	 * @param id
+	 * @return Blokk típusa azonosító alapján
+	 */
 	public static BlockType fromId(int id) {
 		if (idToType.containsKey(id)) {
 			return idToType.get(id);
@@ -110,6 +119,12 @@ public enum BlockType implements SpriteIdProvider {
 		return BlockType.UNKNOWN;
 	}
 
+	/**
+	 * Megadja, hogy az adott eszköz milyen blokkokat tud bányászni
+	 * 
+	 * @param tool Az eszköz típusa
+	 * @return A bányászható blokkok listája
+	 */
 	public static List<BlockType> blocksOfTool(ItemType tool) {
 		if (tool == ItemType.PICKAXE) {
 			return List.of(BlockType.ROCK, BlockType.COAL_ORE, BlockType.IRON_ORE,
@@ -120,6 +135,11 @@ public enum BlockType implements SpriteIdProvider {
 		return List.of();
 	}
 
+	/**
+	 * Megadja, hogy az adott blokktípushoz milyen tulajdonságok tartoznak.
+	 * 
+	 * @return A blokk tulajdonságai
+	 */
 	public BlockProperties getProperties() {
 		return new BlockProperties(1);
 	}

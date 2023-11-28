@@ -13,10 +13,19 @@ import schmallcraft.items.ItemType;
 public class DropTable implements Serializable {
 	EnumMap<ItemType, Double> drops = new EnumMap<>(ItemType.class);
 
+	/**
+	 * Beállítja, hogy egy adott tárgy milyen valószínűséggel keletkezik
+	 * 
+	 * @param item Item típus
+	 * @param rate Valószínűség
+	 */
 	public void setDropRate(ItemType item, double rate) {
 		drops.put(item, rate);
 	}
 
+	/**
+	 * @return A tárgyak random kiválasztva a valószínűségeik alapján
+	 */
 	public List<Item> getDrops() {
 		ArrayList<Item> items = new ArrayList<>();
 		for (Entry<ItemType, Double> item : drops.entrySet()) {

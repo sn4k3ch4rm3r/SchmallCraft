@@ -7,6 +7,9 @@ import javax.imageio.ImageIO;
 
 import schmallcraft.ui.Window;
 
+/**
+ * A program belépési pontja.
+ */
 public class Main {
     public static boolean lightsEnabled = true;
     public static BufferedImage spriteSheet;
