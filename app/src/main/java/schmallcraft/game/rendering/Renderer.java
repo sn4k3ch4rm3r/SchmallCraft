@@ -11,6 +11,7 @@ import java.util.concurrent.ExecutionException;
 
 import javax.imageio.ImageIO;
 
+import schmallcraft.Main;
 import schmallcraft.game.GameState;
 import schmallcraft.game.objects.GameObject;
 import schmallcraft.items.Item;
@@ -70,7 +71,7 @@ public class Renderer {
 		}
 
 		// Render lights in the underworld only
-		if (gameState.getLevel() == Level.UNDERWORLD) {
+		if (Main.LIGHTS_ENABLED && gameState.getLevel() == Level.UNDERWORLD) {
 			try {
 				PixelLighShader.renderLights(screenBuffer, lights, camera);
 			} catch (InterruptedException | ExecutionException e) {
@@ -118,7 +119,7 @@ public class Renderer {
 		if (gameState.getInventoryState() != InventoryState.CLOSED) {
 			// Background
 			Rectangle inventoryBbox = getInventoryBbox();
-			g.drawImage(getSprite(0x80, inventoryBbox.width, inventoryBbox.height),
+			g.drawImage(getSprite(0x90, inventoryBbox.width, inventoryBbox.height),
 					inventoryBbox.x, inventoryBbox.y,
 					null);
 			// Title
