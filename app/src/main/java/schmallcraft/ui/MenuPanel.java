@@ -1,11 +1,17 @@
 package schmallcraft.ui;
 
+import static schmallcraft.util.Constants.TILE_SIZE;
+
+import java.awt.Color;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
+import java.awt.Rectangle;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 
-import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JPanel;
 
@@ -16,11 +22,12 @@ public class MenuPanel extends JPanel {
 		public void onGameSelected(GameState gameState);
 	}
 
-	private JButton newGameButton;
-	private JButton loadGameButton;
+	private Button newGameButton;
+	private Button loadGameButton;
 
 	public MenuPanel(GameSelectedCallback callback) {
-		newGameButton = new JButton("New Game");
+		newGameButton = new Button(
+				new Rectangle(64, 112, TILE_SIZE * 4, TILE_SIZE / 2));
 		newGameButton.addActionListener(event -> {
 			File saveFile = fileDialog(true);
 			if (saveFile == null) {
@@ -30,8 +37,8 @@ public class MenuPanel extends JPanel {
 			state.save();
 			callback.onGameSelected(state);
 		});
-
-		loadGameButton = new JButton("Load Game");
+		loadGameButton = new Button(
+				new Rectangle(64, 120, (int) (TILE_SIZE * 4.5), TILE_SIZE / 2));
 		loadGameButton.addActionListener(event -> {
 			File saveFile = fileDialog(false);
 			if (saveFile == null) {
@@ -52,8 +59,16 @@ public class MenuPanel extends JPanel {
 
 		});
 
-		this.add(newGameButton);
-		this.add(loadGameButton);
+		this.setBackground(new Color(57, 74, 80));
+		this.setLayout(new GridBagLayout());
+		GridBagConstraints gbc = new GridBagConstraints();
+		gbc.gridwidth = GridBagConstraints.REMAINDER;
+		gbc.anchor = GridBagConstraints.CENTER;
+		gbc.insets = new Insets(10, 0, 10, 0);
+		this.add(new TitlePanel(), gbc);
+		this.add(newGameButton, gbc);
+		this.add(loadGameButton, gbc);
+
 	}
 
 	private File fileDialog(boolean newFile) {

@@ -4,12 +4,9 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
-
-import javax.imageio.ImageIO;
 
 import schmallcraft.Main;
 import schmallcraft.game.GameState;
@@ -37,11 +34,7 @@ public class Renderer {
 		this.scale = scale;
 		this.renderCallback = renderCallback;
 		screenBuffer = new BufferedImage(logicalWidth, logicalHeight, BufferedImage.TYPE_INT_RGB);
-		try {
-			spriteSheet = ImageIO.read(this.getClass().getClassLoader().getResource("textures.png"));
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		this.spriteSheet = Main.spriteSheet;
 	}
 
 	public void render(GameState gameState) {
@@ -82,7 +75,7 @@ public class Renderer {
 		}
 
 		// Render lights in the underworld only
-		if (Main.LIGHTS_ENABLED && gameState.getLevel() == Level.UNDERWORLD) {
+		if (Main.lightsEnabled && gameState.getLevel() == Level.UNDERWORLD) {
 			try {
 				PixelLighShader.renderLights(screenBuffer, lights, camera);
 			} catch (InterruptedException | ExecutionException e) {
